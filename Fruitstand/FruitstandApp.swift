@@ -14,4 +14,5 @@ struct FruitstandApp: App {
             ContentView()
         }
     }
+    
 }
