@@ -13,6 +13,7 @@
 		16022E0F2652F8720098BD95 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 16022E0E2652F8720098BD95 /* Preview Assets.xcassets */; };
 		163DA461278BB7CA000965C6 /* ProductLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 163DA460278BB7CA000965C6 /* ProductLoader.swift */; };
 		163DA463278BF434000965C6 /* ProductOperations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 163DA462278BF434000965C6 /* ProductOperations.swift */; };
+		1690B4902790197900CFAD06 /* AddProductView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1690B48F2790197900CFAD06 /* AddProductView.swift */; };
 		16B2D1DD278A3EB7006242BC /* ProductInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16B2D1DC278A3EB7006242BC /* ProductInfo.swift */; };
 		16B2D1E1278A5289006242BC /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 16B2D1E0278A5289006242BC /* CloudKit.framework */; };
 		16B2D1E3278A6A35006242BC /* ProductAtttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16B2D1E2278A6A35006242BC /* ProductAtttributes.swift */; };
@@ -28,6 +29,7 @@
 		16022E102652F8720098BD95 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		163DA460278BB7CA000965C6 /* ProductLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductLoader.swift; sourceTree = "<group>"; };
 		163DA462278BF434000965C6 /* ProductOperations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductOperations.swift; sourceTree = "<group>"; };
+		1690B48F2790197900CFAD06 /* AddProductView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddProductView.swift; sourceTree = "<group>"; };
 		16B2D1DC278A3EB7006242BC /* ProductInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductInfo.swift; sourceTree = "<group>"; };
 		16B2D1DE278A5277006242BC /* Fruitstand.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Fruitstand.entitlements; sourceTree = "<group>"; };
 		16B2D1E0278A5289006242BC /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
@@ -71,6 +73,7 @@
 				16022E072652F8710098BD95 /* FruitstandApp.swift */,
 				16022E092652F8710098BD95 /* ContentView.swift */,
 				16B333CF2652F8B1003E4BCE /* ProductView.swift */,
+				1690B48F2790197900CFAD06 /* AddProductView.swift */,
 				16B2D1DC278A3EB7006242BC /* ProductInfo.swift */,
 				16B2D1E2278A6A35006242BC /* ProductAtttributes.swift */,
 				163DA460278BB7CA000965C6 /* ProductLoader.swift */,
@@ -171,6 +174,7 @@
 				16022E0A2652F8710098BD95 /* ContentView.swift in Sources */,
 				163DA461278BB7CA000965C6 /* ProductLoader.swift in Sources */,
 				163DA463278BF434000965C6 /* ProductOperations.swift in Sources */,
+				1690B4902790197900CFAD06 /* AddProductView.swift in Sources */,
 				16B2D1DD278A3EB7006242BC /* ProductInfo.swift in Sources */,
 				16B333D02652F8B1003E4BCE /* ProductView.swift in Sources */,
 				16022E082652F8710098BD95 /* FruitstandApp.swift in Sources */,
@@ -302,7 +306,9 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Fruitstand/Fruitstand.entitlements;
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
+				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_ASSET_PATHS = "\"Fruitstand/Preview Content\"";
 				DEVELOPMENT_TEAM = 86LR2G8L2C;
 				ENABLE_PREVIEWS = YES;
@@ -313,7 +319,11 @@
 					"@executable_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = armandsarkani.Fruitstand;
+				"PRODUCT_BUNDLE_IDENTIFIER[sdk=macosx*]" = armandsarkani.Fruitstand;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "2022 iOS Provisioning Profile";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "2022 macOS Provisioning Profile";
+				SUPPORTS_MACCATALYST = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -325,7 +335,9 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Fruitstand/Fruitstand.entitlements;
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
+				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_ASSET_PATHS = "\"Fruitstand/Preview Content\"";
 				DEVELOPMENT_TEAM = 86LR2G8L2C;
 				ENABLE_PREVIEWS = YES;
@@ -336,7 +348,11 @@
 					"@executable_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = armandsarkani.Fruitstand;
+				"PRODUCT_BUNDLE_IDENTIFIER[sdk=macosx*]" = armandsarkani.Fruitstand;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "2022 iOS Provisioning Profile";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "2022 macOS Provisioning Profile";
+				SUPPORTS_MACCATALYST = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};

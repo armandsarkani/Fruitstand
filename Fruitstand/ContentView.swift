@@ -9,7 +9,6 @@ import SwiftUI
 
 var keyStore = NSUbiquitousKeyValueStore()
 
-let labels: [String] = ["Mac", "iPhone", "iPad", "Apple Watch", "AirPods", "Apple TV", "iPod"]
 let icons: [String: String] = ["Mac": "desktopcomputer", "iPhone": "iphone", "iPad": "ipad", "Apple Watch": "applewatch", "AirPods": "airpodspro", "Apple TV": "appletv.fill", "iPod": "ipod"]
 struct ContentView: View {
     @State var showInfoModalView: Bool = false
@@ -21,9 +20,13 @@ struct ContentView: View {
             List {
                 Section(header: Text("Devices"))
                 {
-                    ForEach(labels, id: \.self) { label in
-                        NavigationLink(destination: ProductListView(title: label)){
-                            Label(label, systemImage: icons[label]!)
+                    ForEach(DeviceType.allCases, id: \.self) { label in
+                        NavigationLink(destination: ProductListView(deviceType: label.id)){
+                            Label(label.id, systemImage: icons[label.id]!)
+                                .fixedSize()
+                            Spacer()
+                            Text(String(loadDeviceTypeCounts()[label]!))
+                                .foregroundColor(.gray)
                         }
                     }
                 }
@@ -40,7 +43,7 @@ struct ContentView: View {
             }
             .listStyle(InsetGroupedListStyle())
             .environment(\.horizontalSizeClass, .regular)
-            .navigationBarTitle(Text("My Collection"))
+            .navigationTitle(Text("My Collection"))
             .navigationBarItems(trailing:
                     HStack
                     {
@@ -70,14 +73,15 @@ struct ContentView: View {
     
 struct SettingsView: View {
     @Binding var showSettingsModalView: Bool
-    @Environment(\.presentationMode) var presentation
     @State private var confirmationShown = false
+    @Environment(\.presentationMode) var presentation
     var body: some View {
         NavigationView {
             List
             {
                 Button(action: {confirmationShown.toggle()}) {
                     Label("Erase All Products", systemImage: "trash")
+                        .foregroundColor(.red)
                 }
                 
                 .alert(isPresented: $confirmationShown) {
@@ -95,61 +99,119 @@ struct SettingsView: View {
                     )
                 }
             }
-            .navigationBarTitle(Text("Settings"), displayMode: .inline)
+            .navigationTitle(Text("Settings"))
+            .navigationBarTitleDisplayMode(.inline)
             .navigationBarItems(
-                leading: Button(action: {self.showSettingsModalView.toggle()}, label: {Text("Cancel").fontWeight(.regular)}))
+                leading: Button(action: {self.showSettingsModalView.toggle()}, label: {Text("Close").fontWeight(.regular)}))
            
         }
     }
    
 }
-struct SearchBar: View {
-    @Binding var text: String
-    @State private var isEditing = false
- 
-    var body: some View {
-        HStack {
-            TextField("Search ...", text: $text)
-                .padding(7)
-                .padding(.horizontal, 25)
-                .background(Color(.systemGray6))
-                .cornerRadius(8)
-                .overlay(
-                    HStack {
-                        Image(systemName: "magnifyingglass")
-                            .foregroundColor(.gray)
-                            .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
-                            .padding(.leading, 8)
-                 
-                        if isEditing {
-                            Button(action: {
-                                self.text = ""
-                            }) {
-                                Image(systemName: "multiply.circle.fill")
-                                    .foregroundColor(.gray)
-                                    .padding(.trailing, 8)
-                            }
-                        }
-                    }
-                )
-                .padding(.horizontal, 10)
-                .onTapGesture {
-                    self.isEditing = true
-                }
- 
-            if isEditing {
-                Button(action: {
-                    self.isEditing = false
-                    self.text = ""
- 
-                }) {
-                    Text("Cancel")
-                }
-                .padding(.trailing, 10)
-                .transition(.move(edge: .trailing))
-            }
-        }
+
+struct ProductListView: View {
+    var deviceType: String
+    @State var modelList: [ModelAndCount]
+    init(deviceType: String)
+    {
+        self.deviceType = deviceType
+        self.modelList = loadModelList(deviceType: deviceType)
+
     }
+    var body: some View {
+        if(modelList.isEmpty)
+        {
+            VStack(spacing: 15)
+            {
+                Image(systemName: icons[deviceType]!)
+                    .font(.system(size: 72))
+                Text(deviceType)
+                    .font(.title)
+                    .fontWeight(.bold)
+                Text("Collection is empty.")
+                    .font(.body)
+            }
+            
+        }
+        else
+        {
+            List
+            {
+                ForEach($modelList, id: \.self) { $model in
+                    NavigationLink(destination: ProductView(model: model.model, deviceType: deviceType)){
+                        if(DeviceType(rawValue: deviceType) == DeviceType.iPhone){
+                            Label(model.model, systemImage: iPhoneModel(rawValue: model.model)!.getIcon())
+                                .fixedSize()
+                        }
+                        if(DeviceType(rawValue: deviceType) == DeviceType.iPad){
+                            Label(model.model, systemImage: iPadModel(rawValue: model.model)!.getIcon())
+                                .fixedSize()
+                        }
+                        if(DeviceType(rawValue: deviceType) == DeviceType.Mac){
+                            Label(model.model, systemImage: MacModel(rawValue: model.model)!.getIcon())
+                                .fixedSize()
+                        }
+                        if(DeviceType(rawValue: deviceType) == DeviceType.AppleWatch){
+                            Label(model.model, systemImage: AppleWatchModel(rawValue: model.model)!.getIcon())
+                                .fixedSize()
+                        }
+                        if(DeviceType(rawValue: deviceType) == DeviceType.AirPods){
+                            Label(model.model, systemImage: AirPodsModel(rawValue: model.model)!.getIcon())
+                                .fixedSize()
+                        }
+                        if(DeviceType(rawValue: deviceType) == DeviceType.AppleTV){
+                            Label(model.model, systemImage: AppleTVModel(rawValue: model.model)!.getIcon())
+                                .fixedSize()
+                        }
+                        if(DeviceType(rawValue: deviceType) == DeviceType.iPod){
+                            Label(model.model, systemImage: iPodModel(rawValue: model.model)!.getIcon())
+                                .fixedSize()
+                        }
+                        Spacer()
+                        Text(String(model.count!))
+                            .foregroundColor(.gray)
+                    }
+                }
+                
+            }.navigationTitle(Text(deviceType))        .navigationBarTitleDisplayMode(.inline)
+        }
+        
+            
+    }
+    
+}
+
+struct CountsView: View {
+    var body: some View {
+        VStack(spacing: 15)
+        {
+            Image(systemName: "sum")
+                .font(.system(size: 72))
+            Text("Product Count Statistics")
+                .font(.title)
+                .fontWeight(.bold)
+            Text("This feature is coming soon!")
+                .font(.body)
+        }
+            
+    }
+    
+}
+struct ValuesView: View {
+    var body: some View {
+        VStack(spacing: 15)
+        {
+            Image(systemName: "dollarsign.circle.fill")
+                .font(.system(size: 72))
+            Text("Product Value Statistics")
+                .font(.title)
+                .fontWeight(.bold)
+            Text("This feature is coming soon!")
+                .font(.body)
+        }
+            
+    }
+    
 }
 
 struct ContentView_Previews: PreviewProvider{
@@ -161,34 +223,11 @@ struct ContentView_Previews: PreviewProvider{
     }
 }
 
-struct CountsView: View {
-    var body: some View {
-        Image(systemName: "sum")
-            .resizable()
-            .frame(width: 32, height: 48)
-        Spacer()
-            .frame(width: 30.0, height: 30.0)
-        Text("Product Count Statistics")
-            .font(.title)
-        Text("This feature is coming soon!")
-            .font(.body)
-            
+struct ProductListView_Previews: PreviewProvider{
+    static var previews: some View {
+        Group {
+            ProductListView(deviceType: "iPhone")
+                .preferredColorScheme(.dark)
+        }
     }
-    
-}
-struct ValuesView: View {
-    var body: some View {
-        Image(systemName: "dollarsign.circle.fill")
-            .resizable()
-            .frame(width: 48, height: 48)
-        Spacer()
-            .frame(width: 30.0, height: 30.0)
-        Text("Product Value Statistics")
-            .font(.title)
-        Text("This feature is coming soon!")
-            .font(.body)
-            
-            
-    }
-    
 }

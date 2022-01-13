@@ -32,8 +32,9 @@ struct ProductInfo: Codable, Hashable
 {
     // Shared with all
     var type: DeviceType?
-    var model: String?
+    var uuid: String?
     var color: String?
+    var model: String? 
     var workingStatus: WorkingStatus?
     var estimatedValue: Int?
     var condition: Condition?
@@ -43,6 +44,16 @@ struct ProductInfo: Codable, Hashable
     var warranty: Warranty?
     var yearAcquired: Int?
     var comments: String?
+    
+    // Model names for each device type
+    var iPhoneModel: iPhoneModel?
+    var iPadModel: iPadModel?
+    var MacModel: MacModel?
+    var AppleWatchModel: AppleWatchModel?
+    var AirPodsModel: AirPodsModel?
+    var AppleTVModel: AppleTVModel?
+    var iPodModel: iPodModel?
+    var otherModel: String?
     
     // Shared with iPhone, iPad, Mac, Apple TV, iPod
     var storage: String?
@@ -57,7 +68,6 @@ struct ProductInfo: Codable, Hashable
     
     // iPad only
     var connectivity: iPadConnectivity?
-
 
     // Mac only
     var year: String?
@@ -79,6 +89,60 @@ struct ProductInfo: Codable, Hashable
     // AirPods only
     var AirPodsCaseType: AirPodsCaseType?
     
+}
+
+func getProductModel(product: ProductInfo) -> String
+{
+    var model: String
+    if(product.type == DeviceType.iPhone){
+        model = product.iPhoneModel!.rawValue
+    }
+    else if(product.type == DeviceType.iPad){
+        model = product.iPadModel!.rawValue
+    }
+    else if(product.type == DeviceType.Mac){
+        model = product.MacModel!.rawValue
+    }
+    else if(product.type == DeviceType.AppleWatch){
+        model = product.AppleWatchModel!.rawValue
+    }
+    else if(product.type == DeviceType.AirPods){
+        model = product.AirPodsModel!.rawValue
+    }
+    else if(product.type == DeviceType.AppleTV){
+        model = product.AppleTVModel!.rawValue
+    }
+    else{
+        model = product.iPodModel!.rawValue
+    }
+    return model
+}
+
+func getProductIcon(product: ProductInfo) -> String
+{
+    var model: String
+    if(product.type == DeviceType.iPhone){
+        model = product.iPhoneModel!.getIcon()
+    }
+    else if(product.type == DeviceType.iPad){
+        model = product.iPadModel!.getIcon()
+    }
+    else if(product.type == DeviceType.Mac){
+        model = product.MacModel!.getIcon()
+    }
+    else if(product.type == DeviceType.AppleWatch){
+        model = product.AppleWatchModel!.getIcon()
+    }
+    else if(product.type == DeviceType.AirPods){
+        model = product.AirPodsModel!.getIcon()
+    }
+    else if(product.type == DeviceType.AppleTV){
+        model = product.AppleTVModel!.getIcon()
+    }
+    else{
+        model = product.iPodModel!.getIcon()
+    }
+    return model
 }
 
 class ProductInfoManager: ObservableObject
