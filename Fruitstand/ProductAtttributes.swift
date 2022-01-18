@@ -68,19 +68,14 @@ enum iPadConnectivity: String, CaseIterable, Identifiable, Codable {
 enum WatchConnectivity: String, CaseIterable, Identifiable, Codable {
     case GPS
     case Cellular = "GPS + Cellular"
+    case None
     var id: String { self.rawValue }
 }
 
 enum FormFactor: String, CaseIterable, Identifiable, Codable {
     case Notebook
     case Desktop
-    var id: String { self.rawValue }
-}
-
-enum StorageType: String, CaseIterable, Identifiable, Codable {
-    case HDD = "Hard drive"
-    case SSD
-    case None
+    case AllinOne = "All-in-one"
     var id: String { self.rawValue }
 }
 
@@ -102,10 +97,10 @@ enum WatchCaseType: String, CaseIterable, Identifiable, Codable {
 }
 
 enum AirPodsCaseType: String, CaseIterable, Identifiable, Codable {
-    case Wired = "Charging Case (wired)"
+    case Wired = "Wired Charging Case"
     case Wireless = "Wireless Charging Case"
-    case MagSafe = "MagSafe Wireless Charging Case"
-    case Smart = "Smart Case (AirPods Max)"
+    case MagSafe = "MagSafe Case"
+    case Smart = "Smart Case"
     case Other
     var id: String { self.rawValue }
 }
@@ -113,10 +108,11 @@ enum AirPodsCaseType: String, CaseIterable, Identifiable, Codable {
 
 enum iPhoneModel: String, CaseIterable, Identifiable, Codable {
     // Models
-    case _1stGen = "iPhone (1st generation)"
+    case _1stGen = "iPhone (1st gen.)"
     case _3G = "iPhone 3G"
     case _3GS = "iPhone 3GS"
     case _4 = "iPhone 4"
+    case _4s = "iPhone 4s"
     case _5 = "iPhone 5"
     case _5c = "iPhone 5c"
     case _5s = "iPhone 5s"
@@ -124,7 +120,7 @@ enum iPhoneModel: String, CaseIterable, Identifiable, Codable {
     case _6Plus = "iPhone 6 Plus"
     case _6s = "iPhone 6s"
     case _6sPlus = "iPhone 6s Plus"
-    case _SE1stGen = "iPhone SE (1st generation)"
+    case _SE1stGen = "iPhone SE (1st gen.)"
     case _7 = "iPhone 7"
     case _7Plus = "iPhone 7 Plus"
     case _8 = "iPhone 8"
@@ -136,7 +132,7 @@ enum iPhoneModel: String, CaseIterable, Identifiable, Codable {
     case _11 = "iPhone 11"
     case _11Pro = "iPhone 11 Pro"
     case _11ProMax = "iPhone 11 Pro Max"
-    case _SE2ndGen = "iPhone SE (2nd generation)"
+    case _SE2ndGen = "iPhone SE (2nd gen.)"
     case _12Mini = "iPhone 12 mini"
     case _12 = "iPhone 12"
     case _12Pro = "iPhone 12 Pro"
@@ -166,35 +162,35 @@ enum iPhoneModel: String, CaseIterable, Identifiable, Codable {
 
 enum iPadModel: String, CaseIterable, Identifiable, Codable {
     // Models
-    case _1stGen = "iPad (1st generation)"
-    case _2ndGen = "iPad (2nd generation)"
-    case _3rdGen = "iPad (3rd generation)"
-    case _4thGen = "iPad (4th generation)"
-    case _5thGen = "iPad (5th generation)"
-    case _6thGen = "iPad (6th generation)"
-    case _7thGen = "iPad (7th generation)"
-    case _8thGen = "iPad (8th generation)"
-    case _9thGen = "iPad (9th generation)"
-    case _Air1stGen = "iPad Air (1st generation)"
-    case _Air2ndGen = "iPad Air (2nd generation)"
-    case _Air3rdGen = "iPad Air (3rd generation)"
-    case _Air4thGen = "iPad Air (4th generation)" // no home button
-    case _Mini1stGen = "iPad mini (1st generation)"
-    case _Mini2ndGen = "iPad mini (2nd generation)"
-    case _Mini3rdGen = "iPad mini (3rd generation)"
-    case _Mini4thGen = "iPad mini (4th generation)"
-    case _Mini5thGen = "iPad mini (5th generation)"
-    case _Mini6thGen = "iPad mini (6th generation)" // no home button
+    case _1stGen = "iPad (1st gen.)"
+    case _2ndGen = "iPad (2nd gen.)"
+    case _3rdGen = "iPad (3rd gen.)"
+    case _4thGen = "iPad (4th gen.)"
+    case _5thGen = "iPad (5th gen.)"
+    case _6thGen = "iPad (6th gen.)"
+    case _7thGen = "iPad (7th gen.)"
+    case _8thGen = "iPad (8th gen.)"
+    case _9thGen = "iPad (9th gen.)"
+    case _Air1stGen = "iPad Air (1st gen.)"
+    case _Air2ndGen = "iPad Air (2nd gen.)"
+    case _Air3rdGen = "iPad Air (3rd gen.)"
+    case _Air4thGen = "iPad Air (4th gen.)" // no home button
+    case _Mini1stGen = "iPad mini (1st gen.)"
+    case _Mini2ndGen = "iPad mini (2nd gen.)"
+    case _Mini3rdGen = "iPad mini (3rd gen.)"
+    case _Mini4thGen = "iPad mini (4th gen.)"
+    case _Mini5thGen = "iPad mini (5th gen.)"
+    case _Mini6thGen = "iPad mini (6th gen.)" // no home button
     case _Pro9_7 = "iPad Pro 9.7-inch"
-    case _Pro_12_9_1stGen = "iPad Pro 12.9-inch (1st generation)"
+    case _Pro_12_9_1stGen = "iPad Pro 12.9-inch (1st gen.)"
     case _Pro10_5 = "iPad Pro 10.5-inch"
-    case _Pro_12_9_2ndGen = "iPad Pro 12.9-inch (2nd generation)"
-    case _Pro_11_1stGen = "iPad Pro 11-inch (1st generation)" // no home button (all the way down)
-    case _Pro_12_9_3rdGen = "iPad Pro 12.9-inch (3rd generation)"
-    case _Pro_11_2ndGen = "iPad Pro 11-inch (2nd generation)"
-    case _Pro_12_9_4thGen = "iPad Pro 12.9-inch (4th generation)"
-    case _Pro_11_3rdGen = "iPad Pro 11-inch (3rd generation)"
-    case _Pro_12_9_5thGen = "iPad Pro 12.9-inch (5th generation)"
+    case _Pro_12_9_2ndGen = "iPad Pro 12.9-inch (2nd gen.)"
+    case _Pro_11_1stGen = "iPad Pro 11-inch (1st gen.)" // no home button (all the way down)
+    case _Pro_12_9_3rdGen = "iPad Pro 12.9-inch (3rd gen.)"
+    case _Pro_11_2ndGen = "iPad Pro 11-inch (2nd gen.)"
+    case _Pro_12_9_4thGen = "iPad Pro 12.9-inch (4th gen.)"
+    case _Pro_11_3rdGen = "iPad Pro 11-inch (3rd gen.)"
+    case _Pro_12_9_5thGen = "iPad Pro 12.9-inch (5th gen.)"
     case Other = "Other"
     
     var id: String { self.rawValue }
@@ -219,14 +215,14 @@ enum MacModel: String, CaseIterable, Identifiable, Codable {
     // Models
     case _MBP = "MacBook Pro (original)"
     case _MBPUnibody = "MacBook Pro (unibody)"
-    case _MBPRetina = "MacBook Pro (Retina, original)"
+    case _MBPRetina = "MacBook Pro (Retina)"
     case _MBPRetinaTB = "MacBook Pro (Retina, Thunderbolt)"
     case _MBPRetinaAS = "MacBook Pro (Apple Silicon)"
     case _MBA = "MacBook Air (non-Retina)"
     case _MBARetina = "MacBook Air (Retina)"
     case _MBAAS = "MacBook Air (Apple Silicon)"
     case _MB = "MacBook (polycarbonate)"
-    case _MBUnibody = "MacBook (polycarbonate, unibody)"
+    case _MBUnibody = "MacBook (unibody)"
     case _MBAl = "MacBook (aluminum, unibody)"
     case _MB12 = "MacBook (Retina)"
     case _iMac = "iMac (Intel)"
@@ -236,7 +232,7 @@ enum MacModel: String, CaseIterable, Identifiable, Codable {
     case _MacMiniAS = "Mac mini (Apple Silicon)"
     case _MacPro = "Mac Pro"
     case Other = "Other"
-    case Earlier = "Earlier Model (PowerPC, 68k)"
+    case Earlier = "Earlier Models"
     
     var id: String { self.rawValue }
     static var asArray: [MacModel] {return self.allCases}
@@ -269,7 +265,7 @@ enum MacModel: String, CaseIterable, Identifiable, Codable {
 
 enum AppleWatchModel: String, CaseIterable, Identifiable, Codable {
     // Models
-    case _S0 = "Apple Watch (1st generation)"
+    case _S0 = "Apple Watch (1st gen.)"
     case _S1 = "Apple Watch Series 1"
     case _S2 = "Apple Watch Series 2"
     case _S3 = "Apple Watch Series 3"
@@ -292,9 +288,9 @@ enum AppleWatchModel: String, CaseIterable, Identifiable, Codable {
 }
 enum AirPodsModel: String, CaseIterable, Identifiable, Codable {
     // Models
-    case _1stGen = "AirPods (1st generation)"
-    case _2ndGen = "AirPods (2nd generation)"
-    case _3rdGen = "AirPods (3rd generation)"
+    case _1stGen = "AirPods (1st gen.)"
+    case _2ndGen = "AirPods (2nd gen.)"
+    case _3rdGen = "AirPods (3rd gen.)"
     case _Pro = "AirPods Pro"
     case _Max = "AirPods Max"
     case Other = "Other"
@@ -326,12 +322,12 @@ enum AirPodsModel: String, CaseIterable, Identifiable, Codable {
 
 enum AppleTVModel: String, CaseIterable, Identifiable, Codable {
     // Models
-    case _1stGen = "Apple TV (1st generation)"
-    case _2ndGen = "Apple TV (2nd generation)"
-    case _3rdGen = "Apple TV (3rd generation)"
+    case _1stGen = "Apple TV (1st gen.)"
+    case _2ndGen = "Apple TV (2nd gen.)"
+    case _3rdGen = "Apple TV (3rd gen.)"
     case _HD = "Apple TV HD"
-    case _4K1stGen = "Apple TV 4K (1st generation)"
-    case _4K2ndGen = "Apple TV 4K (2nd generation)"
+    case _4K1stGen = "Apple TV 4K (1st gen.)"
+    case _4K2ndGen = "Apple TV 4K (2nd gen.)"
     case Other = "Other"
     
     var id: String { self.rawValue }
@@ -346,42 +342,42 @@ enum AppleTVModel: String, CaseIterable, Identifiable, Codable {
 
 enum iPodModel: String, CaseIterable, Identifiable, Codable {
     // Models
-    case _1stGen = "iPod (1st generation)"
-    case _2ndGen = "iPod (2nd generation)"
-    case _3rdGen = "iPod (3rd generation)"
-    case _4thGen = "iPod (4th generation)"
-    case _4thGenHP = "iPod (4th generation, HP)"
-    case _4thGenPhoto = "iPod (4th generation, photo)"
-    case _4thGenPhotoHP = "iPod (4th generation, HP, photo)"
+    case _1stGen = "iPod (1st gen.)"
+    case _2ndGen = "iPod (2nd gen.)"
+    case _3rdGen = "iPod (3rd gen.)"
+    case _4thGen = "iPod (4th gen.)"
+    case _4thGenHP = "iPod + HP (4th gen.)"
+    case _4thGenPhoto = "iPod (4th gen., photo)"
+    case _4thGenPhotoHP = "iPod + HP (4th gen., photo)"
     case _U2 = "iPod U2"
     case _U2Photo = "iPod U2 (photo)"
-    case _5thGen = "iPod 5th generation"
-    case _U25thGen = "iPod U2 (5th generation)"
+    case _5thGen = "iPod 5th gen."
+    case _U25thGen = "iPod U2 (5th gen.)"
     case _Classic = "iPod classic"
     case _Classic09 = "iPod classic (Late 2009)"
-    case _Mini1stGen = "iPod mini (1st generation)"
-    case _Mini1stGenHP =  "iPod mini + HP (1st generation)"
-    case _Mini2ndGen = "iPod mini (2nd generation)"
-    case _Mini2ndGenHP = "iPod mini + HP (2nd generation)"
-    case _Nano1stGen = "iPod nano (1st generation)"
-    case _Nano2ndGen = "iPod nano (2nd generation)"
-    case _Nano3rdGen = "iPod nano (3rd generation)"
-    case _Nano4thGen = "iPod nano (4th generation)"
-    case _Nano5thGen = "iPod nano (5th generation)"
-    case _Nano6thGen = "iPod nano (6th generation)"
-    case _Nano7thGen = "iPod nano (7th generation)"
-    case _Shuffle1stGen = "iPod shuffle (1st generation)"
-    case _Shuffle1stGenHP = "iPod shuffle + HP (1st generation)"
-    case _Shuffle2ndGen = "iPod shuffle (2nd generation)"
-    case _Shuffle3rdGen = "iPod shuffle (3rd generation)"
-    case _Shuffle4thGen = "iPod shuffle (4th generation)"
-    case _Touch1stGen = "iPod touch (1st generation)"
-    case _Touch2ndGen = "iPod touch (2nd generation)"
-    case _Touch3rdGen = "iPod touch (3rd generation)"
-    case _Touch4thGen = "iPod touch (4th generation)"
-    case _Touch5thGen = "iPod touch (5th generation)"
-    case _Touch6thGen = "iPod touch (6th generation)"
-    case _Touch7thGen = "iPod touch (7th generation)"
+    case _Mini1stGen = "iPod mini (1st gen.)"
+    case _Mini1stGenHP =  "iPod mini + HP (1st gen.)"
+    case _Mini2ndGen = "iPod mini (2nd gen.)"
+    case _Mini2ndGenHP = "iPod mini + HP (2nd gen.)"
+    case _Nano1stGen = "iPod nano (1st gen.)"
+    case _Nano2ndGen = "iPod nano (2nd gen.)"
+    case _Nano3rdGen = "iPod nano (3rd gen.)"
+    case _Nano4thGen = "iPod nano (4th gen.)"
+    case _Nano5thGen = "iPod nano (5th gen.)"
+    case _Nano6thGen = "iPod nano (6th gen.)"
+    case _Nano7thGen = "iPod nano (7th gen.)"
+    case _Shuffle1stGen = "iPod shuffle (1st gen.)"
+    case _Shuffle1stGenHP = "iPod shuffle + HP (1st gen.)"
+    case _Shuffle2ndGen = "iPod shuffle (2nd gen.)"
+    case _Shuffle3rdGen = "iPod shuffle (3rd gen.)"
+    case _Shuffle4thGen = "iPod shuffle (4th gen.)"
+    case _Touch1stGen = "iPod touch (1st gen.)"
+    case _Touch2ndGen = "iPod touch (2nd gen.)"
+    case _Touch3rdGen = "iPod touch (3rd gen.)"
+    case _Touch4thGen = "iPod touch (4th gen.)"
+    case _Touch5thGen = "iPod touch (5th gen.)"
+    case _Touch6thGen = "iPod touch (6th gen.)"
+    case _Touch7thGen = "iPod touch (7th gen.)"
     case Other = "Other"
     
     var id: String { self.rawValue }

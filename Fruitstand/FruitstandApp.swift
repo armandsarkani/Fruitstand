@@ -9,6 +9,7 @@ import SwiftUI
 
 @main
 struct FruitstandApp: App {
+    @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     var body: some Scene {
         WindowGroup {
             ContentView()
@@ -24,6 +25,7 @@ struct FruitstandApp: App {
     }
     
 }
+
 extension View {
     fileprivate func withHostingWindow(_ callback: @escaping (UIWindow?) -> Void) -> some View {
         self.background(HostingWindowFinder(callback: callback))
@@ -44,5 +46,6 @@ fileprivate struct HostingWindowFinder: UIViewRepresentable {
     func updateUIView(_ uiView: UIView, context: Context) {
     }
 }
+
 
 

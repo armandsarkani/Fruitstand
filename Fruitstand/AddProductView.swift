@@ -18,7 +18,6 @@ struct AddProductView: View {
         return f
     }()
     @Environment(\.presentationMode) var presentation
-    
     var body: some View {
            NavigationView {
                 Form
@@ -57,24 +56,7 @@ struct AddProductView: View {
     {
         self.generator.notificationOccurred(.success)
         product.model = getProductModel(product: product)
-        var uuidPrefix = product.type!.id
-        if(product.type!.id == "Apple TV")
-        {
-            uuidPrefix = "AppleTV"
-        }
-        else if(product.type!.id == "Apple Watch")
-        {
-            uuidPrefix = "AppleWatch"
-        }
-        let uuid = uuidPrefix + "_" + UUID().uuidString
-        product.uuid = uuid
-        let userDefaults = UserDefaults.standard
-        var UUIDArray: [String] = userDefaults.object(forKey: "uuidArray") as? [String] ?? []
-        UUIDArray.append(uuid)
-        userDefaults.set(UUIDArray, forKey: "uuidArray")
-        let manager = ProductInfoManager(uuid:uuid)
-        manager.product = product
-
+        saveOneProduct(product: &product)
         self.showInfoModalView.toggle()
     }
 }
@@ -187,7 +169,7 @@ struct SpecificsView: View
                     .tag(status as FormFactor?)
                     }
             }
-            if(product.formFactor == FormFactor.Notebook)
+            if(product.formFactor == FormFactor.Notebook || product.formFactor == FormFactor.AllinOne)
             {
                 HStack
                 {
@@ -207,13 +189,6 @@ struct SpecificsView: View
                 .autocapitalization(.none)
             TextField("Memory", text: $product.memory ?? "")
                 .autocapitalization(.none)
-            
-            Picker("Storage Type", selection: $product.storageType) {
-                ForEach(StorageType.allCases, id: \.id) { status in
-                    Text(status.id)
-                    .tag(status as StorageType?)
-                    }
-            }
         }
         if(product.type == DeviceType.AppleWatch)
         {
@@ -262,7 +237,7 @@ struct SpecificsView: View
         {
             Toggle(isOn: $product.activationLock ?? false)
             {
-                Text("Activation Lock/Find My On")
+                Text("Activation Locked")
             }
         }
 
@@ -302,7 +277,7 @@ struct ModelPickerView : View
                 ForEach(MacModel.allCases, id: \.id) { status in
                     Text(status.id)
                     .tag(status as MacModel?)
-                    }
+                }
             }
             if(product.MacModel == MacModel.Other || product.MacModel == MacModel.Earlier){
                 TextField("Other/Earlier Mac Model", text: $product.otherModel ?? "")
