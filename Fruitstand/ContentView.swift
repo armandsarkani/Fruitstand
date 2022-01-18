@@ -141,7 +141,7 @@ struct SettingsView: View {
                     Button(action: {loadSampleCollection()}) {
                         Label("Load Sample Collection", systemImage: "square.and.arrow.down")
                     }
-                    Button(action: {}) {
+                    Button(action: {NSUbiquitousKeyValueStore.default.synchronize()}) {
                         Label("Sync with iCloud", systemImage: "icloud.fill")
                             .foregroundColor(.blue)
                     }

@@ -9,11 +9,12 @@ import Foundation
 import Combine
 
 func resetDefaults() {
-    let userDefaults = UserDefaults.standard
-    let dictionary = userDefaults.dictionaryRepresentation()
+    let userDefaults = NSUbiquitousKeyValueStore.default
+    let dictionary = userDefaults.dictionaryRepresentation
     dictionary.keys.forEach { key in
         userDefaults.removeObject(forKey: key)
     }
+    NSUbiquitousKeyValueStore.default.synchronize()
     print("Reset to default settings.")
 }
 
@@ -26,17 +27,18 @@ func resetCloudDefaults() {
 
 func removeFromUUIDArray(uuid: String)
 {
-    let userDefaults = UserDefaults.standard
+    let userDefaults = NSUbiquitousKeyValueStore.default
     var UUIDArray: [String] = userDefaults.object(forKey: "uuidArray") as? [String] ?? []
     if let index = UUIDArray.firstIndex(of: uuid) {
       UUIDArray.remove(at: index)
     }
     userDefaults.set(UUIDArray, forKey: "uuidArray")
+    NSUbiquitousKeyValueStore.default.synchronize()
     
 }
 
 func eraseProduct(uuid: String) {
-    let userDefaults = UserDefaults.standard
+    let userDefaults = NSUbiquitousKeyValueStore.default
     userDefaults.removeObject(forKey: uuid)
     removeFromUUIDArray(uuid: uuid)
 }

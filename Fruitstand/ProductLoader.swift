@@ -18,7 +18,7 @@ struct ModelAndCount: Codable, Hashable
 
 func loadMatchingUUIDs(deviceType: String) -> [String]
 {
-    let userDefaults = UserDefaults.standard
+    let userDefaults = NSUbiquitousKeyValueStore.default
     userDefaults.set(false, forKey: "_UIConstraintBasedLayoutLogUnsatisfiable")
     let UUIDArray: [String] = userDefaults.object(forKey: "uuidArray") as? [String] ?? []
     var matchingUUIDArray: [String] = []
@@ -48,9 +48,10 @@ func loadMatchingProducts(deviceType: String) -> [ProductInfo]
 {
     let matchingUUIDArray = loadMatchingUUIDs(deviceType: deviceType)
     var products: [ProductInfo] = []
+    let userDefaults = NSUbiquitousKeyValueStore.default
     for uuid in matchingUUIDArray
     {
-        if let product = UserDefaults.standard.getCodableObject(dataType: ProductInfo.self, key: uuid)
+        if let product = userDefaults.getCodableObject(dataType: ProductInfo.self, key: uuid)
         {
             products.append(product)
         }
@@ -66,9 +67,10 @@ func loadMatchingProductsByModel(deviceType: String, model: String) -> [ProductI
 {
     let matchingUUIDArray = loadMatchingUUIDs(deviceType: deviceType)
     var products: [ProductInfo] = []
+    let userDefaults = NSUbiquitousKeyValueStore.default
     for uuid in matchingUUIDArray
     {
-        if let product = UserDefaults.standard.getCodableObject(dataType: ProductInfo.self, key: uuid)
+        if let product = userDefaults.getCodableObject(dataType: ProductInfo.self, key: uuid)
         {
             if(getProductModel(product: product) == model)
             {
@@ -182,10 +184,9 @@ func loadAllProducts(productData: [[String:String]], deviceType: DeviceType)
 
 func updateOneProduct(product: ProductInfo)
 {
-    let userDefaults = UserDefaults.standard
+    let userDefaults = NSUbiquitousKeyValueStore.default
     userDefaults.setCodableObject(product, forKey: product.uuid ?? "Error_UUID")
-    let dictionary = userDefaults.dictionaryRepresentation()
-    userDefaults.register(defaults: dictionary)
+    NSUbiquitousKeyValueStore.default.synchronize()
 }
 
 func saveOneProduct(product: inout ProductInfo)
@@ -201,13 +202,12 @@ func saveOneProduct(product: inout ProductInfo)
     }
     let uuid = uuidPrefix + "_" + UUID().uuidString
     product.uuid = uuid
-    let userDefaults = UserDefaults.standard
+    let userDefaults = NSUbiquitousKeyValueStore.default
     var UUIDArray: [String] = userDefaults.object(forKey: "uuidArray") as? [String] ?? []
     UUIDArray.append(uuid)
     userDefaults.set(UUIDArray, forKey: "uuidArray")
     userDefaults.setCodableObject(product, forKey: uuid)
-    let dictionary = userDefaults.dictionaryRepresentation()
-    userDefaults.register(defaults: dictionary)
+    NSUbiquitousKeyValueStore.default.synchronize()
 }
 
 
