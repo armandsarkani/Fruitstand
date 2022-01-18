@@ -180,6 +180,14 @@ func loadAllProducts(productData: [[String:String]], deviceType: DeviceType)
         
 }
 
+func updateOneProduct(product: ProductInfo)
+{
+    let userDefaults = UserDefaults.standard
+    userDefaults.setCodableObject(product, forKey: product.uuid ?? "Error_UUID")
+    let dictionary = userDefaults.dictionaryRepresentation()
+    userDefaults.register(defaults: dictionary)
+}
+
 func saveOneProduct(product: inout ProductInfo)
 {
     var uuidPrefix = product.type!.id
@@ -197,11 +205,11 @@ func saveOneProduct(product: inout ProductInfo)
     var UUIDArray: [String] = userDefaults.object(forKey: "uuidArray") as? [String] ?? []
     UUIDArray.append(uuid)
     userDefaults.set(UUIDArray, forKey: "uuidArray")
-    let manager = ProductInfoManager(uuid:uuid)
-    manager.product = product
+    userDefaults.setCodableObject(product, forKey: uuid)
     let dictionary = userDefaults.dictionaryRepresentation()
     userDefaults.register(defaults: dictionary)
 }
+
 
 func loadCSV(forResource: String) -> [[String: String]]
 {

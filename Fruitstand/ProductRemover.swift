@@ -1,8 +1,8 @@
 //
-//  ProductOperations.swift
+//  ProductRemover.swift
 //  Fruitstand
 //
-//  Created by Armand Sarkani on 1/9/22.
+//  Created by Armand Sarkani on 1/18/22.
 //
 
 import Foundation
@@ -40,7 +40,4 @@ func eraseProduct(uuid: String) {
     userDefaults.removeObject(forKey: uuid)
     removeFromUUIDArray(uuid: uuid)
 }
-
-
-
 

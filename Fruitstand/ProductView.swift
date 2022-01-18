@@ -14,6 +14,7 @@ let boolToTextScheme2: [Bool: String] = [true: "On", false: "Off"]
 let boolToStatusScheme1: [Bool: String] = [true: "affirmative", false: "negative"]
 let boolToStatusScheme2: [Bool: String] = [true: "negative", false: "affirmative"]
 let commonColorMapping: [String: Color] = ["black": Color.black, "space black": Color.black, "black & slate": Color.black, "white": Color.white, "white & silver": Color.white, "space gray": Color.gray, "gray": Color.gray, "silver": Color("Silver"), "red": Color.red, "(product)red": Color.red, "green": Color.green, "blue": Color.blue, "gold": Color("Gold"), "rose gold": Color("Rose Gold"), "yellow": Color.yellow, "orange": Color.orange, "coral": Color("Coral"), "sierra blue": Color.blue, "pacific blue": Color.blue, "graphite": Color.gray, "purple": Color.purple, "midnight green": Color.green]
+let generator = UINotificationFeedbackGenerator()
 
 
 func OptionalBinding<T>(_ binding: Binding<T?>, _ defaultValue: T) -> Binding<T> {
@@ -49,7 +50,7 @@ struct ProductView: View {
             ForEach($products, id: \.self) { $product in
                 Section
                 {
-                    ProductCardView(product: $product, confirmationShown: $confirmationShown, selectedProduct: $selectedProduct)
+                    ProductCardView(product: $product, products: $products, confirmationShown: $confirmationShown, selectedProduct: $selectedProduct)
 
                 }
             }
@@ -68,6 +69,7 @@ struct ProductView: View {
                               action: {
                                   eraseProduct(uuid: selectedProduct!.uuid!);
                                   products = loadMatchingProductsByModel(deviceType: deviceType, model: model);
+                                  deviceTypeCounts = loadDeviceTypeCounts()
                                   productDeleted.toggle()
                               })
            )
@@ -93,13 +95,17 @@ struct ProductView: View {
         .navigationTitle(model)
         .navigationBarTitleDisplayMode(.large)
         .navigationBarItems(trailing:
-            Button(action: {showInfoModalView.toggle()}) {
+                Button(action: {generator.notificationOccurred(.success); showInfoModalView.toggle()}) {
                 Image(systemName: "plus")
                     .imageScale(.large)
                     .frame(height: 96, alignment: .trailing)
             })
         .sheet(isPresented: $showInfoModalView) {
             AddProductView(showInfoModalView: self.$showInfoModalView)
+                .onDisappear {
+                    deviceTypeCounts = loadDeviceTypeCounts()
+                    products = loadMatchingProductsByModel(deviceType: deviceType, model: model)
+                }
 
         }
     }
@@ -108,8 +114,10 @@ struct ProductView: View {
 
 struct ProductCardView: View {
     @Binding var product: ProductInfo
+    @Binding var products: [ProductInfo]
     @Binding var confirmationShown: Bool
     @Binding var selectedProduct: ProductInfo?
+    @State var showEditModalView: Bool = false
     @Environment(\.colorScheme) var colorScheme
     var body: some View {
         VStack(alignment: .leading)
@@ -148,6 +156,7 @@ struct ProductCardView: View {
                         .imageScale(.medium)
                         .foregroundColor(.red)
                         .onTapGesture {
+                            generator.notificationOccurred(.error)
                             selectedProduct = product
                             confirmationShown.toggle()
                         }
@@ -157,23 +166,32 @@ struct ProductCardView: View {
                         .font(Font.system(.body).bold())
                         .imageScale(.large)
                         .foregroundColor(.blue)
-                        .onTapGesture {}
+                        .onTapGesture {
+                            showEditModalView.toggle()
+                            generator.notificationOccurred(.success)
+                        }
                 }.frame(maxWidth: .infinity, alignment: .trailing)
                
             }
             
             Spacer()
         }
+        .sheet(isPresented: $showEditModalView) {
+            EditProductView(product: product, showEditModalView: $showEditModalView)
+                .onDisappear {
+                    products = loadMatchingProductsByModel(deviceType: product.type!.id, model: product.model!)
+                }
+
+        }
         HorizontalTwoAttributeView(descriptionLeft: "Working status", dataLeft: (product.workingStatus != nil ? product.workingStatus!.id: "Unknown"), descriptionRight: "Year acquired", dataRight: (product.yearAcquired != nil ? String(product.yearAcquired!): "Unknown"))
         HorizontalTwoAttributeView(descriptionLeft: "Condition", dataLeft: (product.condition != nil ? product.condition!.id: "Unknown"), descriptionRight: "Acquired as", dataRight: (product.acquiredAs != nil ? product.acquiredAs!.id: "Unknown"))
         HorizontalTwoAttributeView(descriptionLeft: "Estimated value", dataLeft: (product.estimatedValue != nil ? ("$" + String(product.estimatedValue!)): "Unknown"), descriptionRight: "Warranty", dataRight: (product.warranty != nil ? product.warranty!.id: "Unknown"))
         HorizontalTwoBooleanView(descriptionLeft: "Physical damage", dataLeft: boolToTextScheme1[product.physicalDamage ?? false]!, descriptionRight: "Original box", dataRight: boolToTextScheme1[product.originalBox ?? false]!, leftStatus: boolToStatusScheme2[product.physicalDamage ?? false]!, rightStatus: boolToStatusScheme1[product.originalBox ?? false]!)
         SpecificsCardView(product: $product)
-        if(product.comments != nil) {
+        if(product.comments != nil && product.comments != "") {
             HorizontalOneAttributeView(description: "Comments", data: product.comments!, alignment: .leading)
 
         }
-        
     }
 }
 
@@ -197,7 +215,17 @@ struct SpecificsHeaderView: View {
             }
             
         }
-        else if(product.type == DeviceType.iPhone)
+        else
+        {
+            if(product.model == "Other")
+            {
+                Spacer()
+                Text("\(product.otherModel ?? "Unknown Model")")
+                    .fontWeight(.bold)
+                    .font(.title3)
+            }
+        }
+        if(product.type == DeviceType.iPhone)
         {
             Spacer()
             Text(product.storage ?? "Unknown Storage")

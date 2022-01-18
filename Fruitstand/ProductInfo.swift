@@ -170,23 +170,3 @@ func getProductIcon(product: ProductInfo) -> String
     return model
 }
 
-class ProductInfoManager: ObservableObject
-{
-    var uuid: String
-    @Published var product: ProductInfo!
-    {
-        didSet
-        {
-            UserDefaults.standard.setCodableObject(product, forKey: uuid) // once product variable modified by view, set UserDefaults
-            
-        }
-    }
-    init(uuid: String)
-    {
-        self.uuid = uuid
-        if((UserDefaults.standard.getCodableObject(dataType: ProductInfo.self, key: uuid)) != nil)
-        {
-            self.product = UserDefaults.standard.getCodableObject(dataType: ProductInfo.self, key: uuid)
-        }
-    }
-}

@@ -8,16 +8,17 @@
 import Foundation
 import SwiftUI
 
+// Global variables
+var numFormatter: NumberFormatter = {
+    let f = NumberFormatter()
+    f.numberStyle = .none
+    return f
+}()
+
 struct AddProductView: View {
+    @State var product: ProductInfo = ProductInfo(type: DeviceType.Mac)
     @Binding var showInfoModalView: Bool
-    let generator = UINotificationFeedbackGenerator()
-    @State var product = ProductInfo(type: DeviceType.Mac)
-    var numFormatter: NumberFormatter = {
-        let f = NumberFormatter()
-        f.numberStyle = .none
-        return f
-    }()
-    @Environment(\.presentationMode) var presentation
+    @Environment(\.isPresented) var presentation
     var body: some View {
            NavigationView {
                 Form
@@ -46,7 +47,8 @@ struct AddProductView: View {
                     }
 
                 }
-                .navigationTitle(Text("Add Product"))        .navigationBarTitleDisplayMode(.inline)
+                .navigationTitle(Text("Add Product"))
+                .navigationBarTitleDisplayMode(.inline)
                 .navigationBarItems(
                     leading: Button(action: {self.showInfoModalView.toggle()}, label: {Text("Cancel").fontWeight(.regular)}),
                     trailing: Button(action: {addItem()}, label: {Text("Add").bold()}).disabled((product.type == nil ||  product.color == nil || product.yearAcquired == nil || product.estimatedValue == nil || product.workingStatus == nil || product.condition == nil || product.acquiredAs == nil || product.warranty == nil || product.physicalDamage == nil || product.originalBox == nil) || (product.iPhoneModel == nil && product.iPadModel == nil && product.MacModel == nil && product.AppleWatchModel == nil && product.AirPodsModel == nil && product.AppleTVModel == nil && product.iPodModel == nil)))
@@ -54,10 +56,59 @@ struct AddProductView: View {
     }
     func addItem()
     {
-        self.generator.notificationOccurred(.success)
+        generator.notificationOccurred(.success)
         product.model = getProductModel(product: product)
         saveOneProduct(product: &product)
         self.showInfoModalView.toggle()
+
+    }
+}
+
+struct EditProductView: View {
+    @State var product: ProductInfo
+    @Binding var showEditModalView: Bool
+    let generator = UINotificationFeedbackGenerator()
+    @Environment(\.isPresented) var presentation
+    init(product: ProductInfo, showEditModalView: Binding<Bool>)
+    {
+        self.product = product
+        _showEditModalView = showEditModalView
+    }
+    var body: some View {
+        NavigationView {
+             Form
+             {
+                 ModelPickerView(product: $product)
+                 
+                 Section("Basics")
+                 {
+                     BasicsView(numFormatter: numFormatter, product: $product)
+                 }
+                 Section("Device Specifics")
+                 {
+                     SpecificsView(numFormatter: numFormatter, product: $product)
+                 }
+                
+                 Section("Additional Comments")
+                 {
+                     TextField("Comments", text: $product.comments ?? "")
+                         .autocapitalization(.none)
+                 }
+
+             }
+             .navigationTitle(Text("Edit Product"))
+             .navigationBarTitleDisplayMode(.inline)
+             .navigationBarItems(
+                 leading: Button(action: {showEditModalView.toggle()}, label: {Text("Cancel").fontWeight(.regular)}),
+                 trailing: Button(action: {editItem()}, label: {Text("Done").bold()}).disabled((product.color == "" || product.yearAcquired == nil || product.estimatedValue == nil || product.workingStatus == nil || product.condition == nil || product.acquiredAs == nil || product.warranty == nil || product.physicalDamage == nil || product.originalBox == nil) || (product.iPhoneModel == nil && product.iPadModel == nil && product.MacModel == nil && product.AppleWatchModel == nil && product.AirPodsModel == nil && product.AppleTVModel == nil && product.iPodModel == nil)))
+        }
+    }
+    func editItem()
+    {
+        generator.notificationOccurred(.success)
+        product.model = getProductModel(product: product)
+        updateOneProduct(product: product)
+        self.showEditModalView.toggle()
     }
 }
     

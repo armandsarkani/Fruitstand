@@ -9,14 +9,23 @@ import SwiftUI
 
 // Global variables
 var keyStore = NSUbiquitousKeyValueStore()
-let icons: [String: String] = ["Mac": "desktopcomputer", "iPhone": "iphone", "iPad": "ipad", "Apple Watch": "applewatch", "AirPods": "airpodspro", "Apple TV": "appletv.fill", "iPod": "ipod"]
+let icons: [String: String] = ["Mac": "laptopcomputer", "iPhone": "iphone", "iPad": "ipad", "Apple Watch": "applewatch", "AirPods": "airpodspro", "Apple TV": "appletv.fill", "iPod": "ipod"]
+extension View {
+    func `if`<Content: View>(_ conditional: Bool, content: (Self) -> Content) -> some View {
+         if conditional {
+             return AnyView(content(self))
+         } else {
+             return AnyView(self)
+         }
+     }
+}
 
 struct ContentView: View {
     @State var showInfoModalView: Bool = false
     @State var showSettingsModalView: Bool = false
     @State var searchText: String = ""
     @State var deviceTypeCounts: [DeviceType: Int] = loadDeviceTypeCounts()
-    @Environment(\.presentationMode) var presentation
+    @Environment(\.isPresented) var presentation
     var body: some View {
         NavigationView {
             List {
@@ -37,11 +46,16 @@ struct ContentView: View {
                 }
                 Section(header: Text("Statistics"))
                 {
-                    NavigationLink(destination: CountsView()){
-                        Label("Counts", systemImage: "sum")
-                    }
                     NavigationLink(destination: ValuesView()){
                         Label("Values", systemImage: "dollarsign.circle.fill")
+                    }
+                    HStack
+                    {
+                        Label("Collection Size", systemImage: "sum")
+                            .fixedSize()
+                        Spacer()
+                        Text(String(getTotalCollectionSize()))
+                            .foregroundColor(.gray)
                     }
                 }
                
@@ -59,8 +73,7 @@ struct ContentView: View {
                                     .imageScale(.large)
                                     .frame(height: 96, alignment: .trailing)
                                 }
-                        Button(action: {
-                            showInfoModalView.toggle()
+                Button(action: {generator.notificationOccurred(.success); showInfoModalView.toggle()
                             }) {
                                 Image(systemName: "plus")
                                     .imageScale(.large)
@@ -84,7 +97,14 @@ struct ContentView: View {
 
                 }
         }
-        
+        .if(UIDevice.current.model.hasPrefix("iPhone")) {
+            $0.navigationViewStyle(StackNavigationViewStyle())
+        }
+
+    }
+    func getTotalCollectionSize() -> Int
+    {
+        return deviceTypeCounts[DeviceType.iPhone]! + deviceTypeCounts[DeviceType.iPad]! + deviceTypeCounts[DeviceType.Mac]! + deviceTypeCounts[DeviceType.AppleWatch]! + deviceTypeCounts[DeviceType.AirPods]! + deviceTypeCounts[DeviceType.AppleTV]! + deviceTypeCounts[DeviceType.iPod]!
     }
 }
     
@@ -92,7 +112,7 @@ struct SettingsView: View {
     @Binding var deviceTypeCounts: [DeviceType: Int]
     @Binding var showSettingsModalView: Bool
     @State private var confirmationShown = false
-    @Environment(\.presentationMode) var presentation
+    @Environment(\.isPresented) var presentation
     var body: some View {
         NavigationView {
             List
@@ -210,7 +230,7 @@ struct ProductListView: View {
             modelList = loadModelList(deviceType: deviceType)
         }
         .navigationBarItems(trailing:
-            Button(action: {showInfoModalView.toggle()}) {
+                Button(action: {generator.notificationOccurred(.success); showInfoModalView.toggle()}) {
                 Image(systemName: "plus")
                     .imageScale(.large)
                     .frame(height: 96, alignment: .trailing)
@@ -225,22 +245,6 @@ struct ProductListView: View {
     }
 }
 
-struct CountsView: View {
-    var body: some View {
-        VStack(spacing: 15)
-        {
-            Image(systemName: "sum")
-                .font(.system(size: 72))
-            Text("Product Count Statistics")
-                .font(.title)
-                .fontWeight(.bold)
-            Text("This feature is coming soon!")
-                .font(.body)
-        }
-            
-    }
-    
-}
 struct ValuesView: View {
     var body: some View {
         VStack(spacing: 15)
