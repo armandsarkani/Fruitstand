@@ -5,6 +5,8 @@
 //  Created by Armand Sarkani on 1/18/22.
 //
 
+// This module is responsible for removing products from/into UserDefaults/iCloud.
+
 import Foundation
 import Combine
 

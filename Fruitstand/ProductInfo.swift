@@ -5,6 +5,8 @@
 //  Created by Armand Sarkani on 1/8/22.
 //
 
+// This module is responsible for the product model.
+
 import Foundation
 import Combine
 

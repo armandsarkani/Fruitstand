@@ -5,6 +5,9 @@
 //  Created by Armand Sarkani on 5/16/21.
 //
 
+// This module is responsible for the view layouts of the main screen and model list screen.
+
+
 import SwiftUI
 
 // Global variables
@@ -225,7 +228,7 @@ struct ProductListView: View {
                 }
             }
         })
-        .navigationTitle(Text(deviceType))     .navigationBarTitleDisplayMode(.inline)
+        .navigationTitle(Text(deviceType))    .navigationBarTitleDisplayMode(.inline)
         .onAppear {
             modelList = loadModelList(deviceType: deviceType)
         }
@@ -246,18 +249,64 @@ struct ProductListView: View {
 }
 
 struct ValuesView: View {
+    @State var totalCollectionValue: Int = getTotalCollectionValue()
+    @State var deviceTypeValues: [DeviceType: Int] = getDeviceTypeValues()
+    @State var averageValues: [DeviceType: Double] = getAverageValues()
     var body: some View {
-        VStack(spacing: 15)
-        {
-            Image(systemName: "dollarsign.circle.fill")
-                .font(.system(size: 72))
-            Text("Product Value Statistics")
-                .font(.title)
-                .fontWeight(.bold)
-            Text("This feature is coming soon!")
-                .font(.body)
+        if collectionIsEmpty() {
+            VStack(spacing: 15)
+            {
+                Image(systemName: "dollarsign.circle.fill")
+                    .font(.system(size: 72))
+                Text("Values")
+                    .font(.title)
+                    .fontWeight(.bold)
+                Text("Collection is empty.")
+                    .font(.body)
+            }
         }
-            
+       else
+        {
+            List {
+                HStack
+                {
+                    Label("Total Collection Value", systemImage: "dollarsign.circle.fill")
+                        .fixedSize()
+                    Spacer()
+                    Text(String(format: "$%d", locale: Locale.current, totalCollectionValue))
+                        .foregroundColor(.gray)
+                }
+               Section("Total Value By Device Type")
+                {
+                    ForEach(DeviceType.allCases, id: \.self) { key in
+                        HStack
+                        {
+                            Label(key.id, systemImage: icons[key.id]!)
+                                .fixedSize()
+                            Spacer()
+                            Text(String(format: "$%d", locale: Locale.current, deviceTypeValues[key]!))
+                                .foregroundColor(.gray)
+                        }
+                    }
+                }
+                Section("Average Value By Device Type")
+                 {
+                     ForEach(DeviceType.allCases, id: \.self) { key in
+                         HStack
+                         {
+                             Label(key.id, systemImage: icons[key.id]!)
+                                 .fixedSize()
+                             Spacer()
+                             Text(String(format: "$%.2f", locale: Locale.current, averageValues[key]!))
+                                 .foregroundColor(.gray)
+                         }
+                     }
+                 }
+            }
+            .navigationTitle("Values")
+            .navigationBarTitleDisplayMode(.inline)
+
+        }
     }
     
 }

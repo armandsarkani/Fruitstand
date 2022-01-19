@@ -11,6 +11,7 @@
 		16022E0A2652F8710098BD95 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16022E092652F8710098BD95 /* ContentView.swift */; };
 		16022E0C2652F8720098BD95 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 16022E0B2652F8720098BD95 /* Assets.xcassets */; };
 		16022E0F2652F8720098BD95 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 16022E0E2652F8720098BD95 /* Preview Assets.xcassets */; };
+		162C058D279794FE006FDA48 /* CollectionStatistics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 162C058C279794FE006FDA48 /* CollectionStatistics.swift */; };
 		162EA7F927975B6D00B0B397 /* ProductRemover.swift in Sources */ = {isa = PBXBuildFile; fileRef = 162EA7F827975B6D00B0B397 /* ProductRemover.swift */; };
 		163DA461278BB7CA000965C6 /* ProductLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 163DA460278BB7CA000965C6 /* ProductLoader.swift */; };
 		1690B4902790197900CFAD06 /* AddProductView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1690B48F2790197900CFAD06 /* AddProductView.swift */; };
@@ -32,6 +33,7 @@
 		16022E0B2652F8720098BD95 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		16022E0E2652F8720098BD95 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		16022E102652F8720098BD95 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		162C058C279794FE006FDA48 /* CollectionStatistics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionStatistics.swift; sourceTree = "<group>"; };
 		162EA7F827975B6D00B0B397 /* ProductRemover.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductRemover.swift; sourceTree = "<group>"; };
 		163DA460278BB7CA000965C6 /* ProductLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductLoader.swift; sourceTree = "<group>"; };
 		1690B48F2790197900CFAD06 /* AddProductView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddProductView.swift; sourceTree = "<group>"; };
@@ -83,6 +85,7 @@
 				16B2D1DE278A5277006242BC /* Fruitstand.entitlements */,
 				16022E072652F8710098BD95 /* FruitstandApp.swift */,
 				16022E092652F8710098BD95 /* ContentView.swift */,
+				162C058C279794FE006FDA48 /* CollectionStatistics.swift */,
 				16B333CF2652F8B1003E4BCE /* ProductView.swift */,
 				1690B48F2790197900CFAD06 /* AddProductView.swift */,
 				16B2D1DC278A3EB7006242BC /* ProductInfo.swift */,
@@ -201,6 +204,7 @@
 				1690B4902790197900CFAD06 /* AddProductView.swift in Sources */,
 				16B2D1DD278A3EB7006242BC /* ProductInfo.swift in Sources */,
 				16B333D02652F8B1003E4BCE /* ProductView.swift in Sources */,
+				162C058D279794FE006FDA48 /* CollectionStatistics.swift in Sources */,
 				16022E082652F8710098BD95 /* FruitstandApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -333,7 +337,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 2100;
+				CURRENT_PROJECT_VERSION = 2121;
 				DEVELOPMENT_ASSET_PATHS = "\"Fruitstand/Preview Content\"";
 				DEVELOPMENT_TEAM = 86LR2G8L2C;
 				ENABLE_PREVIEWS = YES;
@@ -364,7 +368,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 2100;
+				CURRENT_PROJECT_VERSION = 2121;
 				DEVELOPMENT_ASSET_PATHS = "\"Fruitstand/Preview Content\"";
 				DEVELOPMENT_TEAM = 86LR2G8L2C;
 				ENABLE_PREVIEWS = YES;

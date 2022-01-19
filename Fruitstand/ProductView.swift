@@ -5,6 +5,8 @@
 //  Created by Armand Sarkani on 5/17/21.
 //
 
+// This module is responsible for the view for displaying a list of products for a given model.
+
 import SwiftUI
 
 
@@ -51,7 +53,6 @@ struct ProductView: View {
                 Section
                 {
                     ProductCardView(product: $product, products: $products, confirmationShown: $confirmationShown, selectedProduct: $selectedProduct)
-
                 }
             }
         }
@@ -123,6 +124,7 @@ struct ProductCardView: View {
         VStack(alignment: .leading)
         {
             SpecificsHeaderView(product: $product)
+            Spacer()
             HStack
             {
                 if(commonColorMapping.keys.contains(product.color!.lowercased()))
@@ -151,6 +153,7 @@ struct ProductCardView: View {
                 Text(product.color!)
                 HStack {
                     Label("Delete", systemImage: "trash.fill")
+                        .hoverEffect(.lift)
                         .labelStyle(.iconOnly)
                         .font(Font.system(.body).bold())
                         .imageScale(.medium)
@@ -162,6 +165,7 @@ struct ProductCardView: View {
                         }
                     Spacer().frame(width: 30)
                     Label("Edit", systemImage: "pencil")
+                        .hoverEffect(.lift)
                         .labelStyle(.iconOnly)
                         .font(Font.system(.body).bold())
                         .imageScale(.large)
@@ -185,7 +189,7 @@ struct ProductCardView: View {
         }
         HorizontalTwoAttributeView(descriptionLeft: "Working status", dataLeft: (product.workingStatus != nil ? product.workingStatus!.id: "Unknown"), descriptionRight: "Year acquired", dataRight: (product.yearAcquired != nil ? String(product.yearAcquired!): "Unknown"))
         HorizontalTwoAttributeView(descriptionLeft: "Condition", dataLeft: (product.condition != nil ? product.condition!.id: "Unknown"), descriptionRight: "Acquired as", dataRight: (product.acquiredAs != nil ? product.acquiredAs!.id: "Unknown"))
-        HorizontalTwoAttributeView(descriptionLeft: "Estimated value", dataLeft: (product.estimatedValue != nil ? ("$" + String(product.estimatedValue!)): "Unknown"), descriptionRight: "Warranty", dataRight: (product.warranty != nil ? product.warranty!.id: "Unknown"))
+        HorizontalTwoAttributeView(descriptionLeft: "Estimated value", dataLeft: (product.estimatedValue != nil ?  String(format: "$%d", locale: Locale.current, product.estimatedValue!): "Unknown"), descriptionRight: "Warranty", dataRight: (product.warranty != nil ? product.warranty!.id: "Unknown"))
         HorizontalTwoBooleanView(descriptionLeft: "Physical damage", dataLeft: boolToTextScheme1[product.physicalDamage ?? false]!, descriptionRight: "Original box", dataRight: boolToTextScheme1[product.originalBox ?? false]!, leftStatus: boolToStatusScheme2[product.physicalDamage ?? false]!, rightStatus: boolToStatusScheme1[product.originalBox ?? false]!)
         SpecificsCardView(product: $product)
         if(product.comments != nil && product.comments != "") {

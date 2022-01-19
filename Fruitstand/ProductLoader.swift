@@ -5,6 +5,8 @@
 //  Created by Armand Sarkani on 1/9/22.
 //
 
+// This module is responsible for loading and saving products from/into UserDefaults/iCloud.
+
 import Foundation
 import Combine
 import SwiftCSV
@@ -42,6 +44,20 @@ func loadMatchingUUIDs(deviceType: String) -> [String]
     }
     return matchingUUIDArray
                 
+}
+
+func loadCollection() -> [DeviceType: [ProductInfo]]
+{
+    var collection: [DeviceType: [ProductInfo]] = [:]
+    collection[DeviceType.iPhone] = loadMatchingProducts(deviceType: DeviceType.iPhone.id)
+    collection[DeviceType.iPad] = loadMatchingProducts(deviceType: DeviceType.iPad.id)
+    collection[DeviceType.Mac] = loadMatchingProducts(deviceType: DeviceType.Mac.id)
+    collection[DeviceType.AppleWatch] = loadMatchingProducts(deviceType: DeviceType.AppleWatch.id)
+    collection[DeviceType.AirPods] = loadMatchingProducts(deviceType: DeviceType.AirPods.id)
+    collection[DeviceType.AppleTV] = loadMatchingProducts(deviceType: DeviceType.AppleTV.id)
+    collection[DeviceType.iPod] = loadMatchingProducts(deviceType: DeviceType.iPod.id)
+    return collection
+
 }
 
 func loadMatchingProducts(deviceType: String) -> [ProductInfo]
@@ -107,7 +123,7 @@ func loadModelList(deviceType: String) -> [ModelAndCount]
 
 func loadDeviceTypeCounts() -> [DeviceType: Int]
 {
-    var deviceTypeCounts: [DeviceType: Int] = [:]
+    var deviceTypeCounts: [DeviceType: Int] = [DeviceType.iPhone: 0, DeviceType.iPad: 0, DeviceType.Mac: 0, DeviceType.AppleWatch: 0, DeviceType.AirPods: 0, DeviceType.AppleTV: 0, DeviceType.iPod: 0]
     deviceTypeCounts[DeviceType.iPhone] = loadMatchingProducts(deviceType: DeviceType.iPhone.id).count
     deviceTypeCounts[DeviceType.iPad] = loadMatchingProducts(deviceType: DeviceType.iPad.id).count
     deviceTypeCounts[DeviceType.Mac] = loadMatchingProducts(deviceType: DeviceType.Mac.id).count
@@ -127,22 +143,21 @@ func loadSampleCollection()
     let AirPodsData = loadCSV(forResource: "SampleCollection/AirPods")
     let AppleTVData = loadCSV(forResource: "SampleCollection/AppleTV")
     let iPodData = loadCSV(forResource: "SampleCollection/iPod")
-    loadAllProducts(productData: iPhoneData, deviceType: DeviceType.iPhone)
-    loadAllProducts(productData: iPadData, deviceType: DeviceType.iPad)
-    loadAllProducts(productData: MacData, deviceType: DeviceType.Mac)
-    loadAllProducts(productData: AppleWatchData, deviceType: DeviceType.AppleWatch)
-    loadAllProducts(productData: AirPodsData, deviceType: DeviceType.AirPods)
-    loadAllProducts(productData: AppleTVData, deviceType: DeviceType.AppleTV)
-    loadAllProducts(productData: iPodData, deviceType: DeviceType.iPod)
+    loadAllProductsFromCSV(productData: iPhoneData, deviceType: DeviceType.iPhone)
+    loadAllProductsFromCSV(productData: iPadData, deviceType: DeviceType.iPad)
+    loadAllProductsFromCSV(productData: MacData, deviceType: DeviceType.Mac)
+    loadAllProductsFromCSV(productData: AppleWatchData, deviceType: DeviceType.AppleWatch)
+    loadAllProductsFromCSV(productData: AirPodsData, deviceType: DeviceType.AirPods)
+    loadAllProductsFromCSV(productData: AppleTVData, deviceType: DeviceType.AppleTV)
+    loadAllProductsFromCSV(productData: iPodData, deviceType: DeviceType.iPod)
     
     
 }
 
-func loadAllProducts(productData: [[String:String]], deviceType: DeviceType)
+func loadAllProductsFromCSV(productData: [[String:String]], deviceType: DeviceType)
 {
     let stringToBool: [String: Bool] = ["Yes": true, "No": false]
-    for element in productData // ["Activation Lock": "Yes", "Storage": "32GB", "Working Status": "Mostly Working", "Warranty": "Expired", "Model": "iPod touch (6th gen.)", "Color": "Gold", "Comments": "Activation lock bypassed", "Condition": "Good", "Physical Damage": "None", "Acquired As": "Used", "Estimated Value": "35", "Original Box": "No", "Year Acquired": "2021"]
-
+    for element in productData
     {
         var product: ProductInfo = ProductInfo(type: deviceType, color: element["Color"] ?? nil, workingStatus: WorkingStatus(rawValue: element["Working Status"] ?? ""), estimatedValue: Int(element["Estimated Value"] ?? ""), condition: Condition(rawValue: element["Condition"] ?? ""), acquiredAs: AcquiredAs(rawValue: element["Acquired As"] ?? ""), physicalDamage: stringToBool[element["Physical Damage"] ?? "No"] ?? false, originalBox: stringToBool[element["Original Box"] ?? "No"] ?? false, warranty: Warranty(rawValue: element["Warranty"] ?? ""), yearAcquired: Int(element["Year Acquired"] ?? ""), comments: (element["Comments"] != "" ? element["Comments"]: nil), storage: element["Storage"] ?? nil, activationLock: stringToBool[element["Activation Lock"] ?? "No"] ?? false, carrier: element["Carrier"] ?? nil, ESNStatus: ESNStatus(rawValue: element["ESN Status"] ?? ""), carrierLockStatus: CarrierLockStatus(rawValue: element["Carrier Lock Status"] ?? ""), connectivity: iPadConnectivity(rawValue: element["iPad Connectivity"] ?? ""), year: element["Year"] ?? nil, formFactor: FormFactor(rawValue: element["Form Factor"] ?? ""), screenSize: Int(element["Screen Size"] ?? ""), processor: element["Processor"] ?? nil, memory: element["Memory"] ?? nil, caseType: WatchCaseType(rawValue: element["Watch Case"] ?? ""), caseSize: Int(element["Case Size"] ?? ""), watchConnectivity: WatchConnectivity(rawValue: element["Connectivity"] ?? ""), originalBands: element["Original Bands"] ?? nil, hasRemote: stringToBool[element["Has Remote"] ?? "No"] ?? false, AirPodsCaseType: AirPodsCaseType(rawValue: element["AirPods Case"] ?? ""))
         if(deviceType == DeviceType.iPhone){

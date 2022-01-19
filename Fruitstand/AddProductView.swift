@@ -5,6 +5,8 @@
 //  Created by Armand Sarkani on 1/13/22.
 //
 
+// This module is responsible for adding and editing products in the collection.
+
 import Foundation
 import SwiftUI
 
