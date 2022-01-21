@@ -109,7 +109,17 @@ struct ProductInfo: Codable, Hashable
     var hasRemote: Bool? = false
     
     // AirPods only
-    var AirPodsCaseType: AirPodsCaseType?
+    var APCaseType: AirPodsCaseType?
+    
+    func contains(searchText: String) -> Bool
+    {
+        let lowercaseSearchText = searchText.lowercased()
+        if(model!.lowercased().contains(lowercaseSearchText) || (otherModel ?? "").lowercased().contains(lowercaseSearchText) || color!.lowercased().contains(lowercaseSearchText) || uuid!.lowercased().contains(lowercaseSearchText) || (workingStatus ?? WorkingStatus.Working).rawValue.lowercased().contains(lowercaseSearchText) || (comments ?? "").lowercased().contains(lowercaseSearchText) || (warranty ?? Warranty.Expired).rawValue.lowercased().contains(lowercaseSearchText) || (year ?? "").lowercased().contains(lowercaseSearchText) || String(yearAcquired!).lowercased().contains(lowercaseSearchText) || (processor ?? "").lowercased().contains(lowercaseSearchText) || (connectivity ?? iPadConnectivity.WiFi).rawValue.lowercased().contains(lowercaseSearchText) || (watchConnectivity ?? WatchConnectivity.GPS).rawValue.lowercased().contains(lowercaseSearchText) || (caseType ?? WatchCaseType.Aluminum).rawValue.lowercased().contains(lowercaseSearchText) || (APCaseType ?? AirPodsCaseType.Wired).rawValue.lowercased().contains(lowercaseSearchText) || (storage ?? "").lowercased().contains(lowercaseSearchText) || String(caseSize ?? 0).lowercased().contains(lowercaseSearchText) || String(screenSize ?? 0).lowercased().contains(lowercaseSearchText))
+        {
+            return true
+        }
+        return false
+    }
     
 }
 

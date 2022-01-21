@@ -34,7 +34,7 @@ struct ContentView: View {
                 Section(header: Text("Devices"))
                 {
                     ForEach(DeviceType.allCases, id: \.self) { label in
-                        NavigationLink(destination: ProductListView(deviceType: label)        .environmentObject(collectionModel)){
+                        NavigationLink(destination: ProductListView(deviceType: label).environmentObject(collectionModel)){
                             Label(label.id, systemImage: icons[label.id]!)
                                 .fixedSize()
                             Spacer()
@@ -63,23 +63,31 @@ struct ContentView: View {
             .listStyle(InsetGroupedListStyle())
             .environment(\.horizontalSizeClass, .regular)
             .navigationTitle(Text("My Collection"))
-            .navigationBarItems(trailing:
-                    HStack
-                    {
-                        Button(action: {
+            .navigationBarItems(
+                leading:
+                    Button(action: {
                             showSettingsModalView.toggle()
                             }) {
                                 Image(systemName: "gearshape")
                                     .imageScale(.large)
                                     .frame(height: 96, alignment: .trailing)
-                                }
-                Button(action: {generator.notificationOccurred(.success); showInfoModalView.toggle()
+                                },
+                    trailing:
+                    HStack
+                    {
+                        NavigationLink(destination: MainSearchView().environmentObject(collectionModel))
+                        {
+                            Image(systemName: "magnifyingglass")
+                                .imageScale(.large)
+                                .frame(height: 96, alignment: .trailing)
+                        }
+                        Button(action: {generator.notificationOccurred(.success); showInfoModalView.toggle()
                             }) {
                                 Image(systemName: "plus")
                                     .imageScale(.large)
                                     .frame(height: 96, alignment: .trailing)
                             }
-                    })
+                        })
             .onAppear {
                 collectionModel.loadCollection()
             }
@@ -93,6 +101,62 @@ struct ContentView: View {
             SettingsView(showSettingsModalView: self.$showSettingsModalView).environmentObject(collectionModel)
         }
 
+    }
+}
+
+struct MainSearchView: View {
+    @EnvironmentObject var collectionModel: CollectionModel
+    @State private var searchText = ""
+    @State var deviceTypeFilter: String = "All Devices"
+    let deviceTypeFilters = ["All Devices", "Mac", "iPhone", "iPad", "Apple Watch", "AirPods", "Apple TV", "iPod"]
+    var searchResults: [ProductInfo] {
+           if searchText.isEmpty {
+               return []
+           }
+           else {
+               if(deviceTypeFilter != "All Devices")
+               {
+                   return collectionModel.collectionArray.filter { $0.contains(searchText: searchText) && $0.type == DeviceType(rawValue: deviceTypeFilter)}
+               }
+               return collectionModel.collectionArray.filter { $0.contains(searchText: searchText)}
+
+           }
+    }
+    var resultsText: String {
+        if searchText.isEmpty {
+            return ""
+        }
+        else {
+            return "\(searchResults.count) Results"
+        }
+    }
+
+    var body: some View {
+        Form
+        {
+            if(!searchText.isEmpty)
+            {
+                Section(header: Text(resultsText).fontWeight(.medium).font(.title3).textCase(nil)) {}
+                .listRowInsets(EdgeInsets(top: 20, leading: 7, bottom: -500, trailing: 0))
+            }
+            if(searchText.isEmpty)
+            {
+                Picker("Filter By Device Type", selection: $deviceTypeFilter) {
+                    ForEach(deviceTypeFilters, id: \.self) { filter in
+                        Label(filter, systemImage: (icons[filter] ?? "circle.hexagongrid"))
+                    }
+                }
+                .pickerStyle(.inline)
+            }
+            ForEach(searchResults, id: \.self) { product in
+                Section {
+                    ProductCardView(product: product, fullSearchable: true).environmentObject(collectionModel)
+                }
+            }
+        }
+        .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .always), prompt: "Search all products ").autocapitalization(.none)
+        .navigationTitle("Search")
+        .navigationBarTitleDisplayMode(.large)
     }
 }
     
@@ -170,14 +234,36 @@ struct ProductListView: View {
     var deviceType: DeviceType
     @EnvironmentObject var collectionModel: CollectionModel
     @State var showInfoModalView: Bool = false
+    @State private var searchText = ""
+    var resultsText: String {
+        if searchText.isEmpty {
+            return ""
+        }
+        else {
+            return "\(searchResults.count) Results"
+        }
+    }
     init(deviceType: DeviceType)
     {
         self.deviceType = deviceType
     }
+    var searchResults: [ModelAndCount] {
+           if searchText.isEmpty {
+               return collectionModel.modelList[deviceType]!
+           }
+           else {
+               return collectionModel.modelList[deviceType]!.filter { $0.model.lowercased().contains(searchText.lowercased())}
+           }
+    }
     var body: some View {
         List
         {
-            ForEach(collectionModel.modelList[deviceType]!, id: \.self) { model in
+            if(!searchText.isEmpty)
+            {
+                Section(header: Text(resultsText).fontWeight(.medium).font(.title3).textCase(nil)) {}
+                .listRowInsets(EdgeInsets(top: 20, leading: 7, bottom: -500, trailing: 0))
+            }
+            ForEach(searchResults, id: \.self) { model in
                 NavigationLink(destination: ProductView(model: model.model, deviceType: deviceType)              .environmentObject(collectionModel)){
                     if(model.model.count >= 30)
                     {
@@ -195,6 +281,7 @@ struct ProductListView: View {
                 }
             }
         }
+        .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .automatic)).autocapitalization(.none)
         .overlay(Group {
             if(collectionModel.modelList[deviceType]!.isEmpty){
                 VStack(spacing: 15)
@@ -210,16 +297,26 @@ struct ProductListView: View {
             }
         })
         .navigationTitle(Text(deviceType.rawValue))
-        .navigationBarTitleDisplayMode(.inline)
-        .navigationBarItems(trailing:
-                Button(action: {generator.notificationOccurred(.success); showInfoModalView.toggle()}) {
-                Image(systemName: "plus")
-                    .imageScale(.large)
-                    .frame(height: 96, alignment: .trailing)
+        .navigationBarTitleDisplayMode(.large)
+        .if(UIDevice.current.model.hasPrefix("iPhone")) {
+            $0.navigationBarItems(trailing:
+                    HStack {
+                    NavigationLink(destination: MainSearchView().environmentObject(collectionModel))
+                        {
+                            Image(systemName: "magnifyingglass")
+                                .imageScale(.large)
+                                .frame(height: 96, alignment: .trailing)
+                        }
+                        Button(action: {generator.notificationOccurred(.success); showInfoModalView.toggle()}) {
+                        Image(systemName: "plus")
+                            .imageScale(.large)
+                            .frame(height: 96, alignment: .trailing)
+                    }
             })
+        }
         .sheet(isPresented: $showInfoModalView) {
-            AddProductView(showInfoModalView: self.$showInfoModalView).environmentObject(collectionModel)
-       }
+        AddProductView(showInfoModalView: self.$showInfoModalView).environmentObject(collectionModel)
+        }
     }
 }
 

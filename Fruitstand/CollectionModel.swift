@@ -18,6 +18,7 @@ struct ModelAndCount: Codable, Hashable
 
 class CollectionModel: ObservableObject {
     @Published var collection: [DeviceType: [ProductInfo]] = [DeviceType.iPhone: [], DeviceType.iPad: [], DeviceType.Mac: [], DeviceType.AppleWatch: [], DeviceType.AirPods: [], DeviceType.AppleTV: [], DeviceType.iPod: []]
+    @Published var collectionArray: [ProductInfo] = []
     @Published var modelList: [DeviceType: [ModelAndCount]] = [DeviceType.iPhone: [], DeviceType.iPad: [], DeviceType.Mac: [], DeviceType.AppleWatch: [], DeviceType.AirPods: [], DeviceType.AppleTV: [], DeviceType.iPod: []]
     @Published var collectionSize: Int = 0
     @Published var iCloudStatus: Bool = false
@@ -96,6 +97,7 @@ class CollectionModel: ObservableObject {
     func loadCollection()
     {
         collection = [DeviceType.iPhone: [], DeviceType.iPad: [], DeviceType.Mac: [], DeviceType.AppleWatch: [], DeviceType.AirPods: [], DeviceType.AppleTV: [], DeviceType.iPod: []]
+        collectionArray = []
         collectionSize = 0
         var UUIDArray: [String]
         if(iCloudStatus)
@@ -123,6 +125,7 @@ class CollectionModel: ObservableObject {
             if(product.model != "nil")
             {
                 collection[product.type ?? DeviceType.Mac]!.append(product)
+                collectionArray.append(product)
                 collectionSize += 1
             }
             else

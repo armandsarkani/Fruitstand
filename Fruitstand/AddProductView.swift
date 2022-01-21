@@ -281,7 +281,7 @@ struct SpecificsView: View
         }
         if(product.type == DeviceType.AirPods)
         {
-            Picker("Case Type", selection: $product.AirPodsCaseType) {
+            Picker("Case Type", selection: $product.APCaseType) {
                 ForEach(AirPodsCaseType.allCases, id: \.id) { status in
                     Text(status.id)
                     .tag(status as AirPodsCaseType?)

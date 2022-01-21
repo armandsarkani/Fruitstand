@@ -15,7 +15,7 @@ let boolToTextScheme1: [Bool: String] = [true: "Yes", false: "No"]
 let boolToTextScheme2: [Bool: String] = [true: "On", false: "Off"]
 let boolToStatusScheme1: [Bool: String] = [true: "affirmative", false: "negative"]
 let boolToStatusScheme2: [Bool: String] = [true: "negative", false: "affirmative"]
-let commonColorMapping: [String: Color] = ["black": Color.black, "space black": Color.black, "black & slate": Color.black, "white": Color.white, "white & silver": Color.white, "space gray": Color.gray, "gray": Color.gray, "silver": Color("Silver"), "red": Color.red, "(product)red": Color.red, "green": Color.green, "blue": Color.blue, "gold": Color("Gold"), "rose gold": Color("Rose Gold"), "yellow": Color.yellow, "orange": Color.orange, "coral": Color("Coral"), "sierra blue": Color.blue, "pacific blue": Color.blue, "graphite": Color.gray, "purple": Color.purple, "midnight green": Color.green]
+let commonColorMapping: [String: Color] = ["black": Color.black, "space black": Color.black, "black & slate": Color.black, "white": Color.white, "white & silver": Color.white, "space gray": Color.gray, "gray": Color.gray, "silver": Color("Silver"), "red": Color.red, "(product)red": Color.red, "green": Color.green, "blue": Color.blue, "gold": Color("Gold"), "rose gold": Color("Rose Gold"), "yellow": Color.yellow, "orange": Color.orange, "coral": Color("Coral"), "sierra blue": Color.cyan, "pacific blue": Color.blue, "graphite": Color.gray, "purple": Color.purple, "midnight green": Color.green, "starlight": Color("Starlight"), "platinum": Color("Starlight"), "blueberry": Color.blue, "key lime": Color.green, "tangerine": Color.orange, "indigo": Color.indigo, "jet black": Color.black, "pink": Color.pink]
 let generator = UINotificationFeedbackGenerator()
 
 
@@ -35,40 +35,45 @@ struct ProductView: View {
     @EnvironmentObject var collectionModel: CollectionModel
     var model: String
     var deviceType: DeviceType
-    @State private var selectedProduct: ProductInfo? = nil
     @State var showInfoModalView: Bool = false
-    @State var productDeleted: Bool = false
-    @State var confirmationShown: Bool = false
+    @State private var searchText = ""
     init(model: String, deviceType: DeviceType)
     {
         self.model = model
         self.deviceType = deviceType
     }
+    var searchResults: [ProductInfo] {
+           if searchText.isEmpty {
+               return collectionModel.loadMatchingProductsByModel(deviceType: deviceType, model: model)
+           }
+           else {
+               return collectionModel.loadMatchingProductsByModel(deviceType: deviceType, model: model).filter { $0.contains(searchText: searchText)}
+           }
+    }
+    var resultsText: String {
+        if searchText.isEmpty {
+            return ""
+        }
+        else {
+            return "\(searchResults.count) Results"
+        }
+    }
     var body: some View {
         List {
-            ForEach(collectionModel.loadMatchingProductsByModel(deviceType: deviceType, model: model), id: \.self) { product in
+            if(!searchText.isEmpty)
+            {
+                Section(header: Text(resultsText).fontWeight(.medium).font(.title3).textCase(nil)) {}
+                .listRowInsets(EdgeInsets(top: 20, leading: 7, bottom: -500, trailing: 0))
+            }
+            ForEach(searchResults, id: \.self) { product in
                 Section
                 {
-                    ProductCardView(product: product, confirmationShown: $confirmationShown, selectedProduct: $selectedProduct).environmentObject(collectionModel)
+                    ProductCardView(product: product, fullSearchable: false).environmentObject(collectionModel)
                 }
             }
         }
+        .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .automatic))
         .textSelection(.enabled)
-        .alert(isPresented: $confirmationShown) {
-           Alert(
-               title: Text("Erase Product?"),
-               message: Text("This product will be removed from your collection."),
-               primaryButton: .default(
-                              Text("Cancel"),
-                              action: {}
-               ),
-               secondaryButton: .destructive(
-                              Text("Erase"),
-                              action: {
-                                  collectionModel.eraseProduct(product: selectedProduct!)
-                                  productDeleted.toggle()
-                              }))
-        }
         .overlay(Group {
             if collectionModel.loadMatchingProductsByModel(deviceType: deviceType, model: model).isEmpty {
                 VStack(spacing: 15)
@@ -85,12 +90,22 @@ struct ProductView: View {
         })
         .navigationTitle(model)
         .navigationBarTitleDisplayMode(.large)
-        .navigationBarItems(trailing:
-                Button(action: {generator.notificationOccurred(.success); showInfoModalView.toggle()}) {
-                Image(systemName: "plus")
-                    .imageScale(.large)
-                    .frame(height: 96, alignment: .trailing)
+        .if(UIDevice.current.model.hasPrefix("iPhone")) {
+            $0.navigationBarItems(trailing:
+                    HStack {
+                    NavigationLink(destination: MainSearchView().environmentObject(collectionModel))
+                        {
+                            Image(systemName: "magnifyingglass")
+                                .imageScale(.large)
+                                .frame(height: 96, alignment: .trailing)
+                        }
+                        Button(action: {generator.notificationOccurred(.success); showInfoModalView.toggle()}) {
+                        Image(systemName: "plus")
+                            .imageScale(.large)
+                            .frame(height: 96, alignment: .trailing)
+                    }
             })
+        }
         .sheet(isPresented: $showInfoModalView) {
             AddProductView(showInfoModalView: self.$showInfoModalView).environmentObject(collectionModel)
         }
@@ -101,13 +116,21 @@ struct ProductView: View {
 struct ProductCardView: View {
     @EnvironmentObject var collectionModel: CollectionModel
     var product: ProductInfo
-    @Binding var confirmationShown: Bool
-    @Binding var selectedProduct: ProductInfo?
+    var fullSearchable: Bool
+    @State var confirmationShown: Bool = false
+    @State private var selectedProduct: ProductInfo? = nil
     @State var showEditModalView: Bool = false
     @Environment(\.colorScheme) var colorScheme
     var body: some View {
         VStack(alignment: .leading)
         {
+            if(fullSearchable && (product.model != "Other" || product.model != "Earlier Models"))
+            {
+                Spacer()
+                Text("\(product.model ?? "Unknown Model")")
+                    .fontWeight(.bold)
+                    .font(.title3)
+            }
             SpecificsHeaderView(product: product)
             Spacer()
             HStack
@@ -168,6 +191,19 @@ struct ProductCardView: View {
         .sheet(isPresented: $showEditModalView) {
             EditProductView(product: product, showEditModalView: $showEditModalView).environmentObject(collectionModel)
 
+        }
+        .alert(isPresented: $confirmationShown) {
+           Alert(
+               title: Text("Erase Product?"),
+               message: Text("This product will be removed from your collection."),
+               primaryButton: .default(
+                              Text("Cancel"),
+                              action: {}
+               ),
+               secondaryButton: .destructive(
+                              Text("Erase"),
+                              action: {
+                                  collectionModel.eraseProduct(product: selectedProduct!)}))
         }
         HorizontalTwoAttributeView(descriptionLeft: "Working status", dataLeft: (product.workingStatus != nil ? product.workingStatus!.id: "Unknown"), descriptionRight: "Year acquired", dataRight: (product.yearAcquired != nil ? String(product.yearAcquired!): "Unknown"))
         HorizontalTwoAttributeView(descriptionLeft: "Condition", dataLeft: (product.condition != nil ? product.condition!.id: "Unknown"), descriptionRight: "Acquired as", dataRight: (product.acquiredAs != nil ? product.acquiredAs!.id: "Unknown"))
@@ -238,7 +274,7 @@ struct SpecificsHeaderView: View {
         else if(product.type == DeviceType.AirPods)
         {
             Spacer()
-            Text((product.AirPodsCaseType != nil ? product.AirPodsCaseType!.id: "Unknown Case Type"))
+            Text((product.APCaseType != nil ? product.APCaseType!.id: "Unknown Case Type"))
                 .fontWeight(.bold)
                 .font(.title3)
         }
