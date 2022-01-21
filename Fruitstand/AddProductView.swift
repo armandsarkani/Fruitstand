@@ -20,6 +20,7 @@ var numFormatter: NumberFormatter = {
 struct AddProductView: View {
     @State var product: ProductInfo = ProductInfo(type: DeviceType.Mac)
     @Binding var showInfoModalView: Bool
+    @EnvironmentObject var collectionModel: CollectionModel
     @Environment(\.isPresented) var presentation
     var body: some View {
            NavigationView {
@@ -60,7 +61,7 @@ struct AddProductView: View {
     {
         generator.notificationOccurred(.success)
         product.model = getProductModel(product: product)
-        saveOneProduct(product: &product)
+        collectionModel.saveOneProduct(product: &product)
         self.showInfoModalView.toggle()
 
     }
@@ -69,6 +70,7 @@ struct AddProductView: View {
 struct EditProductView: View {
     @State var product: ProductInfo
     @Binding var showEditModalView: Bool
+    @EnvironmentObject var collectionModel: CollectionModel
     let generator = UINotificationFeedbackGenerator()
     @Environment(\.isPresented) var presentation
     init(product: ProductInfo, showEditModalView: Binding<Bool>)
@@ -109,7 +111,7 @@ struct EditProductView: View {
     {
         generator.notificationOccurred(.success)
         product.model = getProductModel(product: product)
-        updateOneProduct(product: product)
+        collectionModel.updateOneProduct(product: product)
         self.showEditModalView.toggle()
     }
 }

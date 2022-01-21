@@ -26,8 +26,7 @@ extension View {
 struct ContentView: View {
     @State var showInfoModalView: Bool = false
     @State var showSettingsModalView: Bool = false
-    @State var searchText: String = ""
-    @State var deviceTypeCounts: [DeviceType: Int] = loadDeviceTypeCounts()
+    @StateObject var collectionModel: CollectionModel = CollectionModel()
     @Environment(\.isPresented) var presentation
     var body: some View {
         NavigationView {
@@ -35,21 +34,19 @@ struct ContentView: View {
                 Section(header: Text("Devices"))
                 {
                     ForEach(DeviceType.allCases, id: \.self) { label in
-                        NavigationLink(destination: ProductListView(deviceType: label.id, deviceTypeCounts: $deviceTypeCounts)){
+                        NavigationLink(destination: ProductListView(deviceType: label)        .environmentObject(collectionModel)){
                             Label(label.id, systemImage: icons[label.id]!)
                                 .fixedSize()
                             Spacer()
-                            Text(String(deviceTypeCounts[label]!))
+                            
+                            Text(String(collectionModel.collection[label]!.count))
                                 .foregroundColor(.gray)
                         }
                     }
                 }
-                .onAppear {
-                    deviceTypeCounts = loadDeviceTypeCounts()
-                }
                 Section(header: Text("Statistics"))
                 {
-                    NavigationLink(destination: ValuesView()){
+                    NavigationLink(destination: ValuesView()        .environmentObject(collectionModel)){
                         Label("Values", systemImage: "dollarsign.circle.fill")
                     }
                     HStack
@@ -57,7 +54,7 @@ struct ContentView: View {
                         Label("Collection Size", systemImage: "sum")
                             .fixedSize()
                         Spacer()
-                        Text(String(getTotalCollectionSize()))
+                        Text(String(collectionModel.collectionSize))
                             .foregroundColor(.gray)
                     }
                 }
@@ -83,36 +80,24 @@ struct ContentView: View {
                                     .frame(height: 96, alignment: .trailing)
                             }
                     })
+            .onAppear {
+                collectionModel.loadCollection()
+            }
             
         }
         .sheet(isPresented: $showInfoModalView) {
-            AddProductView(showInfoModalView: self.$showInfoModalView)
-                .onDisappear {
-                    deviceTypeCounts = loadDeviceTypeCounts()
-
-                }
+            AddProductView(showInfoModalView: self.$showInfoModalView).environmentObject(collectionModel)
             
         }
         .sheet(isPresented: $showSettingsModalView) {
-            SettingsView(deviceTypeCounts: $deviceTypeCounts, showSettingsModalView: self.$showSettingsModalView)
-                .onDisappear {
-                    deviceTypeCounts = loadDeviceTypeCounts()
-
-                }
-        }
-        .if(UIDevice.current.model.hasPrefix("iPhone")) {
-            $0.navigationViewStyle(StackNavigationViewStyle())
+            SettingsView(showSettingsModalView: self.$showSettingsModalView).environmentObject(collectionModel)
         }
 
-    }
-    func getTotalCollectionSize() -> Int
-    {
-        return deviceTypeCounts[DeviceType.iPhone]! + deviceTypeCounts[DeviceType.iPad]! + deviceTypeCounts[DeviceType.Mac]! + deviceTypeCounts[DeviceType.AppleWatch]! + deviceTypeCounts[DeviceType.AirPods]! + deviceTypeCounts[DeviceType.AppleTV]! + deviceTypeCounts[DeviceType.iPod]!
     }
 }
     
 struct SettingsView: View {
-    @Binding var deviceTypeCounts: [DeviceType: Int]
+    @EnvironmentObject var collectionModel: CollectionModel
     @Binding var showSettingsModalView: Bool
     @State private var confirmationShown = false
     @Environment(\.isPresented) var presentation
@@ -137,11 +122,11 @@ struct SettingsView: View {
                             ),
                             secondaryButton: .destructive(
                                            Text("Erase"),
-                                           action: resetDefaults
+                                           action: collectionModel.resetCollection
                             )
                         )
                     }
-                    Button(action: {loadSampleCollection()}) {
+                    Button(action: {loadNewSampleCollection(collection: collectionModel)}) {
                         Label("Load Sample Collection", systemImage: "square.and.arrow.down")
                     }
                     Button(action: {NSUbiquitousKeyValueStore.default.synchronize()}) {
@@ -166,7 +151,6 @@ struct SettingsView: View {
             .navigationBarTitleDisplayMode(.inline)
             .navigationBarItems(
                 leading: Button(action: {self.showSettingsModalView.toggle()}, label: {Text("Close").fontWeight(.regular)}))
-           
         }
     }
     func getVersionNumber() -> String
@@ -183,29 +167,26 @@ struct SettingsView: View {
 }
 
 struct ProductListView: View {
-    var deviceType: String
-    @Binding var deviceTypeCounts: [DeviceType: Int]
-    @State var modelList: [ModelAndCount]
+    var deviceType: DeviceType
+    @EnvironmentObject var collectionModel: CollectionModel
     @State var showInfoModalView: Bool = false
-    init(deviceType: String, deviceTypeCounts: Binding<[DeviceType: Int]>)
+    init(deviceType: DeviceType)
     {
         self.deviceType = deviceType
-        self.modelList = loadModelList(deviceType: deviceType)
-        _deviceTypeCounts = deviceTypeCounts
     }
     var body: some View {
         List
         {
-            ForEach($modelList, id: \.self) { $model in
-                NavigationLink(destination: ProductView(model: model.model, deviceType: deviceType, deviceTypeCounts: $deviceTypeCounts)){
+            ForEach(collectionModel.modelList[deviceType]!, id: \.self) { model in
+                NavigationLink(destination: ProductView(model: model.model, deviceType: deviceType)              .environmentObject(collectionModel)){
                     if(model.model.count >= 30)
                     {
-                        Label(model.model, systemImage: getProductIcon(product: ProductInfo(type: DeviceType(rawValue: deviceType), model: model.model)))
+                        Label(model.model, systemImage: getProductIcon(product: ProductInfo(type: DeviceType(rawValue: deviceType.rawValue), model: model.model)))
                             .minimumScaleFactor(0.5)
                     }
                     else
                     {
-                        Label(model.model, systemImage: getProductIcon(product: ProductInfo(type: DeviceType(rawValue: deviceType), model: model.model)))
+                        Label(model.model, systemImage: getProductIcon(product: ProductInfo(type: DeviceType(rawValue: deviceType.rawValue), model: model.model)))
                             .fixedSize()
                     }
                     Spacer()
@@ -215,12 +196,12 @@ struct ProductListView: View {
             }
         }
         .overlay(Group {
-            if modelList.isEmpty {
+            if(collectionModel.modelList[deviceType]!.isEmpty){
                 VStack(spacing: 15)
                 {
-                    Image(systemName: icons[deviceType]!)
+                    Image(systemName: icons[deviceType.rawValue]!)
                         .font(.system(size: 72))
-                    Text(deviceType)
+                    Text(deviceType.rawValue)
                         .font(.title)
                         .fontWeight(.bold)
                     Text("Collection is empty.")
@@ -228,10 +209,8 @@ struct ProductListView: View {
                 }
             }
         })
-        .navigationTitle(Text(deviceType))    .navigationBarTitleDisplayMode(.inline)
-        .onAppear {
-            modelList = loadModelList(deviceType: deviceType)
-        }
+        .navigationTitle(Text(deviceType.rawValue))
+        .navigationBarTitleDisplayMode(.inline)
         .navigationBarItems(trailing:
                 Button(action: {generator.notificationOccurred(.success); showInfoModalView.toggle()}) {
                 Image(systemName: "plus")
@@ -239,21 +218,15 @@ struct ProductListView: View {
                     .frame(height: 96, alignment: .trailing)
             })
         .sheet(isPresented: $showInfoModalView) {
-            AddProductView(showInfoModalView: self.$showInfoModalView)
-                .onDisappear {
-                    deviceTypeCounts = loadDeviceTypeCounts()
-                    modelList = loadModelList(deviceType: deviceType)
-                }
+            AddProductView(showInfoModalView: self.$showInfoModalView).environmentObject(collectionModel)
        }
     }
 }
 
 struct ValuesView: View {
-    @State var totalCollectionValue: Int = getTotalCollectionValue()
-    @State var deviceTypeValues: [DeviceType: Int] = getDeviceTypeValues()
-    @State var averageValues: [DeviceType: Double] = getAverageValues()
+    @EnvironmentObject var collectionModel: CollectionModel
     var body: some View {
-        if collectionIsEmpty() {
+        if(collectionModel.isEmpty()) {
             VStack(spacing: 15)
             {
                 Image(systemName: "dollarsign.circle.fill")
@@ -273,7 +246,7 @@ struct ValuesView: View {
                     Label("Total Collection Value", systemImage: "dollarsign.circle.fill")
                         .fixedSize()
                     Spacer()
-                    Text(String(format: "$%d", locale: Locale.current, totalCollectionValue))
+                    Text(String(format: "$%d", locale: Locale.current, getTotalCollectionValue(collection: collectionModel.collection)))
                         .foregroundColor(.gray)
                 }
                Section("Total Value By Device Type")
@@ -284,7 +257,7 @@ struct ValuesView: View {
                             Label(key.id, systemImage: icons[key.id]!)
                                 .fixedSize()
                             Spacer()
-                            Text(String(format: "$%d", locale: Locale.current, deviceTypeValues[key]!))
+                            Text(String(format: "$%d", locale: Locale.current, getDeviceTypeValues(collection: collectionModel.collection)[key]!))
                                 .foregroundColor(.gray)
                         }
                     }
@@ -297,7 +270,7 @@ struct ValuesView: View {
                              Label(key.id, systemImage: icons[key.id]!)
                                  .fixedSize()
                              Spacer()
-                             Text(String(format: "$%.2f", locale: Locale.current, averageValues[key]!))
+                             Text(String(format: "$%.2f", locale: Locale.current,        getAverageValues(collection: collectionModel.collection, deviceTypeCounts: collectionModel.getDeviceTypeCounts())[key]!))
                                  .foregroundColor(.gray)
                          }
                      }

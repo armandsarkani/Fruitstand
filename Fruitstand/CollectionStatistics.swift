@@ -9,9 +9,8 @@
 
 import Foundation
 
-func getDeviceTypeValues() -> [DeviceType: Int]
+func getDeviceTypeValues(collection: [DeviceType: [ProductInfo]]) -> [DeviceType: Int]
 {
-    let collection: [DeviceType: [ProductInfo]] = loadCollection()
     var deviceTypeValues: [DeviceType: Int] = [DeviceType.iPhone: 0, DeviceType.iPad: 0, DeviceType.Mac: 0, DeviceType.AppleWatch: 0, DeviceType.AirPods: 0, DeviceType.AppleTV: 0, DeviceType.iPod: 0]
     for deviceType in collection.keys {
         for device in collection[deviceType]! {
@@ -21,30 +20,16 @@ func getDeviceTypeValues() -> [DeviceType: Int]
     return deviceTypeValues
 }
 
-func getTotalCollectionValue() -> Int
+func getTotalCollectionValue(collection: [DeviceType: [ProductInfo]]) -> Int
 {
-    let deviceTypeValues: [DeviceType: Int] = getDeviceTypeValues()
+    let deviceTypeValues: [DeviceType: Int] = getDeviceTypeValues(collection: collection)
     return deviceTypeValues[DeviceType.iPhone]! + deviceTypeValues[DeviceType.iPad]! + deviceTypeValues[DeviceType.Mac]! + deviceTypeValues[DeviceType.AppleWatch]! + deviceTypeValues[DeviceType.AirPods]! + deviceTypeValues[DeviceType.AppleTV]! + deviceTypeValues[DeviceType.iPod]!
 
 }
 
-func collectionIsEmpty() -> Bool
+func getAverageValues(collection: [DeviceType: [ProductInfo]], deviceTypeCounts: [DeviceType: Int]) -> [DeviceType: Double]
 {
-    let deviceTypeCounts: [DeviceType: Int] = loadDeviceTypeCounts()
-    for deviceType in deviceTypeCounts.keys
-    {
-        if(deviceTypeCounts[deviceType]! > 0)
-        {
-            return false
-        }
-    }
-    return true
-}
-
-func getAverageValues() -> [DeviceType: Double]
-{
-    let deviceTypeCounts: [DeviceType: Int] = loadDeviceTypeCounts()
-    let deviceTypeValues: [DeviceType: Int] = getDeviceTypeValues()
+    let deviceTypeValues: [DeviceType: Int] = getDeviceTypeValues(collection: collection)
     var averageValues: [DeviceType: Double] = [:]
     for deviceType in deviceTypeValues.keys
     {

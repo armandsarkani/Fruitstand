@@ -32,27 +32,24 @@ func ??<T> (left: Binding<T?>, right: T) -> Binding<T> {
 }
 
 struct ProductView: View {
+    @EnvironmentObject var collectionModel: CollectionModel
     var model: String
-    var deviceType: String
-    @Binding var deviceTypeCounts: [DeviceType: Int]
+    var deviceType: DeviceType
     @State private var selectedProduct: ProductInfo? = nil
     @State var showInfoModalView: Bool = false
-    @State var products: [ProductInfo]
     @State var productDeleted: Bool = false
     @State var confirmationShown: Bool = false
-    init(model: String, deviceType: String, deviceTypeCounts: Binding<[DeviceType: Int]>)
+    init(model: String, deviceType: DeviceType)
     {
         self.model = model
         self.deviceType = deviceType
-        self.products = loadMatchingProductsByModel(deviceType: deviceType, model: model)
-        _deviceTypeCounts = deviceTypeCounts
     }
     var body: some View {
         List {
-            ForEach($products, id: \.self) { $product in
+            ForEach(collectionModel.loadMatchingProductsByModel(deviceType: deviceType, model: model), id: \.self) { product in
                 Section
                 {
-                    ProductCardView(product: $product, products: $products, confirmationShown: $confirmationShown, selectedProduct: $selectedProduct)
+                    ProductCardView(product: product, confirmationShown: $confirmationShown, selectedProduct: $selectedProduct).environmentObject(collectionModel)
                 }
             }
         }
@@ -68,18 +65,15 @@ struct ProductView: View {
                secondaryButton: .destructive(
                               Text("Erase"),
                               action: {
-                                  eraseProduct(uuid: selectedProduct!.uuid!);
-                                  products = loadMatchingProductsByModel(deviceType: deviceType, model: model);
-                                  deviceTypeCounts = loadDeviceTypeCounts()
+                                  collectionModel.eraseProduct(product: selectedProduct!)
                                   productDeleted.toggle()
-                              })
-           )
+                              }))
         }
         .overlay(Group {
-            if products.isEmpty {
+            if collectionModel.loadMatchingProductsByModel(deviceType: deviceType, model: model).isEmpty {
                 VStack(spacing: 15)
                 {
-                    Image(systemName: getProductIcon(product: ProductInfo(type: DeviceType(rawValue: deviceType), model: model)))
+                    Image(systemName: getProductIcon(product: ProductInfo(type: DeviceType(rawValue: deviceType.rawValue), model: model)))
                         .font(.system(size: 72))
                     Text(model)
                         .font(.title)
@@ -89,10 +83,6 @@ struct ProductView: View {
                 }
             }
         })
-        .onAppear {
-            products = loadMatchingProductsByModel(deviceType: deviceType, model: model)
-            deviceTypeCounts = loadDeviceTypeCounts()
-        }
         .navigationTitle(model)
         .navigationBarTitleDisplayMode(.large)
         .navigationBarItems(trailing:
@@ -102,20 +92,15 @@ struct ProductView: View {
                     .frame(height: 96, alignment: .trailing)
             })
         .sheet(isPresented: $showInfoModalView) {
-            AddProductView(showInfoModalView: self.$showInfoModalView)
-                .onDisappear {
-                    deviceTypeCounts = loadDeviceTypeCounts()
-                    products = loadMatchingProductsByModel(deviceType: deviceType, model: model)
-                }
-
+            AddProductView(showInfoModalView: self.$showInfoModalView).environmentObject(collectionModel)
         }
     }
 }
 
 
 struct ProductCardView: View {
-    @Binding var product: ProductInfo
-    @Binding var products: [ProductInfo]
+    @EnvironmentObject var collectionModel: CollectionModel
+    var product: ProductInfo
     @Binding var confirmationShown: Bool
     @Binding var selectedProduct: ProductInfo?
     @State var showEditModalView: Bool = false
@@ -123,7 +108,7 @@ struct ProductCardView: View {
     var body: some View {
         VStack(alignment: .leading)
         {
-            SpecificsHeaderView(product: $product)
+            SpecificsHeaderView(product: product)
             Spacer()
             HStack
             {
@@ -181,17 +166,14 @@ struct ProductCardView: View {
             Spacer()
         }
         .sheet(isPresented: $showEditModalView) {
-            EditProductView(product: product, showEditModalView: $showEditModalView)
-                .onDisappear {
-                    products = loadMatchingProductsByModel(deviceType: product.type!.id, model: product.model!)
-                }
+            EditProductView(product: product, showEditModalView: $showEditModalView).environmentObject(collectionModel)
 
         }
         HorizontalTwoAttributeView(descriptionLeft: "Working status", dataLeft: (product.workingStatus != nil ? product.workingStatus!.id: "Unknown"), descriptionRight: "Year acquired", dataRight: (product.yearAcquired != nil ? String(product.yearAcquired!): "Unknown"))
         HorizontalTwoAttributeView(descriptionLeft: "Condition", dataLeft: (product.condition != nil ? product.condition!.id: "Unknown"), descriptionRight: "Acquired as", dataRight: (product.acquiredAs != nil ? product.acquiredAs!.id: "Unknown"))
         HorizontalTwoAttributeView(descriptionLeft: "Estimated value", dataLeft: (product.estimatedValue != nil ?  String(format: "$%d", locale: Locale.current, product.estimatedValue!): "Unknown"), descriptionRight: "Warranty", dataRight: (product.warranty != nil ? product.warranty!.id: "Unknown"))
         HorizontalTwoBooleanView(descriptionLeft: "Physical damage", dataLeft: boolToTextScheme1[product.physicalDamage ?? false]!, descriptionRight: "Original box", dataRight: boolToTextScheme1[product.originalBox ?? false]!, leftStatus: boolToStatusScheme2[product.physicalDamage ?? false]!, rightStatus: boolToStatusScheme1[product.originalBox ?? false]!)
-        SpecificsCardView(product: $product)
+        SpecificsCardView(product: product)
         if(product.comments != nil && product.comments != "") {
             HorizontalOneAttributeView(description: "Comments", data: product.comments!, alignment: .leading)
 
@@ -200,7 +182,7 @@ struct ProductCardView: View {
 }
 
 struct SpecificsHeaderView: View {
-    @Binding var product: ProductInfo
+    var product: ProductInfo
     var body: some View {
         if(product.type == DeviceType.Mac) {
             if(product.model == "Other" || product.model == "Earlier Models")
@@ -278,7 +260,7 @@ struct SpecificsHeaderView: View {
 }
 
 struct SpecificsCardView: View {
-    @Binding var product: ProductInfo
+    var product: ProductInfo
     let carrierLockStatusMap: [CarrierLockStatus: String] = [CarrierLockStatus.Locked: "negative", CarrierLockStatus.Unlocked: "affirmative", CarrierLockStatus.Unknown: "unknown"]
     let ESNStatusMap: [ESNStatus: String] = [ESNStatus.Bad: "negative", ESNStatus.Clean: "affirmative", ESNStatus.Unknown: "unknown"]
     var body: some View {

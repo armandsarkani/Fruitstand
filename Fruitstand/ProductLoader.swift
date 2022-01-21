@@ -11,12 +11,6 @@ import Foundation
 import Combine
 import SwiftCSV
 
-struct ModelAndCount: Codable, Hashable
-{
-    var model: String
-    var count: Int?
-    var rank: Int
-}
 
 func loadMatchingUUIDs(deviceType: String) -> [String]
 {
@@ -88,7 +82,7 @@ func loadMatchingProductsByModel(deviceType: String, model: String) -> [ProductI
     {
         if let product = userDefaults.getCodableObject(dataType: ProductInfo.self, key: uuid)
         {
-            if(getProductModel(product: product) == model)
+            if(product.model == model)
             {
                 products.append(product)
             }
@@ -106,16 +100,16 @@ func loadModelList(deviceType: String) -> [ModelAndCount]
     let matchingProducts = loadMatchingProducts(deviceType: deviceType)
     var modelStrings: [String] = []
     for product in matchingProducts
-     {
+    {
         modelStrings.append(product.model!)
-     }
-     let mappedItems = modelStrings.map { ($0, 1) }
-     let modelCounts = Dictionary(mappedItems, uniquingKeysWith: +)
-     var modelCountsArray: [ModelAndCount] = []
-     for (key, value) in modelCounts
-     {
+    }
+    let mappedItems = modelStrings.map { ($0, 1) }
+    let modelCounts = Dictionary(mappedItems, uniquingKeysWith: +)
+    var modelCountsArray: [ModelAndCount] = []
+    for (key, value) in modelCounts
+    {
         modelCountsArray.append(ModelAndCount(model: key, count: value, rank: typeToRank(deviceType: deviceType, key: key)))
-     }
+    }
     modelCountsArray.sort{$0.rank < $1.rank}
     return modelCountsArray
     
@@ -150,7 +144,6 @@ func loadSampleCollection()
     loadAllProductsFromCSV(productData: AirPodsData, deviceType: DeviceType.AirPods)
     loadAllProductsFromCSV(productData: AppleTVData, deviceType: DeviceType.AppleTV)
     loadAllProductsFromCSV(productData: iPodData, deviceType: DeviceType.iPod)
-    
     
 }
 

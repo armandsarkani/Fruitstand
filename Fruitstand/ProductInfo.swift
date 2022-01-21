@@ -50,6 +50,7 @@ extension NSUbiquitousKeyValueStore
   }
 }
 
+
 struct ProductInfo: Codable, Hashable
 {
     // Shared with all
