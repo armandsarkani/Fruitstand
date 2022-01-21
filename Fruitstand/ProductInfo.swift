@@ -114,12 +114,73 @@ struct ProductInfo: Codable, Hashable
     func contains(searchText: String) -> Bool
     {
         let lowercaseSearchText = searchText.lowercased()
-        if(model!.lowercased().contains(lowercaseSearchText) || (otherModel ?? "").lowercased().contains(lowercaseSearchText) || color!.lowercased().contains(lowercaseSearchText) || uuid!.lowercased().contains(lowercaseSearchText) || (workingStatus ?? WorkingStatus.Working).rawValue.lowercased().contains(lowercaseSearchText) || (comments ?? "").lowercased().contains(lowercaseSearchText) || (warranty ?? Warranty.Expired).rawValue.lowercased().contains(lowercaseSearchText) || (year ?? "").lowercased().contains(lowercaseSearchText) || String(yearAcquired!).lowercased().contains(lowercaseSearchText) || (processor ?? "").lowercased().contains(lowercaseSearchText) || (connectivity ?? iPadConnectivity.WiFi).rawValue.lowercased().contains(lowercaseSearchText) || (watchConnectivity ?? WatchConnectivity.GPS).rawValue.lowercased().contains(lowercaseSearchText) || (caseType ?? WatchCaseType.Aluminum).rawValue.lowercased().contains(lowercaseSearchText) || (APCaseType ?? AirPodsCaseType.Wired).rawValue.lowercased().contains(lowercaseSearchText) || (storage ?? "").lowercased().contains(lowercaseSearchText) || String(caseSize ?? 0).lowercased().contains(lowercaseSearchText) || String(screenSize ?? 0).lowercased().contains(lowercaseSearchText))
+        if(model!.lowercased().contains(lowercaseSearchText) || (otherModel ?? "").lowercased().contains(lowercaseSearchText) || color!.lowercased().contains(lowercaseSearchText) || (comments ?? "").lowercased().contains(lowercaseSearchText) || (warranty ?? Warranty.Expired).rawValue.lowercased().contains(lowercaseSearchText) || (year ?? "").lowercased().contains(lowercaseSearchText) || String(yearAcquired!).lowercased().contains(lowercaseSearchText) || (processor ?? "").lowercased().contains(lowercaseSearchText) || (connectivity ?? iPadConnectivity.WiFi).rawValue.lowercased().contains(lowercaseSearchText) || (watchConnectivity ?? WatchConnectivity.GPS).rawValue.lowercased().contains(lowercaseSearchText) || (caseType ?? WatchCaseType.Aluminum).rawValue.lowercased().contains(lowercaseSearchText) || (APCaseType ?? AirPodsCaseType.Wired).rawValue.lowercased().contains(lowercaseSearchText) || (storage ?? "").lowercased().contains(lowercaseSearchText) || String(caseSize ?? 0).lowercased().contains(lowercaseSearchText) || String(screenSize ?? 0).lowercased().contains(lowercaseSearchText) || getCommonName(product: self).lowercased().contains(lowercaseSearchText))
         {
             return true
         }
         return false
     }
+    
+}
+
+func getCommonHeaderName(product: ProductInfo) -> String
+{
+    if(product.type == DeviceType.Mac) {
+        if(product.model == "Other" || product.model == "Earlier Models")
+        {
+            return "\(product.otherModel ?? "Unknown Model") (\(product.year ?? "Unknown Year")) \(product.screenSize != nil ? "\(String(product.screenSize!))-inch": "")"
+            
+        }
+        else {
+            return "\(product.year ?? "Unknown Year") \(product.screenSize != nil ? "\(String(product.screenSize!))-inch": "")"
+        }
+        
+    }
+    else
+    {
+        if(product.model == "Other")
+        {
+            return "\(product.otherModel ?? "Unknown Model")"
+        }
+    }
+    if(product.type == DeviceType.iPhone)
+    {
+        return product.storage ?? "Unknown Storage"
+        
+    }
+    else if(product.type == DeviceType.iPad)
+    {
+        return "\(product.storage ?? "Unknown Storage") \(product.connectivity != nil ? product.connectivity!.id: "")"
+        
+    }
+    else if(product.type == DeviceType.AppleWatch)
+    {
+        return "\(product.caseSize != nil ? "\(String(product.caseSize!))mm": "") \(product.caseType != nil ? product.caseType!.id: "") \(product.watchConnectivity != nil ? product.watchConnectivity!.id: "")"
+    }
+    else if(product.type == DeviceType.AirPods)
+    {
+        return (product.APCaseType != nil ? product.APCaseType!.id: "Unknown Case Type")
+    }
+    else if(product.type == DeviceType.AppleTV)
+    {
+       return product.storage ?? "Unknown Storage"
+    }
+    else if(product.type == DeviceType.iPod)
+    {
+        return product.storage ?? "Unknown Storage"
+    }
+    return "Unknown"
+}
+
+func getCommonName(product: ProductInfo) -> String
+{
+    var commonName: String = ""
+    if(product.model != "Other" && product.model != "Earlier Models")
+    {
+        commonName += (product.model! + " ")
+    }
+    commonName += getCommonHeaderName(product: product)
+    return commonName
     
 }
 

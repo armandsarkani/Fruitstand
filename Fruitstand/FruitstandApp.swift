@@ -26,6 +26,10 @@ struct FruitstandApp: App {
     
 }
 
+extension Collection {
+    func choose(_ n: Int) -> ArraySlice<Element> { shuffled().prefix(n) }
+}
+
 extension View {
     fileprivate func withHostingWindow(_ callback: @escaping (UIWindow?) -> Void) -> some View {
         self.background(HostingWindowFinder(callback: callback))

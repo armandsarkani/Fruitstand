@@ -124,7 +124,7 @@ struct ProductCardView: View {
     var body: some View {
         VStack(alignment: .leading)
         {
-            if(fullSearchable && (product.model != "Other" || product.model != "Earlier Models"))
+            if(fullSearchable && product.model != "Other" && product.model != "Earlier Models")
             {
                 Spacer()
                 Text("\(product.model ?? "Unknown Model")")
@@ -220,78 +220,10 @@ struct ProductCardView: View {
 struct SpecificsHeaderView: View {
     var product: ProductInfo
     var body: some View {
-        if(product.type == DeviceType.Mac) {
-            if(product.model == "Other" || product.model == "Earlier Models")
-            {
-                Spacer()
-                Text("\(product.otherModel ?? "Unknown Model") (\(product.year ?? "Unknown Year")) \(product.screenSize != nil ? "\(String(product.screenSize!))-inch": "")")
-                    .fontWeight(.bold)
-                    .font(.title3)
-                
-            }
-            else {
-                Spacer()
-                Text("\(product.year ?? "Unknown Year") \(product.screenSize != nil ? "\(String(product.screenSize!))-inch": "")")
-                    .fontWeight(.bold)
-                    .font(.title3)
-            }
-            
-        }
-        else
-        {
-            if(product.model == "Other")
-            {
-                Spacer()
-                Text("\(product.otherModel ?? "Unknown Model")")
-                    .fontWeight(.bold)
-                    .font(.title3)
-            }
-        }
-        if(product.type == DeviceType.iPhone)
-        {
             Spacer()
-            Text(product.storage ?? "Unknown Storage")
+            Text(getCommonHeaderName(product: product))
                 .fontWeight(.bold)
                 .font(.title3)
-            
-        }
-        else if(product.type == DeviceType.iPad)
-        {
-            Spacer()
-            Text("\(product.storage ?? "Unknown Storage") \(product.connectivity != nil ? product.connectivity!.id: "")")
-                .fontWeight(.bold)
-                .font(.title3)
-            
-        }
-        else if(product.type == DeviceType.AppleWatch)
-        {
-            Spacer()
-            Text("\(product.caseSize != nil ? "\(String(product.caseSize!))mm": "") \(product.caseType != nil ? product.caseType!.id: "") \(product.watchConnectivity != nil ? product.watchConnectivity!.id: "")")
-                .fontWeight(.bold)
-                .font(.title3)
-            
-        }
-        else if(product.type == DeviceType.AirPods)
-        {
-            Spacer()
-            Text((product.APCaseType != nil ? product.APCaseType!.id: "Unknown Case Type"))
-                .fontWeight(.bold)
-                .font(.title3)
-        }
-        else if(product.type == DeviceType.AppleTV)
-        {
-            Spacer()
-            Text(product.storage ?? "Unknown Storage")
-                .fontWeight(.bold)
-                .font(.title3)
-        }
-        else if(product.type == DeviceType.iPod)
-        {
-            Spacer()
-            Text(product.storage ?? "Unknown Storage")
-                .fontWeight(.bold)
-                .font(.title3)
-        }
     }
 }
 

@@ -1,4 +1,8 @@
 import Foundation
 
-var dict: [String: [Int]] = ["Yes": [1, 2, 3], "No": [4, 5, 6], "Green": [7, 8, 9]]
-dict.values
+extension Collection {
+    func choose(_ n: Int) -> ArraySlice<Element> { shuffled().prefix(n) }
+}
+
+var alphabet = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"]
+print(alphabet.choose(8))

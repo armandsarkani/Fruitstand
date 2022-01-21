@@ -52,6 +52,7 @@ class CollectionModel: ObservableObject {
         collection[product.type ?? DeviceType.Mac]!.append(product)
         loadModelList()
         collectionSize += 1
+        collectionArray.append(product)
 
         // Save to UserDefaults/iCloud
         if(iCloudStatus)
@@ -78,6 +79,7 @@ class CollectionModel: ObservableObject {
     {
         // Save to collection
         collection[product.type!]![returnCollectionIndexByProduct(product: product)] = product
+        collectionArray[returnCollectionArrayIndexByProduct(product: product)] = product
         loadModelList()
         
         // Save changes to UserDefaults/iCloud
@@ -166,6 +168,7 @@ class CollectionModel: ObservableObject {
     func eraseProduct(product: ProductInfo) {
        // Save to collection
         collection[product.type!]!.remove(at: returnCollectionIndexByProduct(product: product))
+        collectionArray.remove(at: returnCollectionArrayIndexByProduct(product: product))
         loadModelList()
         collectionSize -= 1
         
@@ -218,6 +221,18 @@ class CollectionModel: ObservableObject {
         print("Failed to find product in collection.")
         return 0
                 
+    }
+    func returnCollectionArrayIndexByProduct(product: ProductInfo) -> Int
+    {
+        for (index, element) in collectionArray.enumerated()
+        {
+            if(element.uuid == product.uuid)
+            {
+                return index
+            }
+        }
+        print("Failed to find product in collection.")
+        return 0
     }
     func isEmpty() -> Bool
     {

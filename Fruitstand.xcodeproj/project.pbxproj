@@ -22,6 +22,10 @@
 		16C5AE0A2792163B00C837F4 /* SampleCollection in Resources */ = {isa = PBXBuildFile; fileRef = 16C5AE092792163B00C837F4 /* SampleCollection */; };
 		16C5AE0E27922D1200C837F4 /* SwiftCSV in Frameworks */ = {isa = PBXBuildFile; productRef = 16C5AE0D27922D1200C837F4 /* SwiftCSV */; };
 		16C5AE1127922D5500C837F4 /* Zephyr in Frameworks */ = {isa = PBXBuildFile; productRef = 16C5AE1027922D5500C837F4 /* Zephyr */; };
+		16F1CF10279B5EFD0094CE89 /* ProductListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16F1CF0F279B5EFD0094CE89 /* ProductListView.swift */; };
+		16F1CF12279B5F2F0094CE89 /* ValuesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16F1CF11279B5F2F0094CE89 /* ValuesView.swift */; };
+		16F1CF14279B5F490094CE89 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16F1CF13279B5F490094CE89 /* SettingsView.swift */; };
+		16F1CF16279B5F730094CE89 /* MainSearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16F1CF15279B5F730094CE89 /* MainSearchView.swift */; };
 		16FC8BC92798C8CC00EA6A64 /* CollectionModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16FC8BC82798C8CC00EA6A64 /* CollectionModel.swift */; };
 		16FC8BCB2798F9AF00EA6A64 /* SampleCollectionLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16FC8BCA2798F9AF00EA6A64 /* SampleCollectionLoader.swift */; };
 /* End PBXBuildFile section */
@@ -42,6 +46,10 @@
 		16B2D1E2278A6A35006242BC /* ProductAtttributes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductAtttributes.swift; sourceTree = "<group>"; };
 		16B333CF2652F8B1003E4BCE /* ProductView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProductView.swift; sourceTree = "<group>"; };
 		16C5AE092792163B00C837F4 /* SampleCollection */ = {isa = PBXFileReference; lastKnownFileType = folder; name = SampleCollection; path = Fruitstand/SampleCollection; sourceTree = "<group>"; };
+		16F1CF0F279B5EFD0094CE89 /* ProductListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductListView.swift; sourceTree = "<group>"; };
+		16F1CF11279B5F2F0094CE89 /* ValuesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValuesView.swift; sourceTree = "<group>"; };
+		16F1CF13279B5F490094CE89 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		16F1CF15279B5F730094CE89 /* MainSearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainSearchView.swift; sourceTree = "<group>"; };
 		16FC8BC82798C8CC00EA6A64 /* CollectionModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionModel.swift; sourceTree = "<group>"; };
 		16FC8BCA2798F9AF00EA6A64 /* SampleCollectionLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleCollectionLoader.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -83,11 +91,9 @@
 			isa = PBXGroup;
 			children = (
 				16B2D1DE278A5277006242BC /* Fruitstand.entitlements */,
+				16F1CF19279B60750094CE89 /* Views */,
 				16022E072652F8710098BD95 /* FruitstandApp.swift */,
-				16022E092652F8710098BD95 /* ContentView.swift */,
 				162C058C279794FE006FDA48 /* CollectionStatistics.swift */,
-				16B333CF2652F8B1003E4BCE /* ProductView.swift */,
-				1690B48F2790197900CFAD06 /* AddProductView.swift */,
 				16B2D1DC278A3EB7006242BC /* ProductInfo.swift */,
 				16B2D1E2278A6A35006242BC /* ProductAtttributes.swift */,
 				16FC8BCA2798F9AF00EA6A64 /* SampleCollectionLoader.swift */,
@@ -114,6 +120,20 @@
 				16B2D1E0278A5289006242BC /* CloudKit.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		16F1CF19279B60750094CE89 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				16022E092652F8710098BD95 /* ContentView.swift */,
+				16F1CF15279B5F730094CE89 /* MainSearchView.swift */,
+				16F1CF13279B5F490094CE89 /* SettingsView.swift */,
+				16F1CF11279B5F2F0094CE89 /* ValuesView.swift */,
+				16F1CF0F279B5EFD0094CE89 /* ProductListView.swift */,
+				16B333CF2652F8B1003E4BCE /* ProductView.swift */,
+				1690B48F2790197900CFAD06 /* AddProductView.swift */,
+			);
+			path = Views;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -196,16 +216,20 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				16F1CF10279B5EFD0094CE89 /* ProductListView.swift in Sources */,
 				16B2D1E3278A6A35006242BC /* ProductAtttributes.swift in Sources */,
 				16022E0A2652F8710098BD95 /* ContentView.swift in Sources */,
 				16FC8BCB2798F9AF00EA6A64 /* SampleCollectionLoader.swift in Sources */,
 				169A919827924FEF00AC9088 /* AppDelegate.swift in Sources */,
 				1690B4902790197900CFAD06 /* AddProductView.swift in Sources */,
 				16B2D1DD278A3EB7006242BC /* ProductInfo.swift in Sources */,
+				16F1CF16279B5F730094CE89 /* MainSearchView.swift in Sources */,
 				16FC8BC92798C8CC00EA6A64 /* CollectionModel.swift in Sources */,
 				16B333D02652F8B1003E4BCE /* ProductView.swift in Sources */,
 				162C058D279794FE006FDA48 /* CollectionStatistics.swift in Sources */,
+				16F1CF12279B5F2F0094CE89 /* ValuesView.swift in Sources */,
 				16022E082652F8710098BD95 /* FruitstandApp.swift in Sources */,
+				16F1CF14279B5F490094CE89 /* SettingsView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -337,7 +361,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 2200;
+				CURRENT_PROJECT_VERSION = 2300;
 				DEVELOPMENT_ASSET_PATHS = "\"Fruitstand/Preview Content\"";
 				DEVELOPMENT_TEAM = 86LR2G8L2C;
 				ENABLE_PREVIEWS = YES;
@@ -347,7 +371,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.2;
+				MARKETING_VERSION = 1.3;
 				PRODUCT_BUNDLE_IDENTIFIER = armandsarkani.Fruitstand;
 				"PRODUCT_BUNDLE_IDENTIFIER[sdk=macosx*]" = armandsarkani.Fruitstand;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -368,7 +392,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 2200;
+				CURRENT_PROJECT_VERSION = 2300;
 				DEVELOPMENT_ASSET_PATHS = "\"Fruitstand/Preview Content\"";
 				DEVELOPMENT_TEAM = 86LR2G8L2C;
 				ENABLE_PREVIEWS = YES;
@@ -378,7 +402,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.2;
+				MARKETING_VERSION = 1.3;
 				PRODUCT_BUNDLE_IDENTIFIER = armandsarkani.Fruitstand;
 				"PRODUCT_BUNDLE_IDENTIFIER[sdk=macosx*]" = armandsarkani.Fruitstand;
 				PRODUCT_NAME = "$(TARGET_NAME)";
