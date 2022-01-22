@@ -1,0 +1,44 @@
+Model,Color,Storage,Working Status,Estimated Value,Condition,Acquired As,Physical Damage,Activation Lock,Original Box,Warranty,Year Acquired,Comments
+iPod (1st gen.),White,5GB,Working,200,Good,Used,No,No,No,Expired,2012,
+iPod (2nd gen.),White,10GB,Working,150,Excellent,Used,No,No,No,Expired,2019,
+iPod (3rd gen.),White,20GB,Working,50,Fair,Used,No,No,No,Expired,2011,
+iPod (3rd gen.),White,20GB,Working,120,Excellent,Used,No,No,Yes,Expired,2013,
+iPod + HP (4th gen.),White,20GB,Working,30,Good,Used,No,No,No,Expired,2012,
+iPod + HP (4th gen.),White,20GB,Not Working,15,Good,Used,No,No,No,Expired,2012,Boot loop
+"iPod (4th gen., photo)",White,20GB,Mostly Working,40,Good,Used,No,No,No,Expired,2013,Error message
+"iPod + HP (4th gen., photo)",White,30GB,Working,45,Good,Used,No,No,No,Expired,2012,
+iPod 5th gen.,White,30GB,Mostly Working,15,Fair,Used,No,No,No,Expired,2020,Error message
+iPod 5th gen.,Black,80GB,Mostly Working,20,Good,Used,No,No,No,Expired,2016,Broken click wheel
+iPod classic,Silver,80GB,Not Working,15,Good,Used,No,No,No,Expired,2014,No power
+iPod classic,Black,80GB,Not Working,15,Good,Used,No,No,No,Expired,2019,No power
+iPod classic (Late 2009),Black,160GB,Working,200,Good,Used,No,No,No,Expired,2021,
+iPod mini (1st gen.),Green,4GB,Working,25,Good,Used,No,No,No,Expired,2015,
+iPod mini (2nd gen.),Blue,6GB,Mostly Working,15,Fair,Used,No,No,No,Expired,2017,Error message
+iPod nano (1st gen.),Black,4GB,Not Working,10,Poor,Used,No,No,No,Expired,2012,Unable to boot
+iPod nano (3rd gen.),Silver,4GB,Working,20,Good,Used,No,No,No,Expired,2013,
+iPod nano (3rd gen.),Silver,4GB,Working,20,Good,Used,No,No,No,Expired,2013,
+iPod nano (4th gen.),Silver,8GB,Working,20,Good,Used,No,No,No,Expired,2010,
+iPod nano (4th gen.),Silver,8GB,Working,30,Excellent,New,No,No,Yes,Expired,2008,
+iPod nano (5th gen.),Purple,8GB,Not Working,15,Good,Used,No,No,No,Expired,2018,Unable to boot
+iPod nano (5th gen.),Green,8GB,Not Working,15,Good,Used,No,No,Yes,Expired,2015,No power
+iPod nano (6th gen.),Graphite,8GB,Working,10,Poor,Used,Yes,No,No,Expired,2015,"Cracked screen, dead pixels"
+iPod nano (6th gen.),Silver,16GB,Working,15,Poor,Used,Yes,No,No,Expired,2014,Cracked screen
+iPod nano (7th gen.),Space Gray,16GB,Working,75,Good,New,None,No,Yes,Expired,2013,
+iPod shuffle (1st gen.),White,512MB,Working,15,Fair,Used,None,No,No,Expired,2012,
+iPod shuffle (1st gen.),White,512MB,Working,30,Excellent,Unopened,None,No,Yes,Expired,2012,
+iPod shuffle + HP (1st gen.),White,1GB,Working,75,Excellent,Used,None,No,Yes,Expired,2013,
+iPod shuffle (2nd gen.),Green,1GB,Working,20,Excellent,Used,None,No,Yes,Expired,2008,First iPod and first Apple product
+iPod shuffle (2nd gen.),Silver,1GB,Working,20,Excellent,Used,None,No,Yes,Expired,2021,
+iPod shuffle (3rd gen.),Silver,2GB,Working,20,Good,Used,None,No,No,Expired,2021,
+iPod shuffle (4th gen.),Silver,2GB,Working,20,Excellent,New,None,No,Yes,Expired,2010,
+iPod shuffle (4th gen.),Blue,2GB,Working,15,Good,Used,None,No,No,Expired,2013,
+iPod shuffle (4th gen.),Blue,2GB,Working,20,Excellent,New,None,No,Yes,Expired,2013,
+iPod touch (1st gen.),Silver,8GB,Working,25,Good,Used,None,No,Yes,Expired,2012,
+iPod touch (1st gen.),Silver,8GB,Working,400,New,Unopened,None,No,Yes,Expired,2012,
+iPod touch (2nd gen.),Silver,8GB,Working,15,Good,Used,None,No,No,Expired,2014,
+iPod touch (2nd gen.),Silver,8GB,Working,20,Excellent,New,None,No,Yes,Expired,2009,
+iPod touch (4th gen.),Silver,8GB,Working,25,Excellent,New,None,No,Yes,Expired,2010,
+iPod touch (5th gen.),Silver,16GB,Working,20,Poor,Used,Yes,No,No,Expired,2014,Cracked screen
+iPod touch (6th gen.),Space Gray,16GB,Working,50,Excellent,Used,None,No,No,Expired,2021,
+iPod touch (6th gen.),Gold,32GB,Mostly Working,35,Good,Used,None,Yes,No,Expired,2021,Activation lock bypassed
+iPod touch (7th gen.),Space Gray,32GB,Mostly Working,60,Excellent,Used,None,Yes,No,Expired,2020,Activation lock bypassed

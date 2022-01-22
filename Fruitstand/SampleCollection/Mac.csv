@@ -1,0 +1,95 @@
+Model,Color,Year,Form Factor,Screen Size,Processor,Memory,Storage,Working Status,Estimated Value,Condition,Acquired As,Physical Damage,Activation Lock,Original Box,Warranty,Year Acquired,Comments
+MacBook (polycarbonate),White,Early 2006,Notebook,13,Intel Core Duo,Unknown,Unknown,Not Working,10,Incomplete,Used,Yes,No,No,Expired,2013,"Unknown damage, does not power on"
+MacBook (polycarbonate),White,Mid 2007,Notebook,13,Intel Core 2 Duo,Unknown,Unknown,Working,75,Good,Used,No,No,No,Expired,2019,
+MacBook (polycarbonate),Black,Mid 2007,Notebook,13,Intel Core 2 Duo,2GB,160GB,Working,100,Good,Used,No,No,No,Expired,2020,
+MacBook (polycarbonate),Black,Mid 2007,Notebook,13,Intel Core 2 Duo,2GB,250GB,Working,75,Good,Used,No,No,No,Expired,2013,Missing key
+MacBook (polycarbonate),Black,Mid 2007,Notebook,13,Intel Core 2 Duo,4GB,250GB,Working,100,Good,Used,No,No,No,Expired,2013,
+MacBook (polycarbonate),White,Early 2008,Notebook,13,Intel Core 2 Duo,2GB,250GB,Mostly Working,45,Fair,Used,No,No,No,Expired,2014,Display flickering issues
+"MacBook (aluminum, unibody)",Silver,Late 2008,Notebook,13,Intel Core 2 Duo,4GB,320GB,Working,150,Good,Used,No,No,No,Expired,2015,
+MacBook (polycarbonate),White,Early 2009,Notebook,13,Intel Core 2 Duo,2GB,None,Working,100,Good,Used,No,No,No,Expired,2020,
+MacBook (polycarbonate),White,Mid 2009,Notebook,13,Intel Core 2 Duo,4GB,500GB,Working,150,Good,Used,No,No,No,Expired,2018,
+MacBook (polycarbonate),White,Mid 2010,Notebook,13,Intel Core 2 Duo,None,None,Not Working,50,Poor,Used,Yes,No,No,Expired,2013,"Water damage, missing parts"
+MacBook (unibody),White,Mid 2010,Notebook,13,Intel Core 2 Duo,4GB,250GB,Working,175,Good,Used,No,No,No,Expired,2013,
+MacBook (unibody),White,Mid 2010,Notebook,13,Intel Core 2 Duo,4GB,250GB,Working,175,Good,Used,No,No,No,Expired,2020,
+MacBook (unibody),White,Mid 2010,Notebook,13,Intel Core 2 Duo,4GB,500GB,Working,125,Good,Used,No,No,No,Expired,2019,“L” key Not Working
+MacBook (Retina),Space Gray,Early 2015,Notebook,12,Intel Core M,8GB,256GB SSD,Working,500,Excellent,New,No,No,Yes,Expired,2016,
+MacBook (Retina),Rose Gold,Early 2016,Notebook,12,Intel Core m5,8GB,512GB SSD,Working,650,Excellent,Used,No,No,Yes,Expired,2018,
+MacBook (Retina),Gold,2017,Notebook,12,Intel Core m3,8GB,256GB SSD,Working,550,Good,Used,No,No,No,Expired,2020,
+MacBook Air (non-Retina),Silver,Late 2008,Notebook,13,Intel Core 2 Duo,2GB,None,Not Working,50,Incomplete,Used,Yes,No,No,Expired,2019,"Display hinge broken, missing hard drive, battery, and miscellaneous other parts"
+MacBook Air (non-Retina),Silver,Mid 2009,Notebook,13,Intel Core 2 Duo,2GB,128GB SSD,Working,100,Good,Used,No,No,No,Expired,2015,
+MacBook Air (non-Retina),Silver,Late 2010,Notebook,13,Intel Core 2 Duo,Unknown,None,Not Working,50,Fair,Used,Yes,No,No,Expired,2019,"Cracked display, LCD issues, unable to power on, possible logic board issues"
+MacBook Air (non-Retina),Silver,Mid 2012,Notebook,13,Intel Core i5,4GB,128GB SSD,Working,300,Good,Used,No,No,No,Expired,2015,
+MacBook Air (non-Retina),Silver,Early 2015,Notebook,11,Intel Core i5,Unknown,None,Not Working,75,Incomplete,Used,Yes,No,No,Expired,2019,"Water damage, missing miscellaneous parts"
+MacBook Air (Retina),Gold,2020,Notebook,13,Intel Core i3,8GB,256GB SSD,Working,550,Excellent,Used,No,No,No,Expired,2021,
+MacBook Air (Apple Silicon),Space Gray,2020,Notebook,13,Apple M1,8GB,256GB SSD,Working,800,Excellent ,New,No,No,Yes,Expired,2020,
+MacBook Pro (original),Silver,Early 2006,Notebook,15,Intel Core Duo,Unknown,Unknown,Not Working,20,Good,Used,No,No,No,Expired,2020,"Missing battery, unable to boot"
+MacBook Pro (original),Silver,Early 2006,Notebook,15,Intel Core Duo,2GB,Unknown,Working,75,Fair,Used,No,No,No,Expired,2019,Missing battery
+MacBook Pro (original),Silver,Early 2006,Notebook,15,Intel Core Duo,2GB,100GB,Working,75,Fair,Used,No,No,No,Expired,2019,Missing battery
+MacBook Pro (original),Silver,Early 2006,Notebook,17,Intel Core Duo,2GB,100GB,Working,100,Good,Used,No,No,No,Expired,2020,
+MacBook Pro (original),Silver ,Mid 2007,Notebook,17,Intel Core 2 Duo,Unknown,Unknown,Not Working,75,Good,Used,No,No,No,Expired,2014,"Startup issues, random restarts"
+MacBook Pro (original),Silver,Early 2008,Notebook,15,Intel Core 2 Duo,4GB,200GB,Not Working,50,Good,Used,No,No,No,Expired,2020,Unable to boot
+MacBook Pro (original),Silver,Early 2008,Notebook,15,Intel Core 2 Duo,4GB,200GB,Working,125,Good,Used,No,No,No,Expired,2019,Missing battery
+MacBook Pro (original),Silver,Early 2008,Notebook,15,Intel Core 2 Duo,4GB,200GB,Working,150,Good,Used,No,No,No,Expired,2021,
+MacBook Pro (original),Silver,Early 2008,Notebook,17,Intel Core 2 Duo,2GB,None,Not Working,50,Fair,Used,No,No,No,Expired,2020,Unable to boot
+MacBook Pro (unibody),Silver,Early 2009,Notebook,17,Intel Core 2 Duo,8GB,240GB SSD,Working,350,Good,Used,No,No,No,Expired,2017,
+MacBook Pro (unibody),Silver,Mid 2009,Notebook,13,Intel Core 2 Duo,4GB,250GB,Working,100,Good,Used,No,No,No,Expired,2020,Trackpad clicks require excessive force
+MacBook Pro (unibody),Silver,Mid 2009,Notebook,15,Intel Core 2 Duo,None,None,Not Working,75,Incomplete,Used,Yes,No,No,Expired,2020,"Missing trackpad, unknown issues"
+MacBook Pro (unibody),Silver,Mid 2009,Notebook,15,Intel Core 2 Duo,4GB,None,Not Working,75,Incomplete,Used,Yes,No,No,Expired,2019,"Display issues, unable to power on"
+MacBook Pro (unibody),Silver,Early 2011,Notebook,13,Intel Core i5,None,None,Not Working,40,Incomplete,Used,Yes,No,No,Expired,2020,"Unable to boot, logic board issues, missing miscellaneous parts"
+MacBook Pro (unibody),Silver,Early 2011,Notebook,15,Intel Core i5,4GB,None,Not Working,85,Incomplete,Used,Yes,No,No,Expired,2018,"Graphics issues, missing miscellaneous parts"
+MacBook Pro (unibody),Silver,Early 2011,Notebook,15,Intel Core i5,4GB,None,Not Working,85,Incomplete,Used,Yes,No,No,Expired,2018,"Graphics issues, missing miscellaneous parts"
+MacBook Pro (unibody),Silver,Early 2011,Notebook,15,Intel Core i7,8GB,None,Mostly Working,125,Good,Used,No,No,No,Expired,2018,"Graphics issues, performance issues"
+MacBook Pro (unibody),Silver,Late 2011,Notebook,13,Intel Core i5,4GB,None,Not Working,50,Incomplete,Used,Yes,No,No,Expired,2020,"Display broken off, unable to power on, unknown issues"
+MacBook Pro (unibody),Silver,Late 2011,Notebook,13,Intel Core i5,4GB,500GB,Working,320,Excellent,New,No,No,Yes,Expired,2011,First Mac
+MacBook Pro (unibody),Silver,Late 2011,Notebook,15,Intel Core i7,4GB,None,Not Working,85,Incomplete,Used,Yes,No,No,Expired,2018,"Graphics issues, missing miscellaneous parts"
+MacBook Pro (unibody),Silver,Mid 2012,Notebook,13,Intel Core i5,4GB,None,Not Working,50,Incomplete,Used,Yes,No,No,Expired,2020,"Unable to boot, logic board issues, missing miscellaneous parts"
+MacBook Pro (unibody),Silver,Mid 2012,Notebook,13,Intel Core i5,16GB,128GB SSD,Working,300,Good,Used,No,No,No,Expired,2020,Sleep/wake issues
+MacBook Pro (unibody),Silver,Mid 2012,Notebook,15,Intel Core i7,8GB,None,Not Working,200,Fair,Used,No,No,No,Expired ,2020,"Startup issues, random restarts"
+MacBook Pro (unibody),Silver,Mid 2012,Notebook,15,Intel Core i7,16GB,240GB SSD,Working,500,Excellent,Used,No,No,No,Expired ,2019,FaceTime camera does not work
+MacBook Pro (Retina),Silver,Mid 2012,Notebook,15,Intel Core i7,8GB,256GB SSD,Working,300,Fair,Used,Yes,No,No,Expired,2020,"Cracked display, LCD issues"
+MacBook Pro (Retina),Silver,Late 2013,Notebook,13,Intel Core i5,4GB,128GB SSD,Working,300,Excellent,Used,No,No,No,Expired,2015,
+MacBook Pro (Retina),Silver,Late 2013,Notebook,13,Intel Core i5,4GB,128GB SSD,Working,175,Good,Used,No,No,No,Expired,2020,LCD issues
+MacBook Pro (Retina),Silver,Mid 2014,Notebook,15,Intel Core i7,16GB,512GB SSD,Working,750,Excellent ,New,No,No,Yes,Expired,2015,
+MacBook Pro (Retina),Silver,Early 2015,Notebook,13,Intel Core i5,16GB,256GB SSD,Working,650,Fair,Used,No,No,No,Expired,2020,
+MacBook Pro (Retina),Silver,Mid 2015,Notebook,15,Intel Core i7,16GB,1TB SSD,Working,850,Excellent,Used,No,No,No,Expired,2019,
+"MacBook Pro (Retina, Thunderbolt)",Space Gray,2016,Notebook,15,Intel Core i7,16GB,512GB SSD,Working,1100,Excellent,New,No,No,Yes,Expired,2016,
+"MacBook Pro (Retina, Thunderbolt)",Space Gray,2019,Notebook,16,Intel Core i9,16GB,1TB SSD,Working,2300,Excellent,New,No,No,Yes,AppleCare+,2019,
+MacBook Pro (Apple Silicon),Space Gray,2021,Notebook,16,Apple M1 Max,32GB,2TB SSD,Working,3899,Excellent,New,No,No,Yes,AppleCare+,2021,
+Mac mini (Intel),Silver,Early 2006,Desktop,,Intel Core 2 Duo,Unknown ,Unknown,Working,50,Good,Used,No,No,No,Expired,2019,Processor upgraded
+Mac mini (Intel),Silver,Mid 2007,Desktop,,Intel Core 2 Duo,1GB,80GB,Working,175,New,Unopened,No,No,Yes,Expired,2021,
+Mac mini (Intel),Space Gray,2018,Desktop,,Intel Core i3,8GB,128GB SSD,Working,680,Excellent ,New,No,No,Yes,Expired,2020,
+iMac (Intel),Silver,Early 2009,All-in-one,20,Intel Core 2 Duo,Unknown,320GB,Working,75,Excellent,Used,No,No,Yes,Expired,2012,Located in storage
+iMac Pro,Space Gray,2017,All-in-one,27,Intel Xeon W,32GB,1TB SSD,Working,3000,Excellent,New,No,No,Yes,Expired,2018,
+Macintosh Portable,Platinum,1989,Notebook,9.8,Motorola 68000,Unknown,Unknown,Not Working,450,Excellent,Used,No,No,No,Expired,2021,"Unable to power on, includes original case and manuals"
+Macintosh Classic,Platinum,1990,All-in-one,9,Motorola 68000,Unknown ,Unknown,Working,150,Good,Used,No,No,No,Expired,2013,Located in storage
+iBook G3 (clamshell),Tangerine,1999,Notebook,12,PowerPC G3,Unknown ,3GB,Working,300,Good,Used,No,No,No,Expired,2020,
+iBook G3 (clamshell),Graphite,1999,Notebook,12,PowerPC G3,Unknown ,6GB,Working,300,Good,Used,No,No,No,Expired,2015,
+iBook G3 (clamshell),Indigo,2000,Notebook,12,PowerPC G3,64MB,10GB,Working,350,Good,Used,No,No,No,Expired,2013,
+iBook G3 (clamshell),Key Lime,2000,Notebook,12,PowerPC G3,128MB,20GB,Working,750,Good,Used,No,No,No,Expired,2020,
+iBook G3,White,2001,Notebook,12,PowerPC G3,Unknown ,Unknown ,Not Working,15,Good,Used,No,No,No,Expired,2012,"Display issues, logic board issues"
+iBook G3,White,2001,Notebook,12,PowerPC G3,Unknown ,None,Not Working,15,Good,Used,No,No,No,Expired,2012,"Display issues, logic board issues"
+iBook G3,White,2001,Notebook,12,PowerPC G3,Unknown ,None,Not Working,15,Good,Used,No,No,No,Expired,2013,Display backlight issues
+iBook G3,White,2003,Notebook,12,PowerPC G3,Unknown ,Unknown ,Working,30,Good,Used,No,No,No,Expired,2018,
+iBook G4,White,2004,Notebook,12,PowerPC G4,Unknown ,Unknown ,Working,30,Fair,Used,Yes,No,No,Expired,2013,Display bezel bulging
+iBook G4,White,2004,Notebook,14,PowerPC G4,Unknown ,Unknown ,Working,40,Excellent,Used,No,No,No,Expired,2017,
+iBook G4,White,2005,Notebook,14,PowerPC G4,Unknown ,Unknown ,Working,40,Excellent,Used,No,No,No,Expired,2019,
+PowerBook 3400c,Gray,1997,Notebook,12,PowerPC 600,Unknown,Unknown,Working,100,Excellent,Used,No,No,No,Expired,2020,
+PowerBook G3,Black,1998,Notebook,13,PowerPC G3,Unknown,4GB,Working,100,Good,Used,No,No,No,Expired,2020,
+PowerBook G3,Black,1998,Notebook,14,PowerPC G3,160MB,Unknown,Working,100,Excellent,Used,No,No,No,Expired,2011,
+PowerBook G4 (titanium),Silver,2001,Notebook,15,PowerPC G4,Unknown ,None,Not Working,30,Fair,Used,No,No,No,Expired,2012,"Missing hard drive, various unknown issues"
+PowerBook G4 (titanium),Silver,2001,Notebook,15,PowerPC G4,Unknown ,None,Not Working,30,Fair,Used,No,No,No,Expired,2012,"Missing hard drive, various unknown issues"
+PowerBook G4 (titanium),Silver,2001,Notebook,15,PowerPC G4,500MB,60GB,Working,250,Good,Used,No,No,Yes,Expired,2019,
+PowerBook G4 (titanium),Silver,2002,Notebook,15,PowerPC G4,Unknown ,None,Not Working,30,Poor,Used,Yes,No,No,Expired,2012,"Display loose, missing hard drive, bad LCD"
+PowerBook G4 (titanium),Silver,2002,Notebook,15,PowerPC G4,Unknown,None,Working,75,Good,Used,No,No,No,Expired,2020,Display lines
+PowerBook G4 (titanium),Silver,2002,Notebook,15,PowerPC G4,256MB,60GB,Working,150,Good,Used,No,No,No,Expired,2020,
+PowerBook G4 (titanium),Silver,2002,Notebook,15,PowerPC G4,768MB,60GB,Working,150,Good,Used,No,No,No,Expired,2013,
+PowerBook G4,Silver,2003,Notebook,12,PowerPC G4,Unknown ,Unknown,Working,40,Incomplete,Used,Yes,No,No,Expired,2012,"Missing keys, body damage around charging port"
+PowerBook G4,Silver,2003,Notebook,12,PowerPC G4,1.25GB,120GB,Working,100,Good,Used,No,No,No,Expired,2021,
+PowerBook G4,Silver,2005,Notebook,15,PowerPC G4,Unknown ,60GB,Working,50,Incomplete,Used,Yes,No,No,Expired,2012,Missing RAM door
+PowerBook G4,Silver,2005,Notebook,15,PowerPC G4,Unknown ,100GB,Working,50,Good,Used,No,No,No,Expired,2019,
+PowerBook G4,Silver,2005,Notebook,17,PowerPC G4,512MB,60GB,Working,175,Excellent,Used,No,No,Yes,Expired,2019,
+Mac mini (PowerPC),Silver,2005,Desktop,,PowerPC G4,Unknown,Unknown,Working,25,Good,Used,No,No,No,Expired,2013,
+iMac G4,White,2002,All-in-one,15,PowerPC G4,Unknown,Unknown,Working,125,Good,Used,No,No,No,Expired,2020,
+iMac G4,White,2002,All-in-one,15,PowerPC G4,Unknown,Unknown,Working,125,Good,Used,No,No,No,Expired,2013,Located in storage
+Power Mac G4 Cube,Graphite,2000,Desktop,,PowerPC G4,Unknown,120GB,Working,500,Good,Used,No,No,No,Expired ,2015,
+Power Mac G4 Cube,Graphite,2000,Desktop,,PowerPC G4,Unknown,20GB,Working,500,Good,Used,No,No,No,Expired ,2020,

@@ -1,0 +1,88 @@
+Model,Color,Year Acquired,Estimated Value,Working Status,Condition,Acquired As,Warranty,Physical Damage,Original Box,Storage,Carrier,ESN Status,Carrier Lock Status,Activation Lock,Comments
+iPhone (1st gen.),Black,2013,300,Working,Fair,Used,Expired,No,Yes,4GB,AT&T,Clean,Unlocked,No,Dead pixels
+iPhone (1st gen.),Black,2019,600,Working,Excellent,Used,Expired,No,Yes,8GB,AT&T,Clean,Unlocked,No,
+iPhone (1st gen.),Black,2019,75,Working,Fair,Used,Expired,Yes,No,8GB,AT&T,Clean,Unlocked,No,Cracked screen
+iPhone (1st gen.),Black,2014,50,Working,Poor,Used,Expired,Yes,No,8GB,AT&T,Clean,Unknown,No,Cracked screen
+iPhone (1st gen.),Black,2019,50,Not Working,Poor,Used,Expired,Yes,No,8GB,AT&T,Clean,Unknown,No,"Unable to power on, cracked screen"
+iPhone (1st gen.),Black,2011,50,Not Working,Poor,Used,Expired,Yes,No,8GB,AT&T,Clean,Unknown,No,"Unable to power on, bad battery, cracked screen"
+iPhone (1st gen.),Black,2015,50,Working,Fair,Used,Expired,Yes,No,16GB,AT&T,Clean,Unlocked,No,Broken bottom cover
+iPhone 3G,Black,2015,20,Working,Good,Used,Expired,No,No,8GB,AT&T,Clean,Unlocked,No,
+iPhone 3G,Black,2015,10,Not Working,Good,Used,Expired,No,No,8GB,AT&T,Clean,Unknown,No,Unable to power on 
+iPhone 3GS,Black,2015,20,Working,Good,Used,Expired,No,No,8GB,AT&T,Clean,Unlocked,No,
+iPhone 3GS,Black,2015,10,Not Working,Good,Used,Expired,No,No,8GB,AT&T,Clean,Unknown,No,Unable to power on 
+iPhone 3GS,Black,2015,15,Working,Fair,Used,Expired,Yes,No,8GB,AT&T,Clean,Unknown,No,Cracked screen
+iPhone 3GS,White,2015,20,Working,Excellent,Used,Expired,No,No,16GB,AT&T,Clean,Unlocked,No,
+iPhone 3GS,Black,2021,30,Working,Good,Used,Expired,No,No,32GB,AT&T,Clean,Unlocked,No,
+iPhone 4,Black,2020,15,Working,Good,Used,Expired,No,No,8GB,AT&T,Clean,Unlocked,No,
+iPhone 4,Black,2019,15,Working,Good,Used,Expired,No,No,16GB,AT&T,Unknown,Locked,Yes,"iCloud account attached, not restored"
+iPhone 4,Black,2013,10,Mostly Working,Good,Used,Expired,Yes,No,16GB,Verizon,Unknown,Locked,No,"Unresponsive home button, liquid damage"
+iPhone 4,Black,2011,25,Working,Excellent,New,Expired,No,Yes,16GB,Verizon,Clean,Locked,No,"Unresponsive power button, first iPhone"
+iPhone 4s,Black,2021,10,Not Working,Good,Used,Expired,No,No,16GB,AT&T,Unknown,Unknown,Yes,"Does not power on, unresponsive power button, Find My on but activation lock status unknown"
+iPhone 4s,Black,2015,10,Not Working,Poor,Used,Expired,Yes,No,16GB,Verizon,Unknown,Locked,Yes,Cracked screen
+iPhone 4s,Black,2018,30,Working,Good,Used,Expired,No,No,16GB,AT&T,Clean,Unlocked,No,
+iPhone 4s,White,2011,35,Working,Excellent,New,Expired,No,Yes,32GB,Verizon,Clean ,Unlocked,No,
+iPhone 5,Black & Slate,2015,20,Working,Fair,Used,Expired,No,No,16GB,Sprint,Unknown,Locked,No,
+iPhone 5,Black & Slate,2015,15,Not Working,Incomplete,Used,Expired,Yes,No,16GB,Unknown,Unknown,Unknown,No,"Missing display, home button"
+iPhone 5,Black & Slate,2016,30,Working,Excellent,Used,Expired,No,No,32GB,Sprint,Unknown,Locked,No,
+iPhone 5,Black & Slate,2019,75,Working,Excellent,Used,Expired,No,Yes,32GB,Verizon,Clean,Unlocked,No,
+iPhone 5,White & Silver,2012,50,Working,Excellent,New,Expired,No,Yes,64GB,Verizon,Clean,Unlocked,No,
+iPhone 5c,White,2014,15,Working,Poor,Used,Expired,Yes,No,16GB,Sprint,Bad,Locked,No,Cracked screen
+iPhone 5c,Green,2018,15,Not Working,Poor,Used,Expired,Yes,No,16GB,Unknown,Unknown,Unknown,Yes,Cracked screen
+iPhone 5c,Yellow,2014,15,Working,Good,Used,Expired,No,No,16GB,Sprint,Bad,Locked,No,Screen issues
+iPhone 5c,Pink,2020,25,Working,Good,Used,Expired,No,No,32GB,AT&T,Clean,Unlocked,No,
+iPhone 5s,Silver,2019,15,Not Working,Fair,Used,Expired,No,No,16GB,Sprint,Unknown,Locked,No,
+iPhone 5s,Silver,2019,15,Not Working,Fair,Used,Expired,No,No,16GB,Unknown,Unknown,Unknown,Yes,Unable to power on
+iPhone 5s,Gold,2014,15,Not Working,Good,Used,Expired,No,No,16GB,Sprint,Bad,Locked,No,Unable to power on - display/logic board issues
+iPhone 5s,Gold,2014,15,Not Working,Good,Used,Expired,No,No,16GB,Sprint,Bad,Locked,Yes,
+iPhone 5s,Space Gray,2014,15,Not Working,Good,Used,Expired,No,No,16GB,Unknown,Unknown,Unknown,No,Boot loop - unable to restore
+iPhone 5s,Space Gray,2014,15,Mostly Working,Fair,Used,Expired,No,No,16GB,T-Mobile,Unknown,Locked,Yes,Activation lock bypassed
+iPhone 5s,Space Gray,2013,40,Working,Good,New,Expired,No,Yes,64GB,Verizon,Clean,Unlocked,No,
+iPhone 6,Space Gray,2020,45,Working,Excellent,New,Expired,No,Yes,16GB,Total Wireless,Clean,Locked,No,
+iPhone 6,Space Gray,2017,20,Not Working,Fair,Used,Expired,No,No,16GB,Verizon,Clean,Unlocked,No,Unable to power on
+iPhone 6 Plus,Gold,2021,25,Mostly Working,Good,Used,Expired,No,No,16GB,Sprint,Unknown,Unknown,Yes,
+iPhone 6 Plus,Gold,2014,75,Working,Good,Used,Expired,No,No,16GB,Sprint,Bad ,Locked,No,
+iPhone 6 Plus,Gold,2017,100,Working,Excellent,Used,Expired,No,Yes,16GB,Verizon,Clean ,Unlocked,No,
+iPhone 6 Plus,Silver,2014,100,Working,Excellent,Used,Expired,No,Yes,16GB,Verizon,Clean,Unlocked,No,
+iPhone 6s,Space Gray,2018,25,Not Working,Poor,Used,Expired,Yes,No,16GB,Unknown,Unknown,Unknown,Yes,"Unable to power on, missing home button, cracked screen"
+iPhone 6s,Rose Gold,2015,100,Working,Good,Used,Expired,No,No,16GB,T-Mobile,Clean ,Unlocked,No,
+iPhone 6s Plus,Gold,2020,120,Working,Good,Used,Expired,No,Yes,64GB,AT&T,Clean,Unlocked,No,"Headphone jack, silent switch stuck"
+iPhone 6s Plus,Space Gray,2015,175,Working,Excellent,New,Expired,No,Yes,128GB,Verizon,Clean,Unlocked,No,
+iPhone SE (1st gen.),Space Gray,2019,15,Not Working,Good,Used,Expired,No,Yes,16GB,T-Mobile,Clean,Unknown,Yes,
+iPhone SE (1st gen.),Rose Gold,2016,40,Working,Excellent,New,Expired,No,Yes,16GB,Verizon,Clean,Unlocked,No,
+iPhone SE (1st gen.),Rose Gold,2020,15,Not Working,Poor,Used,Expired,Yes,No,32GB,Unknown,Unknown,Unlocked,Yes,Cracked screen
+iPhone SE (1st gen.),Rose Gold,2020,15,Not Working,Incomplete,Used,Expired,Yes,No,32GB,Unknown,Unknown,Unknown,Yes,Missing earpiece and front-facing camera
+iPhone SE (1st gen.),Gold,2017,40,Working,Excellent ,New,Expired,No,Yes,32GB,Simple Mobile,Clean,Locked,No,
+iPhone 7,Silver,2021,50,Mostly Working,Good,Used,Expired,No,No,32GB,Unknown,Unknown,Unknown,Yes,Activation lock bypassed
+iPhone 7,Black,2018,40,Not Working,Incomplete,Used,Expired,Yes,No,32GB,Unknown,Unknown,Unknown,Yes,Missing display
+iPhone 7,Black,2020,40,Not Working,Incomplete,Used,Expired,Yes,No,32GB,Unknown,Unknown,Unknown,Yes,Missing display
+iPhone 7,Jet Black,2020,45,Mostly Working,Fair,Used,Expired,No,No,128GB,Sprint,Unknown,Locked,Yes,"Activation lock bypassed, home button Not Working"
+iPhone 7,(PRODUCT)RED,2020,60,Mostly Working,Good,Used,Expired,No,No,128GB,Unknown,Unknown,Unknown,Yes,Activation lock bypassed
+iPhone 7,(PRODUCT)RED,2019,145,Working,Good,Used,Expired,No,No,128GB,Unknown,Clean,Unlocked,No,
+iPhone 7 Plus,Jet Black,2020,80,Mostly Working,Good,Used,Expired,No,No,128GB,Unknown,Unknown,Unknown,Yes,Activation lock bypassed
+iPhone 7 Plus,(PRODUCT)RED,2019,80,Mostly Working,Good,Used,Expired,No,No,256GB,Unknown,Unknown,Unknown,Yes,Activation lock bypassed
+iPhone 7 Plus,Black,2016,250,Working,Excellent,New,Expired,No,Yes,256GB,Verizon,Clean,Unlocked,No,
+iPhone 8,Gold,2020,50,Not Working,Good ,Used,Expired,Yes,No,64GB,Unknown,Unknown,Unknown,No,"Unable to power on, liquid damage, cracked rear glass"
+iPhone 8,Gold,2019,50,Not Working,Incomplete,Used,Expired,Yes,No,64GB,Unknown ,Unknown,Unknown,No,"Logic board issues, missing display, cracked rear glass"
+iPhone 8,Gold,2020,85,Mostly Working,Excellent,Used,Expired,No,No,64GB,AT&T,Unknown,Unknown,Yes,Activation lock bypassed
+iPhone 8 Plus,Silver,2019,100,Mostly Working,Good,Used,Expired,No,No,64GB,Unknown,Unknown,Unknown,Yes,"Activation lock bypassed, home button Not Working"
+iPhone 8 Plus,Gold,2021,250,Working,Excellent,Used,Expired,No,No,64GB,AT&T,Bad,Locked,No,
+iPhone 8 Plus,Space Gray,2021,250,Working,Good,Used,Expired,No,No,64GB,AT&T,Clean,Unlocked,No,
+iPhone 8 Plus,Space Gray,2019,250,Working,Good,Used,Expired,No,Yes,64GB,AT&T,Clean,Unlocked,No,
+iPhone 8 Plus,PRODUCT(RED),2021,250,Working,Excellent,Used,Expired,No,Yes,64GB,AT&T,Clean,Unlocked,No,
+iPhone X,Silver,2020,75,Not Working,Incomplete,Used,Expired,Yes,No,64GB,Unknown,Unknown,Unknown,Yes,Missing display
+iPhone X,Silver,2020,75,Not Working,Poor,Used,Expired,Yes,No,64GB,Unknown,Unknown,Unknown,Yes,"Passcode locked, cracked rear glass"
+iPhone X,Silver,2018,300,Working,Good,Used,Expired,No,No,64GB,AT&T,Clean,Unlocked,No,
+iPhone X,Space Gray,2020,125,Not Working,Incomplete,Used,Expired,Yes,No,64GB,Unknown,Unknown,Unknown,Yes,"Missing display, SIM tray"
+iPhone X,Space Gray,2020,125,Mostly Working ,Fair,Used,Expired,No,No,256GB,Unknown,Unknown,Unknown,Yes,"Activation lock bypassed, Face ID Not Working"
+iPhone X,Space Gray,2017,350,Working,Excellent,New,Expired,No,Yes,256GB,Verizon ,Clean,Unlocked,No,
+iPhone XR,Black,2021,50,Mostly Working,Poor,Used,Expired,Yes,No,64GB,Unknown,Unknown,Unknown,Yes,"Cracked screen, cracked rear glass, LCD issues, device originally blue"
+iPhone XR,Blue,2021,175,Working,Good,Used,Expired,No,No,128GB,T-Mobile,Bad,Locked,No,"Face ID issues, device originally black, serial number replaced"
+iPhone XR,Coral,2019,330,Working,Excellent,Used,Expired,No,No,128GB,AT&T,Clean,Unlocked,No,
+iPhone XS Max,Space Gray,2018,750,Working,Excellent,New,Expired,No,Yes,512GB,SIM-free,Clean,Unlocked,No,
+iPhone 11,(PRODUCT)RED,2019,725,Working,Excellent,Used,Expired,No,No,256GB,AT&T,Clean,Unlocked,No,
+iPhone 11 Pro Max,Midnight Green,2019,1100,Working,Excellent,New,Expired,No,Yes,512GB,SIM-free,Clean,Unlocked,No,
+iPhone SE (2nd gen.),Black,2021,100,Mostly Working,Fair,Used,Limited Warranty,Yes,No,64GB,Unknown,Unknown,Unknown,Yes,"Disabled (Find my iPhone on), cracked screen"
+iPhone 12 mini,Blue,2021,625,Working,Excellent,Used,Expired,No,No,64GB,T-Mobile,Clean,Unlocked,No,
+iPhone 12,White,2021,100,Not Working,Poor,Used,Limited Warranty,Yes,No,Unknown,Unknown,Unknown,Unknown,Yes,"Does not power on, cracked screen, cracked rear glass"
+iPhone 12 Pro Max,Pacific Blue,2020,1200,Working,Excellent,New,Limited Warranty,No,Yes,512GB,SIM-free,Clean,Unlocked,No,
+iPhone 13 Pro Max,Graphite,2021,1599,Working,Excellent,New,AppleCare+,No,Yes,1TB,SIM-free,Clean,Unlocked,No,
