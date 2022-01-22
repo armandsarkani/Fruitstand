@@ -24,8 +24,6 @@ class CollectionModel: ObservableObject {
     @Published var iCloudStatus: Bool = false
     init()
     {
-        loadCollection(count: 0)
-        loadModelList()
         checkiCloudStatus()
         if(iCloudStatus)
         {
@@ -118,40 +116,35 @@ class CollectionModel: ObservableObject {
         collection = [DeviceType.iPhone: [], DeviceType.iPad: [], DeviceType.Mac: [], DeviceType.AppleWatch: [], DeviceType.AirPods: [], DeviceType.AppleTV: [], DeviceType.iPod: []]
         collectionArray = []
         collectionSize = 0
+        var dictionary: [String: Any]
         var UUIDArray: [String]
         if(iCloudStatus)
         {
             NSUbiquitousKeyValueStore.default.set(false, forKey: "_UIConstraintBasedLayoutLogUnsatisfiable")
             UUIDArray = NSUbiquitousKeyValueStore.default.object(forKey: "uuidArray") as? [String] ?? []
+            dictionary = NSUbiquitousKeyValueStore.default.dictionaryRepresentation
         }
         else
         {
             UserDefaults.standard.set(false, forKey: "_UIConstraintBasedLayoutLogUnsatisfiable")
             UUIDArray = UserDefaults.standard.object(forKey: "uuidArray") as? [String] ?? []
+            dictionary = UserDefaults.standard.dictionaryRepresentation()
         }
         // Loads entire collection from UserDefaults into memory
         for uuid in UUIDArray
         {
-            var product: ProductInfo
-            if(iCloudStatus)
+            if(dictionary[uuid] != nil)
             {
-                product = NSUbiquitousKeyValueStore.default.getCodableObject(dataType: ProductInfo.self, key: uuid) ?? ProductInfo(model: "nil")
-            }
-            else
-            {
-                product = UserDefaults.standard.getCodableObject(dataType: ProductInfo.self, key: uuid) ?? ProductInfo(model: "nil")
-            }
-            if(product.model != "nil")
-            {
+                var product: ProductInfo
+                product = try! JSONDecoder().decode(ProductInfo.self, from: dictionary[uuid] as! Data)
                 collection[product.type ?? DeviceType.Mac]!.append(product)
                 collectionArray.append(product)
                 collectionSize += 1
             }
             else
             {
-                print("UUID not found.")
+                print("UUID not found!")
             }
-            
         }
         loadModelList()
     }

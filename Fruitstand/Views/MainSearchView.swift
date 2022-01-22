@@ -37,7 +37,6 @@ struct MainSearchView: View {
             return "\(searchResults.count) Results"
         }
     }
-    // Get edit/delete working refresh this view
     var body: some View {
         if(!searchText.isEmpty)
         {
@@ -47,21 +46,30 @@ struct MainSearchView: View {
                     Image(systemName: (icons[filter] ?? "circle.hexagongrid"))
                 }
             }
-            .pickerStyle(.segmented)
-            #if targetEnvironment(macCatalyst)
-            .frame(maxWidth: (UIScreen.main.bounds.width * 0.35))
-            #else
-            .frame(maxWidth: (UIDevice.current.model.hasPrefix("iPad") ? (UIScreen.main.bounds.width * 0.6): (UIScreen.main.bounds.width * 0.9)))
-            #endif
-            Spacer()
+            .if(UIDevice.current.model.hasPrefix("iPhone"))
+            {
+                $0.frame(maxWidth: (UIScreen.main.bounds.width * 0.9))
+            }
 
+            .if(UIDevice.current.model.hasPrefix("iPad"))
+            {
+                $0.scaleEffect(0.9)
+            }
+            .scaledToFit()
+            .pickerStyle(.segmented)
+//            #if targetEnvironment(macCatalyst)
+//            .frame(maxWidth: (UIScreen.main.bounds.width * 0.35))
+//            #else
+//            .frame(maxWidth: (UIDevice.current.model.hasPrefix("iPad") ? (UIScreen.main.bounds.width * 0.6): (UIScreen.main.bounds.width * 0.9)))
+//            #endif
+            Spacer()
         }
         Form
         {
             if(!searchText.isEmpty)
             {
                 Section(header: Text(resultsText).fontWeight(.medium).font(.title3).textCase(nil)) {}
-                .listRowInsets(EdgeInsets(top: 20, leading: 7, bottom: -500, trailing: 200))
+                .listRowInsets(EdgeInsets(top: 15, leading: 7, bottom: -1000, trailing: 0))
             }
             if(searchText.isEmpty)
             {
@@ -88,6 +96,7 @@ struct MainSearchView: View {
                 }
             }
         }
+        .environment(\.defaultMinListHeaderHeight, 20)
         .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .always), prompt: "Search all products ").autocapitalization(.none)
         .navigationTitle("Search")
         .navigationBarTitleDisplayMode(.large)

@@ -13,15 +13,15 @@
 		16022E0F2652F8720098BD95 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 16022E0E2652F8720098BD95 /* Preview Assets.xcassets */; };
 		162C058D279794FE006FDA48 /* CollectionStatistics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 162C058C279794FE006FDA48 /* CollectionStatistics.swift */; };
 		1690B4902790197900CFAD06 /* AddProductView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1690B48F2790197900CFAD06 /* AddProductView.swift */; };
-		169A919627924B2500AC9088 /* CloudUserDefaults in Frameworks */ = {isa = PBXBuildFile; productRef = 169A919527924B2500AC9088 /* CloudUserDefaults */; };
 		169A919827924FEF00AC9088 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 169A919727924FEF00AC9088 /* AppDelegate.swift */; };
+		169ED968279BCAAD00C1CFDA /* FruitstandUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 169ED967279BCAAD00C1CFDA /* FruitstandUITests.swift */; };
+		169ED96A279BCAAD00C1CFDA /* FruitstandUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 169ED969279BCAAD00C1CFDA /* FruitstandUITestsLaunchTests.swift */; };
 		16B2D1DD278A3EB7006242BC /* ProductInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16B2D1DC278A3EB7006242BC /* ProductInfo.swift */; };
 		16B2D1E1278A5289006242BC /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 16B2D1E0278A5289006242BC /* CloudKit.framework */; };
 		16B2D1E3278A6A35006242BC /* ProductAtttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16B2D1E2278A6A35006242BC /* ProductAtttributes.swift */; };
 		16B333D02652F8B1003E4BCE /* ProductView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16B333CF2652F8B1003E4BCE /* ProductView.swift */; };
 		16C5AE0A2792163B00C837F4 /* SampleCollection in Resources */ = {isa = PBXBuildFile; fileRef = 16C5AE092792163B00C837F4 /* SampleCollection */; };
 		16C5AE0E27922D1200C837F4 /* SwiftCSV in Frameworks */ = {isa = PBXBuildFile; productRef = 16C5AE0D27922D1200C837F4 /* SwiftCSV */; };
-		16C5AE1127922D5500C837F4 /* Zephyr in Frameworks */ = {isa = PBXBuildFile; productRef = 16C5AE1027922D5500C837F4 /* Zephyr */; };
 		16F1CF10279B5EFD0094CE89 /* ProductListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16F1CF0F279B5EFD0094CE89 /* ProductListView.swift */; };
 		16F1CF12279B5F2F0094CE89 /* ValuesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16F1CF11279B5F2F0094CE89 /* ValuesView.swift */; };
 		16F1CF14279B5F490094CE89 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16F1CF13279B5F490094CE89 /* SettingsView.swift */; };
@@ -29,6 +29,16 @@
 		16FC8BC92798C8CC00EA6A64 /* CollectionModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16FC8BC82798C8CC00EA6A64 /* CollectionModel.swift */; };
 		16FC8BCB2798F9AF00EA6A64 /* SampleCollectionLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16FC8BCA2798F9AF00EA6A64 /* SampleCollectionLoader.swift */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		169ED96B279BCAAD00C1CFDA /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 16022DFC2652F8710098BD95 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 16022E032652F8710098BD95;
+			remoteInfo = Fruitstand;
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		16022E042652F8710098BD95 /* Fruitstand.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Fruitstand.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -40,6 +50,9 @@
 		162C058C279794FE006FDA48 /* CollectionStatistics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionStatistics.swift; sourceTree = "<group>"; };
 		1690B48F2790197900CFAD06 /* AddProductView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddProductView.swift; sourceTree = "<group>"; };
 		169A919727924FEF00AC9088 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		169ED965279BCAAD00C1CFDA /* FruitstandUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FruitstandUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		169ED967279BCAAD00C1CFDA /* FruitstandUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FruitstandUITests.swift; sourceTree = "<group>"; };
+		169ED969279BCAAD00C1CFDA /* FruitstandUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FruitstandUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		16B2D1DC278A3EB7006242BC /* ProductInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductInfo.swift; sourceTree = "<group>"; };
 		16B2D1DE278A5277006242BC /* Fruitstand.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Fruitstand.entitlements; sourceTree = "<group>"; };
 		16B2D1E0278A5289006242BC /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
@@ -60,9 +73,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				16B2D1E1278A5289006242BC /* CloudKit.framework in Frameworks */,
-				16C5AE1127922D5500C837F4 /* Zephyr in Frameworks */,
 				16C5AE0E27922D1200C837F4 /* SwiftCSV in Frameworks */,
-				169A919627924B2500AC9088 /* CloudUserDefaults in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		169ED962279BCAAD00C1CFDA /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -74,6 +92,7 @@
 			children = (
 				16C5AE092792163B00C837F4 /* SampleCollection */,
 				16022E062652F8710098BD95 /* Fruitstand */,
+				169ED966279BCAAD00C1CFDA /* FruitstandUITests */,
 				16022E052652F8710098BD95 /* Products */,
 				16B2D1DF278A5289006242BC /* Frameworks */,
 			);
@@ -83,6 +102,7 @@
 			isa = PBXGroup;
 			children = (
 				16022E042652F8710098BD95 /* Fruitstand.app */,
+				169ED965279BCAAD00C1CFDA /* FruitstandUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -112,6 +132,15 @@
 				16022E0E2652F8720098BD95 /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		169ED966279BCAAD00C1CFDA /* FruitstandUITests */ = {
+			isa = PBXGroup;
+			children = (
+				169ED967279BCAAD00C1CFDA /* FruitstandUITests.swift */,
+				169ED969279BCAAD00C1CFDA /* FruitstandUITestsLaunchTests.swift */,
+			);
+			path = FruitstandUITests;
 			sourceTree = "<group>";
 		};
 		16B2D1DF278A5289006242BC /* Frameworks */ = {
@@ -154,12 +183,28 @@
 			name = Fruitstand;
 			packageProductDependencies = (
 				16C5AE0D27922D1200C837F4 /* SwiftCSV */,
-				16C5AE1027922D5500C837F4 /* Zephyr */,
-				169A919527924B2500AC9088 /* CloudUserDefaults */,
 			);
 			productName = Fruitstand;
 			productReference = 16022E042652F8710098BD95 /* Fruitstand.app */;
 			productType = "com.apple.product-type.application";
+		};
+		169ED964279BCAAD00C1CFDA /* FruitstandUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 169ED96F279BCAAD00C1CFDA /* Build configuration list for PBXNativeTarget "FruitstandUITests" */;
+			buildPhases = (
+				169ED961279BCAAD00C1CFDA /* Sources */,
+				169ED962279BCAAD00C1CFDA /* Frameworks */,
+				169ED963279BCAAD00C1CFDA /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				169ED96C279BCAAD00C1CFDA /* PBXTargetDependency */,
+			);
+			name = FruitstandUITests;
+			productName = FruitstandUITests;
+			productReference = 169ED965279BCAAD00C1CFDA /* FruitstandUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 /* End PBXNativeTarget section */
 
@@ -167,11 +212,15 @@
 		16022DFC2652F8710098BD95 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 1250;
+				LastSwiftUpdateCheck = 1320;
 				LastUpgradeCheck = 1250;
 				TargetAttributes = {
 					16022E032652F8710098BD95 = {
 						CreatedOnToolsVersion = 12.5;
+					};
+					169ED964279BCAAD00C1CFDA = {
+						CreatedOnToolsVersion = 13.2.1;
+						TestTargetID = 16022E032652F8710098BD95;
 					};
 				};
 			};
@@ -186,14 +235,13 @@
 			mainGroup = 16022DFB2652F8710098BD95;
 			packageReferences = (
 				16C5AE0C27922D1200C837F4 /* XCRemoteSwiftPackageReference "SwiftCSV" */,
-				16C5AE0F27922D5500C837F4 /* XCRemoteSwiftPackageReference "Zephyr" */,
-				169A919427924B2500AC9088 /* XCRemoteSwiftPackageReference "CloudUserDefaults" */,
 			);
 			productRefGroup = 16022E052652F8710098BD95 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
 				16022E032652F8710098BD95 /* Fruitstand */,
+				169ED964279BCAAD00C1CFDA /* FruitstandUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -206,6 +254,13 @@
 				16022E0F2652F8720098BD95 /* Preview Assets.xcassets in Resources */,
 				16022E0C2652F8720098BD95 /* Assets.xcassets in Resources */,
 				16C5AE0A2792163B00C837F4 /* SampleCollection in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		169ED963279BCAAD00C1CFDA /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -233,7 +288,24 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		169ED961279BCAAD00C1CFDA /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				169ED96A279BCAAD00C1CFDA /* FruitstandUITestsLaunchTests.swift in Sources */,
+				169ED968279BCAAD00C1CFDA /* FruitstandUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		169ED96C279BCAAD00C1CFDA /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 16022E032652F8710098BD95 /* Fruitstand */;
+			targetProxy = 169ED96B279BCAAD00C1CFDA /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		16022E112652F8720098BD95 /* Debug */ = {
@@ -361,7 +433,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 2320;
+				CURRENT_PROJECT_VERSION = 2321;
 				DEVELOPMENT_ASSET_PATHS = "\"Fruitstand/Preview Content\"";
 				DEVELOPMENT_TEAM = 86LR2G8L2C;
 				ENABLE_PREVIEWS = YES;
@@ -392,7 +464,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 2320;
+				CURRENT_PROJECT_VERSION = 2321;
 				DEVELOPMENT_ASSET_PATHS = "\"Fruitstand/Preview Content\"";
 				DEVELOPMENT_TEAM = 86LR2G8L2C;
 				ENABLE_PREVIEWS = YES;
@@ -411,6 +483,44 @@
 				SUPPORTS_MACCATALYST = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		169ED96D279BCAAD00C1CFDA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 86LR2G8L2C;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.2;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = Armand.FruitstandUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = Fruitstand;
+			};
+			name = Debug;
+		};
+		169ED96E279BCAAD00C1CFDA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 86LR2G8L2C;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.2;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = Armand.FruitstandUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = Fruitstand;
 			};
 			name = Release;
 		};
@@ -435,17 +545,18 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
+		169ED96F279BCAAD00C1CFDA /* Build configuration list for PBXNativeTarget "FruitstandUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				169ED96D279BCAAD00C1CFDA /* Debug */,
+				169ED96E279BCAAD00C1CFDA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		169A919427924B2500AC9088 /* XCRemoteSwiftPackageReference "CloudUserDefaults" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/nbasham/CloudUserDefaults";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.0.0;
-			};
-		};
 		16C5AE0C27922D1200C837F4 /* XCRemoteSwiftPackageReference "SwiftCSV" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/swiftcsv/SwiftCSV";
@@ -454,31 +565,13 @@
 				minimumVersion = 0.6.1;
 			};
 		};
-		16C5AE0F27922D5500C837F4 /* XCRemoteSwiftPackageReference "Zephyr" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/ArtSabintsev/Zephyr";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 3.0.0;
-			};
-		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		169A919527924B2500AC9088 /* CloudUserDefaults */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 169A919427924B2500AC9088 /* XCRemoteSwiftPackageReference "CloudUserDefaults" */;
-			productName = CloudUserDefaults;
-		};
 		16C5AE0D27922D1200C837F4 /* SwiftCSV */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 16C5AE0C27922D1200C837F4 /* XCRemoteSwiftPackageReference "SwiftCSV" */;
 			productName = SwiftCSV;
-		};
-		16C5AE1027922D5500C837F4 /* Zephyr */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 16C5AE0F27922D5500C837F4 /* XCRemoteSwiftPackageReference "Zephyr" */;
-			productName = Zephyr;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

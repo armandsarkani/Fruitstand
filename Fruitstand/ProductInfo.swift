@@ -50,6 +50,23 @@ extension NSUbiquitousKeyValueStore
   }
 }
 
+extension String {
+    func fuzzyMatch(_ needle: String) -> Bool {
+        if needle.isEmpty { return true }
+        var remainder = needle[...]
+        for char in self {
+            if char == remainder[remainder.startIndex] {
+                remainder.removeFirst()
+                if remainder.isEmpty { return true }
+            }
+        }
+        return false
+    }
+    func smartContains(_ other: String) -> Bool {
+        let array : [String] = other.lowercased().components(separatedBy: " ").filter { !$0.isEmpty }
+        return array.reduce(true) { !$0 ? false : (self.lowercased().range(of: $1) != nil ) }
+    }
+}
 
 struct ProductInfo: Codable, Hashable
 {
@@ -114,7 +131,7 @@ struct ProductInfo: Codable, Hashable
     func contains(searchText: String) -> Bool
     {
         let lowercaseSearchText = searchText.lowercased()
-        if(model!.lowercased().contains(lowercaseSearchText) || (otherModel ?? "").lowercased().contains(lowercaseSearchText) || color!.lowercased().contains(lowercaseSearchText) || (comments ?? "").lowercased().contains(lowercaseSearchText) || (warranty ?? Warranty.Expired).rawValue.lowercased().contains(lowercaseSearchText) || (year ?? "").lowercased().contains(lowercaseSearchText) || String(yearAcquired!).lowercased().contains(lowercaseSearchText) || (processor ?? "").lowercased().contains(lowercaseSearchText) || (connectivity ?? iPadConnectivity.WiFi).rawValue.lowercased().contains(lowercaseSearchText) || (watchConnectivity ?? WatchConnectivity.GPS).rawValue.lowercased().contains(lowercaseSearchText) || (caseType ?? WatchCaseType.Aluminum).rawValue.lowercased().contains(lowercaseSearchText) || (APCaseType ?? AirPodsCaseType.Wired).rawValue.lowercased().contains(lowercaseSearchText) || (storage ?? "").lowercased().contains(lowercaseSearchText) || String(caseSize ?? 0).lowercased().contains(lowercaseSearchText) || String(screenSize ?? 0).lowercased().contains(lowercaseSearchText) || getCommonName(product: self).lowercased().contains(lowercaseSearchText))
+        if(color!.lowercased().contains(lowercaseSearchText) || (comments ?? "").lowercased().contains(lowercaseSearchText) || (warranty ?? Warranty.Expired).rawValue.lowercased().contains(lowercaseSearchText) || String(yearAcquired!).lowercased().contains(lowercaseSearchText) || (processor ?? "").lowercased().contains(lowercaseSearchText) || (storage ?? "").lowercased().contains(lowercaseSearchText) || getCommonName(product: self).lowercased().smartContains(lowercaseSearchText))
         {
             return true
         }
