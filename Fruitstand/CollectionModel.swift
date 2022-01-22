@@ -24,9 +24,16 @@ class CollectionModel: ObservableObject {
     @Published var iCloudStatus: Bool = false
     init()
     {
-        loadCollection()
+        loadCollection(count: 0)
         loadModelList()
         checkiCloudStatus()
+        if(iCloudStatus)
+        {
+            NotificationCenter.default.addObserver(self,
+                selector: #selector(CollectionModel.ubiquitousKeyValueStoreDidChange),
+                name: NSUbiquitousKeyValueStore.didChangeExternallyNotification,
+                object: NSUbiquitousKeyValueStore.default)
+        }
     }
     func saveOneProduct(product: inout ProductInfo)
     {
@@ -96,8 +103,18 @@ class CollectionModel: ObservableObject {
             userDefaults.synchronize()
         }
     }
-    func loadCollection()
+    @objc func ubiquitousKeyValueStoreDidChange(notification: NSNotification) {
+        print("iCloud Sync Update Received")
+        DispatchQueue.main.async {
+            self.loadCollection(count: 0)
+        }
+    }
+    func loadCollection(count: Int)
     {
+        if(count > 1)
+        {
+            return
+        }
         collection = [DeviceType.iPhone: [], DeviceType.iPad: [], DeviceType.Mac: [], DeviceType.AppleWatch: [], DeviceType.AirPods: [], DeviceType.AppleTV: [], DeviceType.iPod: []]
         collectionArray = []
         collectionSize = 0

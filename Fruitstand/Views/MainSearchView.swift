@@ -47,8 +47,12 @@ struct MainSearchView: View {
                     Image(systemName: (icons[filter] ?? "circle.hexagongrid"))
                 }
             }
-            .frame(width: (UIDevice.current.model.hasPrefix("iPhone") ? 390: 500))
             .pickerStyle(.segmented)
+            #if targetEnvironment(macCatalyst)
+            .frame(maxWidth: (UIScreen.main.bounds.width * 0.35))
+            #else
+            .frame(maxWidth: (UIDevice.current.model.hasPrefix("iPad") ? (UIScreen.main.bounds.width * 0.6): (UIScreen.main.bounds.width * 0.9)))
+            #endif
             Spacer()
 
         }
@@ -64,10 +68,10 @@ struct MainSearchView: View {
                 Section("Suggestions")
                 {
                     ForEach(suggestions.choose(4), id: \.self) { suggestion in
-                        Button(action: {searchText = suggestion})
+                        Button(action: {generator.notificationOccurred(.success); searchText = suggestion})
                         {
                             Label{Text(suggestion).foregroundColor(.primary)} icon: {Image(systemName: "arrow.up.right")}
-                               
+                            
                         }
                     }
                 }

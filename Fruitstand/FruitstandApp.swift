@@ -9,10 +9,11 @@ import SwiftUI
 
 @main
 struct FruitstandApp: App {
+    @StateObject var collectionModel: CollectionModel = CollectionModel()
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            ContentView().environmentObject(collectionModel)
                 .withHostingWindow { window in
                     #if targetEnvironment(macCatalyst)
                     if let titlebar = window?.windowScene?.titlebar {

@@ -93,12 +93,12 @@
 				16B2D1DE278A5277006242BC /* Fruitstand.entitlements */,
 				16F1CF19279B60750094CE89 /* Views */,
 				16022E072652F8710098BD95 /* FruitstandApp.swift */,
-				162C058C279794FE006FDA48 /* CollectionStatistics.swift */,
-				16B2D1DC278A3EB7006242BC /* ProductInfo.swift */,
-				16B2D1E2278A6A35006242BC /* ProductAtttributes.swift */,
-				16FC8BCA2798F9AF00EA6A64 /* SampleCollectionLoader.swift */,
 				169A919727924FEF00AC9088 /* AppDelegate.swift */,
 				16FC8BC82798C8CC00EA6A64 /* CollectionModel.swift */,
+				16B2D1DC278A3EB7006242BC /* ProductInfo.swift */,
+				16B2D1E2278A6A35006242BC /* ProductAtttributes.swift */,
+				162C058C279794FE006FDA48 /* CollectionStatistics.swift */,
+				16FC8BCA2798F9AF00EA6A64 /* SampleCollectionLoader.swift */,
 				16022E0B2652F8720098BD95 /* Assets.xcassets */,
 				16022E102652F8720098BD95 /* Info.plist */,
 				16022E0D2652F8720098BD95 /* Preview Content */,
@@ -361,7 +361,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 2300;
+				CURRENT_PROJECT_VERSION = 2320;
 				DEVELOPMENT_ASSET_PATHS = "\"Fruitstand/Preview Content\"";
 				DEVELOPMENT_TEAM = 86LR2G8L2C;
 				ENABLE_PREVIEWS = YES;
@@ -392,7 +392,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 2300;
+				CURRENT_PROJECT_VERSION = 2320;
 				DEVELOPMENT_ASSET_PATHS = "\"Fruitstand/Preview Content\"";
 				DEVELOPMENT_TEAM = 86LR2G8L2C;
 				ENABLE_PREVIEWS = YES;

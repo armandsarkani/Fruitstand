@@ -26,7 +26,8 @@ extension View {
 struct ContentView: View {
     @State var showInfoModalView: Bool = false
     @State var showSettingsModalView: Bool = false
-    @StateObject var collectionModel: CollectionModel = CollectionModel()
+    @State var count = 1
+    @EnvironmentObject var collectionModel: CollectionModel
     @Environment(\.isPresented) var presentation
     var body: some View {
         NavigationView {
@@ -81,15 +82,25 @@ struct ContentView: View {
                                 .imageScale(.large)
                                 .frame(height: 96, alignment: .trailing)
                         }
+                        .keyboardShortcut("f", modifiers: .command)
                         Button(action: {generator.notificationOccurred(.success); showInfoModalView.toggle()
                             }) {
                                 Image(systemName: "plus")
                                     .imageScale(.large)
                                     .frame(height: 96, alignment: .trailing)
                             }
+                            #if targetEnvironment(macCatalyst)
+                            .keyboardShortcut("a", modifiers: .command)
+                            #else
+                            .keyboardShortcut("+", modifiers: .command)
+                            #endif
+
                         })
+
+
             .onAppear {
-                collectionModel.loadCollection()
+                collectionModel.loadCollection(count: count)
+                count += 1
             }
             
         }
