@@ -36,26 +36,26 @@ struct ValuesView: View {
                 }
                Section("Total Value By Device Type")
                 {
-                    ForEach(DeviceType.allCases, id: \.self) { key in
+                    ForEach(getDeviceTypeValuesSorted(collection: collectionModel.collection), id: \.self) { element in
                         HStack
                         {
-                            Label(key.id, systemImage: icons[key.id]!)
+                            Label(element.deviceType.id, systemImage: icons[element.deviceType.id]!)
                                 .fixedSize()
                             Spacer()
-                            Text(String(format: "$%d", locale: Locale.current, getDeviceTypeValues(collection: collectionModel.collection)[key]!))
+                            Text(String(format: "$%d", locale: Locale.current, element.totalValue ?? 0))
                                 .foregroundColor(.gray)
                         }
                     }
                 }
                 Section("Average Value By Device Type")
                  {
-                     ForEach(DeviceType.allCases, id: \.self) { key in
+                     ForEach(getAverageValuesSorted(collection: collectionModel.collection, deviceTypeCounts: collectionModel.getDeviceTypeCounts()), id: \.self) { element in
                          HStack
                          {
-                             Label(key.id, systemImage: icons[key.id]!)
+                             Label(element.deviceType.id, systemImage: icons[element.deviceType.id]!)
                                  .fixedSize()
                              Spacer()
-                             Text(String(format: "$%.2f", locale: Locale.current,        getAverageValues(collection: collectionModel.collection, deviceTypeCounts: collectionModel.getDeviceTypeCounts())[key]!))
+                             Text(String(format: "$%.2f", locale: Locale.current, element.averageValue ?? 0.0))
                                  .foregroundColor(.gray)
                          }
                      }

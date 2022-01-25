@@ -25,9 +25,11 @@ extension View {
 
 struct ContentView: View {
     @State var showInfoModalView: Bool = false
+    @State private var collectionFull: Bool = false
     @State var showSettingsModalView: Bool = false
     @State var count = 1
     @EnvironmentObject var collectionModel: CollectionModel
+    @EnvironmentObject var accentColor: AccentColor
     @Environment(\.isPresented) var presentation
     var body: some View {
         NavigationView {
@@ -35,7 +37,7 @@ struct ContentView: View {
                 Section(header: Text("Devices"))
                 {
                     ForEach(DeviceType.allCases, id: \.self) { label in
-                        NavigationLink(destination: ProductListView(deviceType: label).environmentObject(collectionModel)){
+                        NavigationLink(destination: ProductListView(deviceType: label).environmentObject(collectionModel).environmentObject(accentColor)){
                             Label(label.id, systemImage: icons[label.id]!)
                                 .fixedSize()
                             Spacer()
@@ -76,14 +78,24 @@ struct ContentView: View {
                     trailing:
                     HStack
                     {
-                        NavigationLink(destination: MainSearchView().environmentObject(collectionModel))
+                        NavigationLink(destination: SearchView().environmentObject(collectionModel).environmentObject(accentColor))
                         {
                             Image(systemName: "magnifyingglass")
                                 .imageScale(.large)
                                 .frame(height: 96, alignment: .trailing)
                         }
                         .keyboardShortcut("f", modifiers: .command)
-                        Button(action: {generator.notificationOccurred(.success); showInfoModalView.toggle()
+                        Button(action: {
+                            print(collectionModel.collectionSize)
+                            if(collectionModel.collectionSize >= 1000)
+                            {
+                                generator.notificationOccurred(.error)
+                                collectionFull.toggle()
+                            }
+                            else {
+                                generator.notificationOccurred(.success)
+                                showInfoModalView.toggle()
+                            }
                             }) {
                                 Image(systemName: "plus")
                                     .imageScale(.large)
@@ -96,6 +108,13 @@ struct ContentView: View {
                             #endif
 
                         })
+                        .alert(isPresented: $collectionFull) {
+                            Alert(
+                                title: Text("1000 Product Limit Reached"),
+                                message: Text("Remove at least one product from your collection before adding new ones."),
+                                dismissButton: .default(Text("OK"))
+                            )
+                        }
 
 
             .onAppear {
@@ -105,13 +124,12 @@ struct ContentView: View {
             
         }
         .sheet(isPresented: $showInfoModalView) {
-            AddProductView(showInfoModalView: self.$showInfoModalView).environmentObject(collectionModel)
+            AddProductView(showInfoModalView: self.$showInfoModalView).environmentObject(collectionModel).environmentObject(accentColor)
             
         }
         .sheet(isPresented: $showSettingsModalView) {
-            SettingsView(showSettingsModalView: self.$showSettingsModalView).environmentObject(collectionModel)
+            SettingsView(showSettingsModalView: self.$showSettingsModalView).environmentObject(collectionModel).environmentObject(accentColor)
         }
-
     }
 }
 

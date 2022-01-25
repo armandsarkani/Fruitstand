@@ -8,6 +8,8 @@
 import Foundation
 import Combine
 import SwiftCSV
+import UniformTypeIdentifiers
+
 
 struct ModelAndCount: Codable, Hashable
 {
@@ -38,7 +40,6 @@ class CollectionModel: ObservableObject {
         // Complete product
         if(collectionSize >= 1000)
         {
-            print("Cannot save this product. Max number of products reached.")
             return
         }
         var uuidPrefix = product.type!.id
@@ -148,10 +149,15 @@ class CollectionModel: ObservableObject {
         }
         loadModelList()
     }
+    func loadSampleCollection()
+    {
+        
+    }
     func resetCollection() {
         // Update collection
         collection = [DeviceType.iPhone: [], DeviceType.iPad: [], DeviceType.Mac: [], DeviceType.AppleWatch: [], DeviceType.AirPods: [], DeviceType.AppleTV: [], DeviceType.iPod: []]
         modelList = [DeviceType.iPhone: [], DeviceType.iPad: [], DeviceType.Mac: [], DeviceType.AppleWatch: [], DeviceType.AirPods: [], DeviceType.AppleTV: [], DeviceType.iPod: []]
+        collectionArray = []
         collectionSize = 0
         
         // Update UserDefaults/iCloud
@@ -295,5 +301,3 @@ class CollectionModel: ObservableObject {
 
 
 }
-
-

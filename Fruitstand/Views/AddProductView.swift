@@ -21,6 +21,7 @@ struct AddProductView: View {
     @State var product: ProductInfo = ProductInfo(type: DeviceType.Mac)
     @Binding var showInfoModalView: Bool
     @EnvironmentObject var collectionModel: CollectionModel
+    @EnvironmentObject var accentColor: AccentColor
     @Environment(\.isPresented) var presentation
     var body: some View {
            NavigationView {
@@ -56,6 +57,7 @@ struct AddProductView: View {
                     leading: Button(action: {self.showInfoModalView.toggle()}, label: {Text("Cancel").fontWeight(.regular)}),
                     trailing: Button(action: {addItem()}, label: {Text("Add").bold()}).disabled((product.type == nil ||  product.color == nil || product.yearAcquired == nil || product.estimatedValue == nil || product.workingStatus == nil || product.condition == nil || product.acquiredAs == nil || product.warranty == nil || product.physicalDamage == nil || product.originalBox == nil) || (product.iPhoneModel == nil && product.iPadModel == nil && product.MacModel == nil && product.AppleWatchModel == nil && product.AirPodsModel == nil && product.AppleTVModel == nil && product.iPodModel == nil)))
            }
+           .accentColor(accentColor.color)
     }
     func addItem()
     {
@@ -71,6 +73,7 @@ struct EditProductView: View {
     @State var product: ProductInfo
     @Binding var showEditModalView: Bool
     @EnvironmentObject var collectionModel: CollectionModel
+    @EnvironmentObject var accentColor: AccentColor
     let generator = UINotificationFeedbackGenerator()
     @Environment(\.isPresented) var presentation
     init(product: ProductInfo, showEditModalView: Binding<Bool>)
@@ -106,6 +109,7 @@ struct EditProductView: View {
                  leading: Button(action: {showEditModalView.toggle()}, label: {Text("Cancel").fontWeight(.regular)}),
                  trailing: Button(action: {editItem()}, label: {Text("Done").bold()}).disabled((product.color == "" || product.yearAcquired == nil || product.estimatedValue == nil || product.workingStatus == nil || product.condition == nil || product.acquiredAs == nil || product.warranty == nil || product.physicalDamage == nil || product.originalBox == nil) || (product.iPhoneModel == nil && product.iPadModel == nil && product.MacModel == nil && product.AppleWatchModel == nil && product.AirPodsModel == nil && product.AppleTVModel == nil && product.iPodModel == nil)))
         }
+        .accentColor(accentColor.color)
     }
     func editItem()
     {
@@ -292,7 +296,7 @@ struct SpecificsView: View
         {
             Toggle(isOn: $product.activationLock ?? false)
             {
-                Text("Activation Locked")
+                Text("Activation Lock")
             }
         }
 

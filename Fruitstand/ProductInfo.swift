@@ -131,7 +131,7 @@ struct ProductInfo: Codable, Hashable
     func contains(searchText: String) -> Bool
     {
         let lowercaseSearchText = searchText.lowercased()
-        if(color!.lowercased().contains(lowercaseSearchText) || (comments ?? "").lowercased().contains(lowercaseSearchText) || (warranty ?? Warranty.Expired).rawValue.lowercased().contains(lowercaseSearchText) || String(yearAcquired!).lowercased().contains(lowercaseSearchText) || (processor ?? "").lowercased().contains(lowercaseSearchText) || (storage ?? "").lowercased().contains(lowercaseSearchText) || getCommonName(product: self).lowercased().smartContains(lowercaseSearchText))
+        if(getCommonName(product: self).lowercased().smartContains(lowercaseSearchText) || color!.lowercased().contains(lowercaseSearchText) || (comments ?? "").lowercased().contains(lowercaseSearchText) || (processor ?? "").lowercased().contains(lowercaseSearchText) || (storage ?? "").lowercased().contains(lowercaseSearchText) || lowercaseSearchText == "yearacquired: " + String(yearAcquired ?? 2022) || lowercaseSearchText == "acquired: " + String(yearAcquired ?? 2022) || (lowercaseSearchText.smartContains((storage ?? "").lowercased()) && lowercaseSearchText.contains(getCommonName(product: self).lowercased())))
         {
             return true
         }
@@ -140,7 +140,7 @@ struct ProductInfo: Codable, Hashable
     
 }
 
-func getCommonHeaderName(product: ProductInfo) -> String
+func getCommonHeaderName(product: ProductInfo, toDisplay: Bool) -> String
 {
     if(product.type == DeviceType.Mac) {
         if(product.model == "Other" || product.model == "Earlier Models")
@@ -160,14 +160,19 @@ func getCommonHeaderName(product: ProductInfo) -> String
             return "\(product.otherModel ?? "Unknown Model")"
         }
     }
-    if(product.type == DeviceType.iPhone)
+    if(product.type == DeviceType.iPhone && toDisplay)
     {
         return product.storage ?? "Unknown Storage"
         
     }
-    else if(product.type == DeviceType.iPad)
+    else if(product.type == DeviceType.iPad && toDisplay)
     {
         return "\(product.storage ?? "Unknown Storage") \(product.connectivity != nil ? product.connectivity!.id: "")"
+        
+    }
+    else if(product.type == DeviceType.iPad && !toDisplay)
+    {
+        return "\(product.connectivity != nil ? product.connectivity!.id: "")"
         
     }
     else if(product.type == DeviceType.AppleWatch)
@@ -178,15 +183,15 @@ func getCommonHeaderName(product: ProductInfo) -> String
     {
         return (product.APCaseType != nil ? product.APCaseType!.id: "Unknown Case Type")
     }
-    else if(product.type == DeviceType.AppleTV)
+    else if(product.type == DeviceType.AppleTV && toDisplay)
     {
        return product.storage ?? "Unknown Storage"
     }
-    else if(product.type == DeviceType.iPod)
+    else if(product.type == DeviceType.iPod && toDisplay)
     {
         return product.storage ?? "Unknown Storage"
     }
-    return "Unknown"
+    return ""
 }
 
 func getCommonName(product: ProductInfo) -> String
@@ -196,7 +201,7 @@ func getCommonName(product: ProductInfo) -> String
     {
         commonName += (product.model! + " ")
     }
-    commonName += getCommonHeaderName(product: product)
+    commonName += getCommonHeaderName(product: product, toDisplay: false)
     return commonName
     
 }

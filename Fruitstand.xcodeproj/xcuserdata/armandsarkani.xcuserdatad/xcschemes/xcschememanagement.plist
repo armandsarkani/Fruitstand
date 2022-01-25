@@ -4,6 +4,11 @@
 <dict>
 	<key>SchemeUserState</key>
 	<dict>
+		<key>Fruitstand WidgetExtension.xcscheme_^#shared#^_</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>2</integer>
+		</dict>
 		<key>Fruitstand.xcscheme_^#shared#^_</key>
 		<dict>
 			<key>orderHint</key>
@@ -18,6 +23,11 @@
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
 		<key>16022E032652F8710098BD95</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>1624C73E279E7D5700258513</key>
 		<dict>
 			<key>primary</key>
 			<true/>

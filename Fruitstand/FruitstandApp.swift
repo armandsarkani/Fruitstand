@@ -10,10 +10,11 @@ import SwiftUI
 @main
 struct FruitstandApp: App {
     @StateObject var collectionModel: CollectionModel = CollectionModel()
+    @StateObject var accentColor: AccentColor = AccentColor()
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     var body: some Scene {
         WindowGroup {
-            ContentView().environmentObject(collectionModel)
+            ContentView().environmentObject(collectionModel).environmentObject(accentColor)
                 .withHostingWindow { window in
                     #if targetEnvironment(macCatalyst)
                     if let titlebar = window?.windowScene?.titlebar {
@@ -21,10 +22,60 @@ struct FruitstandApp: App {
                         titlebar.toolbar = nil
                     }
                     #endif
-                }
+                } 
+                .accentColor(accentColor.color)
         }
     }
     
+}
+
+class AccentColor: ObservableObject {
+    @Published var color: Color
+    init()
+    {
+        if let testColor = UserDefaults.standard.colorForKey(key: "userColor")
+        {
+            self.color = Color(testColor)
+        }
+        else
+        {
+            self.color = Color.accentColor
+        }
+    }
+    func saveColor()
+    {
+        UserDefaults.standard.setColor(color: UIColor(color), forKey: "userColor")
+    }
+
+}
+
+extension UserDefaults {
+  func colorForKey(key: String) -> UIColor? {
+    var colorReturnded: UIColor?
+    if let colorData = data(forKey: key) {
+      do {
+        if let color = try NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(colorData) as? UIColor {
+          colorReturnded = color
+        }
+      } catch {
+        print("Error UserDefaults")
+      }
+    }
+    return colorReturnded
+  }
+  
+  func setColor(color: UIColor?, forKey key: String) {
+    var colorData: NSData?
+    if let color = color {
+      do {
+        let data = try NSKeyedArchiver.archivedData(withRootObject: color, requiringSecureCoding: false) as NSData?
+        colorData = data
+      } catch {
+        print("Error UserDefaults")
+      }
+    }
+    set(colorData, forKey: key)
+  }
 }
 
 

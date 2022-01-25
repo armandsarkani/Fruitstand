@@ -1,5 +1,5 @@
 //
-//  MainSearchView.swift
+//  SearchView.swift
 //  Fruitstand
 //
 //  Created by Armand Sarkani on 1/21/22.
@@ -8,8 +8,9 @@
 import Foundation
 import SwiftUI
 
-struct MainSearchView: View {
+struct SearchView: View {
     @EnvironmentObject var collectionModel: CollectionModel
+    @EnvironmentObject var accentColor: AccentColor
     @State private var searchText = ""
     @State var deviceTypeFilter: String = "All Devices"
     let deviceTypeFilters = ["All Devices", "Mac", "iPhone", "iPad", "Apple Watch", "AirPods", "Apple TV", "iPod"]
@@ -38,9 +39,9 @@ struct MainSearchView: View {
         }
     }
     var body: some View {
+        Spacer()
         if(!searchText.isEmpty)
         {
-            Spacer()
             Picker(selection: $deviceTypeFilter, label: Label("Device Type", systemImage: "square.3.layers.3d.down.left")) {
                 ForEach(deviceTypeFilters, id: \.self) { filter in
                     Image(systemName: (icons[filter] ?? "circle.hexagongrid"))
@@ -57,12 +58,6 @@ struct MainSearchView: View {
             }
             .scaledToFit()
             .pickerStyle(.segmented)
-//            #if targetEnvironment(macCatalyst)
-//            .frame(maxWidth: (UIScreen.main.bounds.width * 0.35))
-//            #else
-//            .frame(maxWidth: (UIDevice.current.model.hasPrefix("iPad") ? (UIScreen.main.bounds.width * 0.6): (UIScreen.main.bounds.width * 0.9)))
-//            #endif
-            Spacer()
         }
         Form
         {
@@ -92,10 +87,12 @@ struct MainSearchView: View {
             }
             ForEach(searchResults, id: \.self) { product in
                 Section {
-                    ProductCardView(product: product, fullSearchable: true).environmentObject(collectionModel)
+                    ProductCardView(product: product, fullSearchable: true).environmentObject(collectionModel).environmentObject(accentColor)
                 }
             }
+            
         }
+        .edgesIgnoringSafeArea(.all)
         .environment(\.defaultMinListHeaderHeight, 20)
         .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .always), prompt: "Search all products ").autocapitalization(.none)
         .navigationTitle("Search")

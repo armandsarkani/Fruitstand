@@ -10,7 +10,9 @@ import SwiftUI
 
 struct ProductListView: View {
     var deviceType: DeviceType
+    @State private var collectionFull: Bool = false
     @EnvironmentObject var collectionModel: CollectionModel
+    @EnvironmentObject var accentColor: AccentColor
     @State var showInfoModalView: Bool = false
     @State private var searchText = ""
     var resultsText: String {
@@ -43,7 +45,7 @@ struct ProductListView: View {
                 .listRowInsets(EdgeInsets(top: 20, leading: 7, bottom: -500, trailing: 0))
             }
             ForEach(searchResults, id: \.self) { model in
-                NavigationLink(destination: ProductView(model: model.model, deviceType: deviceType)              .environmentObject(collectionModel)){
+                NavigationLink(destination: ProductView(model: model.model, deviceType: deviceType)              .environmentObject(collectionModel).environmentObject(accentColor)){
                     if(model.model.count >= 30)
                     {
                         Label(model.model, systemImage: getProductIcon(product: ProductInfo(type: DeviceType(rawValue: deviceType.rawValue), model: model.model)))
@@ -80,21 +82,39 @@ struct ProductListView: View {
         .if(UIDevice.current.model.hasPrefix("iPhone")) {
             $0.navigationBarItems(trailing:
                     HStack {
-                    NavigationLink(destination: MainSearchView().environmentObject(collectionModel))
+                NavigationLink(destination: SearchView().environmentObject(collectionModel).environmentObject(accentColor))
                         {
                             Image(systemName: "magnifyingglass")
                                 .imageScale(.large)
                                 .frame(height: 96, alignment: .trailing)
                         }
-                        Button(action: {generator.notificationOccurred(.success); showInfoModalView.toggle()}) {
+                        Button(action: {
+                            print(collectionModel.collectionSize)
+                            if(collectionModel.collectionSize >= 1000)
+                            {
+                                generator.notificationOccurred(.error)
+                                collectionFull.toggle()
+                            }
+                            else {
+                                generator.notificationOccurred(.success)
+                                showInfoModalView.toggle()
+                            }
+                            }) {
                         Image(systemName: "plus")
                             .imageScale(.large)
                             .frame(height: 96, alignment: .trailing)
                     }
             })
         }
+        .alert(isPresented: $collectionFull) {
+            Alert(
+                title: Text("1000 Product Limit Reached"),
+                message: Text("Remove at least one product from your collection before adding new ones."),
+                dismissButton: .default(Text("OK"))
+            )
+        }
         .sheet(isPresented: $showInfoModalView) {
-        AddProductView(showInfoModalView: self.$showInfoModalView).environmentObject(collectionModel)
+            AddProductView(showInfoModalView: self.$showInfoModalView).environmentObject(collectionModel).environmentObject(accentColor)
         }
     }
 }

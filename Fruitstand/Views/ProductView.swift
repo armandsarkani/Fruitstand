@@ -15,7 +15,7 @@ let boolToTextScheme1: [Bool: String] = [true: "Yes", false: "No"]
 let boolToTextScheme2: [Bool: String] = [true: "On", false: "Off"]
 let boolToStatusScheme1: [Bool: String] = [true: "affirmative", false: "negative"]
 let boolToStatusScheme2: [Bool: String] = [true: "negative", false: "affirmative"]
-let commonColorMapping: [String: Color] = ["black": Color.black, "space black": Color.black, "black & slate": Color.black, "white": Color.white, "white & silver": Color.white, "space gray": Color.gray, "gray": Color.gray, "silver": Color("Silver"), "red": Color.red, "(product)red": Color.red, "green": Color.green, "blue": Color.blue, "gold": Color("Gold"), "rose gold": Color("Rose Gold"), "yellow": Color.yellow, "orange": Color.orange, "coral": Color("Coral"), "sierra blue": Color.cyan, "pacific blue": Color.blue, "graphite": Color.gray, "purple": Color.purple, "midnight green": Color.green, "starlight": Color("Starlight"), "platinum": Color("Starlight"), "blueberry": Color.blue, "key lime": Color.green, "tangerine": Color.orange, "indigo": Color.indigo, "jet black": Color.black, "pink": Color.pink]
+let commonColorMapping: [String: Color] = ["black": Color.black, "space black": Color.black, "black & slate": Color.black, "white": Color.white, "white & silver": Color.white, "space gray": Color.gray, "gray": Color.gray, "silver": Color("Silver"), "red": Color.red, "(product)red": Color.red, "product red": Color.red, "green": Color.green, "blue": Color.blue, "gold": Color("Gold"), "rose gold": Color("Rose Gold"), "yellow": Color.yellow, "orange": Color.orange, "coral": Color("Coral"), "sierra blue": Color.cyan, "pacific blue": Color.blue, "graphite": Color.gray, "purple": Color.purple, "midnight green": Color.green, "starlight": Color("Starlight"), "platinum": Color("Starlight"), "blueberry": Color.blue, "key lime": Color.green, "tangerine": Color.orange, "indigo": Color.indigo, "jet black": Color.black, "pink": Color.pink]
 let generator = UINotificationFeedbackGenerator()
 
 
@@ -33,10 +33,12 @@ func ??<T> (left: Binding<T?>, right: T) -> Binding<T> {
 
 struct ProductView: View {
     @EnvironmentObject var collectionModel: CollectionModel
+    @EnvironmentObject var accentColor: AccentColor
     var model: String
     var deviceType: DeviceType
     @State var showInfoModalView: Bool = false
     @State private var searchText = ""
+    @State private var collectionFull: Bool = false
     init(model: String, deviceType: DeviceType)
     {
         self.model = model
@@ -68,12 +70,11 @@ struct ProductView: View {
             ForEach(searchResults, id: \.self) { product in
                 Section
                 {
-                    ProductCardView(product: product, fullSearchable: false).environmentObject(collectionModel)
+                    ProductCardView(product: product, fullSearchable: false).environmentObject(collectionModel).environmentObject(accentColor)
                 }
             }
         }
-        .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .automatic))
-        .textSelection(.enabled)
+        .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .automatic)).autocapitalization(.none)
         .overlay(Group {
             if collectionModel.loadMatchingProductsByModel(deviceType: deviceType, model: model).isEmpty {
                 VStack(spacing: 15)
@@ -93,21 +94,38 @@ struct ProductView: View {
         .if(UIDevice.current.model.hasPrefix("iPhone")) {
             $0.navigationBarItems(trailing:
                     HStack {
-                    NavigationLink(destination: MainSearchView().environmentObject(collectionModel))
+                NavigationLink(destination: SearchView().environmentObject(collectionModel).environmentObject(accentColor))
                         {
                             Image(systemName: "magnifyingglass")
                                 .imageScale(.large)
                                 .frame(height: 96, alignment: .trailing)
                         }
-                        Button(action: {generator.notificationOccurred(.success); showInfoModalView.toggle()}) {
+                        Button(action: {
+                            if(collectionModel.collectionSize >= 1000)
+                            {
+                                generator.notificationOccurred(.error)
+                                collectionFull.toggle()
+                            }
+                            else {
+                                generator.notificationOccurred(.success)
+                                showInfoModalView.toggle()
+                            }
+                            }) {
                         Image(systemName: "plus")
                             .imageScale(.large)
                             .frame(height: 96, alignment: .trailing)
                     }
             })
         }
+        .alert(isPresented: $collectionFull) {
+            Alert(
+                title: Text("1000 Product Limit Reached"),
+                message: Text("Remove at least one product from your collection before adding new ones."),
+                dismissButton: .default(Text("OK"))
+            )
+        }
         .sheet(isPresented: $showInfoModalView) {
-            AddProductView(showInfoModalView: self.$showInfoModalView).environmentObject(collectionModel)
+            AddProductView(showInfoModalView: self.$showInfoModalView).environmentObject(collectionModel).environmentObject(accentColor)
         }
     }
 }
@@ -115,6 +133,8 @@ struct ProductView: View {
 
 struct ProductCardView: View {
     @EnvironmentObject var collectionModel: CollectionModel
+    @EnvironmentObject var accentColor: AccentColor
+    let workingStatusMap: [WorkingStatus: String] = [WorkingStatus.NotWorking: "negative", WorkingStatus.MostlyWorking: "neutral", WorkingStatus.Working: "affirmative"]
     var product: ProductInfo
     var fullSearchable: Bool
     @State var confirmationShown: Bool = false
@@ -177,7 +197,7 @@ struct ProductCardView: View {
                         .labelStyle(.iconOnly)
                         .font(Font.system(.body).bold())
                         .imageScale(.large)
-                        .foregroundColor(.blue)
+                        .foregroundColor(accentColor.color)
                         .onTapGesture {
                             showEditModalView.toggle()
                             generator.notificationOccurred(.success)
@@ -189,7 +209,7 @@ struct ProductCardView: View {
             Spacer()
         }
         .sheet(isPresented: $showEditModalView) {
-            EditProductView(product: product, showEditModalView: $showEditModalView).environmentObject(collectionModel)
+            EditProductView(product: product, showEditModalView: $showEditModalView).environmentObject(collectionModel).environmentObject(accentColor)
 
         }
         .alert(isPresented: $confirmationShown) {
@@ -205,14 +225,13 @@ struct ProductCardView: View {
                               action: {
                                   collectionModel.eraseProduct(product: selectedProduct!)}))
         }
-        HorizontalTwoAttributeView(descriptionLeft: "Working status", dataLeft: (product.workingStatus != nil ? product.workingStatus!.id: "Unknown"), descriptionRight: "Year acquired", dataRight: (product.yearAcquired != nil ? String(product.yearAcquired!): "Unknown"))
+        HorizontalMixedAttributeBooleanView(descriptionLeft: "Year Acquired", dataLeft: (product.yearAcquired != nil ? String(product.yearAcquired!): "Unknown"), descriptionRight: "Working status", dataRight: (product.workingStatus != nil ? product.workingStatus!.id: "Unknown"), rightStatus: workingStatusMap[product.workingStatus ?? WorkingStatus.Working] ?? "unknown")
         HorizontalTwoAttributeView(descriptionLeft: "Condition", dataLeft: (product.condition != nil ? product.condition!.id: "Unknown"), descriptionRight: "Acquired as", dataRight: (product.acquiredAs != nil ? product.acquiredAs!.id: "Unknown"))
         HorizontalTwoAttributeView(descriptionLeft: "Estimated value", dataLeft: (product.estimatedValue != nil ?  String(format: "$%d", locale: Locale.current, product.estimatedValue!): "Unknown"), descriptionRight: "Warranty", dataRight: (product.warranty != nil ? product.warranty!.id: "Unknown"))
         HorizontalTwoBooleanView(descriptionLeft: "Physical damage", dataLeft: boolToTextScheme1[product.physicalDamage ?? false]!, descriptionRight: "Original box", dataRight: boolToTextScheme1[product.originalBox ?? false]!, leftStatus: boolToStatusScheme2[product.physicalDamage ?? false]!, rightStatus: boolToStatusScheme1[product.originalBox ?? false]!)
         SpecificsCardView(product: product)
         if(product.comments != nil && product.comments != "") {
             HorizontalOneAttributeView(description: "Comments", data: product.comments!, alignment: .leading)
-
         }
     }
 }
@@ -221,7 +240,7 @@ struct SpecificsHeaderView: View {
     var product: ProductInfo
     var body: some View {
             Spacer()
-            Text(getCommonHeaderName(product: product))
+        Text(getCommonHeaderName(product: product, toDisplay: true))
                 .fontWeight(.bold)
                 .font(.title3)
     }
@@ -247,6 +266,7 @@ struct SpecificsCardView: View {
             
         }
         if(product.type == DeviceType.AppleWatch) {
+            HorizontalOneBooleanView(description: "Activation Lock", data: boolToTextScheme2[product.activationLock ?? false]!, status: boolToStatusScheme2[product.activationLock ?? false]!, alignment: .leading)
             HorizontalOneAttributeView(description: "Original bands included", data: product.originalBands ?? "Unknown", alignment: .leading)
             
         }
@@ -271,10 +291,12 @@ struct HorizontalOneAttributeView: View {
             Text(description)
                 .font(.subheadline)
                 .foregroundColor(.gray)
+                .textSelection(.enabled)
                 .fixedSize()
             Spacer(minLength: 5)
             Text(data)
                 .fixedSize(horizontal: false, vertical: true)
+                .textSelection(.enabled)
             Spacer(minLength: 5)
         }
     }
@@ -285,18 +307,20 @@ struct HorizontalOneBooleanView: View {
     var data: String
     var status: String
     var alignment: HorizontalAlignment
-    let statusToImage: [String: String] = ["affirmative": "checkmark.circle.fill", "negative": "exclamationmark.circle.fill", "unknown": "questionmark.circle.fill" ]
-    let statusToColor: [String: Color] = ["affirmative": Color.green, "negative": Color.red, "unknown": Color.yellow]
+    let statusToImage: [String: String] = ["affirmative": "checkmark.circle.fill", "negative": "exclamationmark.circle.fill", "unknown": "questionmark.circle.fill", "neutral": "minus.circle.fill"]
+    let statusToColor: [String: Color] = ["affirmative": Color.green, "negative": Color.red, "unknown": Color.gray, "neutral": Color.yellow]
     var body: some View {
         VStack(alignment: alignment)
         {
             Text(description)
                 .font(.subheadline)
                 .foregroundColor(.gray)
+                .textSelection(.enabled)
                 .fixedSize()
             Spacer(minLength: 5)
             Label(data, systemImage: statusToImage[status]!).foregroundColor(statusToColor[status])
                 .fixedSize(horizontal: false, vertical: true)
+                .textSelection(.enabled)
             Spacer(minLength: 5)
 
         }
