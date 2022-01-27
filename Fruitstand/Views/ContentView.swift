@@ -23,6 +23,7 @@ extension View {
      }
 }
 
+
 struct ContentView: View {
     @State var showInfoModalView: Bool = false
     @State private var collectionFull: Bool = false
@@ -41,7 +42,7 @@ struct ContentView: View {
                             Label(label.id, systemImage: icons[label.id]!)
                                 .fixedSize()
                             Spacer()
-                            
+
                             Text(String(collectionModel.collection[label]!.count))
                                 .foregroundColor(.gray)
                         }
@@ -49,7 +50,7 @@ struct ContentView: View {
                 }
                 Section(header: Text("Statistics"))
                 {
-                    NavigationLink(destination: ValuesView()        .environmentObject(collectionModel)){
+                    NavigationLink(destination: ValuesView().environmentObject(collectionModel)){
                         Label("Values", systemImage: "dollarsign.circle.fill")
                     }
                     HStack
@@ -86,7 +87,6 @@ struct ContentView: View {
                         }
                         .keyboardShortcut("f", modifiers: .command)
                         Button(action: {
-                            print(collectionModel.collectionSize)
                             if(collectionModel.collectionSize >= 1000)
                             {
                                 generator.notificationOccurred(.error)

@@ -117,18 +117,21 @@ struct ProductView: View {
                     }
             })
         }
-        .alert(isPresented: $collectionFull) {
-            Alert(
-                title: Text("1000 Product Limit Reached"),
-                message: Text("Remove at least one product from your collection before adding new ones."),
-                dismissButton: .default(Text("OK"))
-            )
+        .if(UIDevice.current.model.hasPrefix("iPhone")) {
+            $0.alert(isPresented: $collectionFull) {
+                Alert(
+                    title: Text("1000 Product Limit Reached"),
+                    message: Text("Remove at least one product from your collection before adding new ones."),
+                    dismissButton: .default(Text("OK"))
+                )
+            }
         }
         .sheet(isPresented: $showInfoModalView) {
             AddProductView(showInfoModalView: self.$showInfoModalView).environmentObject(collectionModel).environmentObject(accentColor)
         }
     }
 }
+
 
 
 struct ProductCardView: View {

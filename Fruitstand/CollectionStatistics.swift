@@ -9,7 +9,7 @@
 
 import Foundation
 
-struct DeviceTypeValue: Hashable {
+struct DeviceTypeValue: Hashable, Codable {
     var deviceType: DeviceType
     var totalValue: Int?
     var averageValue: Double?

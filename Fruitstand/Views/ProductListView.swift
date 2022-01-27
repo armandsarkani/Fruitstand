@@ -8,6 +8,7 @@
 import Foundation
 import SwiftUI
 
+
 struct ProductListView: View {
     var deviceType: DeviceType
     @State private var collectionFull: Bool = false
@@ -45,7 +46,8 @@ struct ProductListView: View {
                 .listRowInsets(EdgeInsets(top: 20, leading: 7, bottom: -500, trailing: 0))
             }
             ForEach(searchResults, id: \.self) { model in
-                NavigationLink(destination: ProductView(model: model.model, deviceType: deviceType)              .environmentObject(collectionModel).environmentObject(accentColor)){
+                NavigationLink(destination: ProductView(model: model.model, deviceType: deviceType)              .environmentObject(collectionModel).environmentObject(accentColor))
+                    {
                     if(model.model.count >= 30)
                     {
                         Label(model.model, systemImage: getProductIcon(product: ProductInfo(type: DeviceType(rawValue: deviceType.rawValue), model: model.model)))
@@ -89,7 +91,6 @@ struct ProductListView: View {
                                 .frame(height: 96, alignment: .trailing)
                         }
                         Button(action: {
-                            print(collectionModel.collectionSize)
                             if(collectionModel.collectionSize >= 1000)
                             {
                                 generator.notificationOccurred(.error)
@@ -106,12 +107,14 @@ struct ProductListView: View {
                     }
             })
         }
-        .alert(isPresented: $collectionFull) {
-            Alert(
-                title: Text("1000 Product Limit Reached"),
-                message: Text("Remove at least one product from your collection before adding new ones."),
-                dismissButton: .default(Text("OK"))
-            )
+        .if(UIDevice.current.model.hasPrefix("iPhone")) {
+            $0.alert(isPresented: $collectionFull) {
+                Alert(
+                    title: Text("1000 Product Limit Reached"),
+                    message: Text("Remove at least one product from your collection before adding new ones."),
+                    dismissButton: .default(Text("OK"))
+                )
+            }
         }
         .sheet(isPresented: $showInfoModalView) {
             AddProductView(showInfoModalView: self.$showInfoModalView).environmentObject(collectionModel).environmentObject(accentColor)

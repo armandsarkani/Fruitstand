@@ -107,6 +107,7 @@ struct SettingsView: View {
                         ColorPicker("", selection: $accentColor.color, supportsOpacity: false)
                             .onChange(of: accentColor.color, perform: { value in
                                 accentColor.saveColor()
+                                collectionModel.saveWidgetModel()
                         })
                         #if targetEnvironment(macCatalyst)
                             .frame(width: 100)

@@ -9,14 +9,8 @@ import Foundation
 import Combine
 import SwiftCSV
 import UniformTypeIdentifiers
-
-
-struct ModelAndCount: Codable, Hashable
-{
-    var model: String
-    var count: Int?
-    var rank: Int
-}
+import SwiftUI
+import WidgetKit
 
 class CollectionModel: ObservableObject {
     @Published var collection: [DeviceType: [ProductInfo]] = [DeviceType.iPhone: [], DeviceType.iPad: [], DeviceType.Mac: [], DeviceType.AppleWatch: [], DeviceType.AirPods: [], DeviceType.AppleTV: [], DeviceType.iPod: []]
@@ -24,6 +18,8 @@ class CollectionModel: ObservableObject {
     @Published var modelList: [DeviceType: [ModelAndCount]] = [DeviceType.iPhone: [], DeviceType.iPad: [], DeviceType.Mac: [], DeviceType.AppleWatch: [], DeviceType.AirPods: [], DeviceType.AppleTV: [], DeviceType.iPod: []]
     @Published var collectionSize: Int = 0
     @Published var iCloudStatus: Bool = false
+    @Published var widgetModel: WidgetModel = WidgetModel(accentColor: Color.accentColor, deviceTypeCounts: [], collectionSize: 0, deviceTypeValues: [], averageValues: [], totalCollectionValue: 0)
+
     init()
     {
         checkiCloudStatus()
@@ -59,6 +55,7 @@ class CollectionModel: ObservableObject {
         loadModelList()
         collectionSize += 1
         collectionArray.append(product)
+        saveWidgetModel()
 
         // Save to UserDefaults/iCloud
         if(iCloudStatus)
@@ -87,6 +84,7 @@ class CollectionModel: ObservableObject {
         collection[product.type!]![returnCollectionIndexByProduct(product: product)] = product
         collectionArray[returnCollectionArrayIndexByProduct(product: product)] = product
         loadModelList()
+        saveWidgetModel()
         
         // Save changes to UserDefaults/iCloud
         if(iCloudStatus)
@@ -148,10 +146,8 @@ class CollectionModel: ObservableObject {
             }
         }
         loadModelList()
-    }
-    func loadSampleCollection()
-    {
-        
+        saveWidgetModel()
+      
     }
     func resetCollection() {
         // Update collection
@@ -159,6 +155,7 @@ class CollectionModel: ObservableObject {
         modelList = [DeviceType.iPhone: [], DeviceType.iPad: [], DeviceType.Mac: [], DeviceType.AppleWatch: [], DeviceType.AirPods: [], DeviceType.AppleTV: [], DeviceType.iPod: []]
         collectionArray = []
         collectionSize = 0
+        saveWidgetModel()
         
         // Update UserDefaults/iCloud
         if(iCloudStatus)
@@ -166,7 +163,9 @@ class CollectionModel: ObservableObject {
             let userDefaults = NSUbiquitousKeyValueStore.default
             let dictionary = userDefaults.dictionaryRepresentation
             dictionary.keys.forEach { key in
-                userDefaults.removeObject(forKey: key)
+                if(key != "userColor") {
+                    userDefaults.removeObject(forKey: key)
+                }
             }
             NSUbiquitousKeyValueStore.default.synchronize()
         }
@@ -175,7 +174,9 @@ class CollectionModel: ObservableObject {
             let userDefaults = UserDefaults.standard
             let dictionary = userDefaults.dictionaryRepresentation()
             dictionary.keys.forEach { key in
-                userDefaults.removeObject(forKey: key)
+                if(key != "userColor") {
+                    userDefaults.removeObject(forKey: key)
+                }
             }
             userDefaults.synchronize()
         }
@@ -187,6 +188,7 @@ class CollectionModel: ObservableObject {
         collectionArray.remove(at: returnCollectionArrayIndexByProduct(product: product))
         loadModelList()
         collectionSize -= 1
+        saveWidgetModel()
         
         // Save changes to UserDefaults/iCloud
         if(iCloudStatus)
@@ -267,10 +269,33 @@ class CollectionModel: ObservableObject {
         }
         return deviceTypeCounts
     }
+    func getDeviceTypeCountsSorted() -> [DeviceTypeCount]
+    {
+        var deviceTypeCounts: [DeviceTypeCount] = []
+        for deviceType in collection.keys
+        {
+            deviceTypeCounts.append(DeviceTypeCount(deviceType: deviceType, count: collection[deviceType]!.count))
+        }
+        deviceTypeCounts.sort{$0.count > $1.count}
+        return deviceTypeCounts
+    }
     func checkiCloudStatus()
     {
         iCloudStatus = FileManager.default.ubiquityIdentityToken != nil ? true : false
         
+    }
+    func saveWidgetModel()
+    {
+        widgetModel.accentColor = Color(UserDefaults.standard.colorForKey(key: "userColor") ??  UIColor.tintColor)
+        widgetModel.deviceTypeCounts = getDeviceTypeCountsSorted()
+        widgetModel.collectionSize = collectionSize
+        widgetModel.deviceTypeValues = getDeviceTypeValuesSorted(collection: self.collection)
+        widgetModel.averageValues = getAverageValuesSorted(collection: self.collection, deviceTypeCounts: getDeviceTypeCounts())
+        widgetModel.totalCollectionValue = getTotalCollectionValue(collection: self.collection)
+        
+        let userDefaultsAppGroup = UserDefaults(suiteName: "group.armandsarkani.fruitstand")!
+        userDefaultsAppGroup.setCodableObject(widgetModel, forKey: "widgetModel")
+        WidgetCenter.shared.reloadAllTimelines()
     }
     // View Model functions
     func loadMatchingProductsByModel(deviceType: DeviceType, model: String) -> [ProductInfo]
@@ -300,4 +325,11 @@ class CollectionModel: ObservableObject {
     }
 
 
+}
+
+struct ModelAndCount: Codable, Hashable
+{
+    var model: String
+    var count: Int?
+    var rank: Int
 }
