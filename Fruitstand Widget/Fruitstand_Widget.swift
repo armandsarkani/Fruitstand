@@ -74,7 +74,7 @@ struct SmallCountsWidgetView: View {
                
             }
             Text(String(entry.widgetModel.collectionSize))
-                .font(.system(.largeTitle, design: .rounded))
+                .font(.system(size: 48, design: .rounded))
                 .fontWeight(.semibold)
             Text("Apple Products")
                 .foregroundColor(.gray)
@@ -395,3 +395,4 @@ struct Fruitstand_ValuesWidget: Widget {
         .supportedFamilies([.systemSmall, .systemMedium, .systemLarge])
     }
 }
+

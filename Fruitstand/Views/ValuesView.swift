@@ -15,12 +15,11 @@ struct ValuesView: View {
             VStack(spacing: 15)
             {
                 Image(systemName: "dollarsign.circle.fill")
-                    .font(.system(size: 72))
+                    .font(.system(size: 72, design: .rounded))
                 Text("Values")
-                    .font(.title)
+                    .font(.system(.title, design: .rounded))
                     .fontWeight(.bold)
                 Text("Collection is empty.")
-                    .font(.body)
             }
         }
        else
@@ -34,7 +33,7 @@ struct ValuesView: View {
                     Text(String(format: "$%d", locale: Locale.current, getTotalCollectionValue(collection: collectionModel.collection)))
                         .foregroundColor(.gray)
                 }
-               Section("Total Value By Device Type")
+                Section(header: Text("Total Value By Device Type").font(.subheadline))
                 {
                     ForEach(getDeviceTypeValuesSorted(collection: collectionModel.collection), id: \.self) { element in
                         HStack
@@ -47,7 +46,7 @@ struct ValuesView: View {
                         }
                     }
                 }
-                Section("Average Value By Device Type")
+                Section(header: Text("Average Value By Device Type").font(.subheadline))
                  {
                      ForEach(getAverageValuesSorted(collection: collectionModel.collection, deviceTypeCounts: collectionModel.getDeviceTypeCounts()), id: \.self) { element in
                          HStack
@@ -62,7 +61,7 @@ struct ValuesView: View {
                  }
             }
             .navigationTitle("Values")
-            .navigationBarTitleDisplayMode(.inline)
+            .navigationBarTitleDisplayMode(.large)
 
         }
     }

@@ -35,16 +35,16 @@ struct AddProductView: View {
                     }
                     ModelPickerView(product: $product)
                     
-                    Section("Basics")
+                    Section(header: Text("Basics").font(.subheadline))
                     {
                         BasicsView(numFormatter: numFormatter, product: $product)
                     }
-                    Section("Device Specifics")
+                    Section(header: Text("Device Specifics").font(.subheadline))
                     {
                         SpecificsView(numFormatter: numFormatter, product: $product)
                     }
                    
-                    Section("Additional Comments")
+                    Section(header: Text("Additional Comments").font(.subheadline))
                     {
                         TextField("Comments", text: $product.comments ?? "")
                             .autocapitalization(.none)
@@ -52,7 +52,7 @@ struct AddProductView: View {
 
                 }
                 .navigationTitle(Text("Add Product"))
-                .navigationBarTitleDisplayMode(.inline)
+                .navigationBarTitleDisplayMode(.large)
                 .navigationBarItems(
                     leading: Button(action: {self.showInfoModalView.toggle()}, label: {Text("Cancel").fontWeight(.regular)}),
                     trailing: Button(action: {addItem()}, label: {Text("Add").bold()}).disabled((product.type == nil ||  product.color == nil || product.yearAcquired == nil || product.estimatedValue == nil || product.workingStatus == nil || product.condition == nil || product.acquiredAs == nil || product.warranty == nil || product.physicalDamage == nil || product.originalBox == nil) || (product.iPhoneModel == nil && product.iPadModel == nil && product.MacModel == nil && product.AppleWatchModel == nil && product.AirPodsModel == nil && product.AppleTVModel == nil && product.iPodModel == nil)))
@@ -87,16 +87,16 @@ struct EditProductView: View {
              {
                  ModelPickerView(product: $product)
                  
-                 Section("Basics")
+                 Section(header: Text("Basics").font(.subheadline))
                  {
                      BasicsView(numFormatter: numFormatter, product: $product)
                  }
-                 Section("Device Specifics")
+                 Section(header: Text("Device Specifics").font(.subheadline))
                  {
                      SpecificsView(numFormatter: numFormatter, product: $product)
                  }
                 
-                 Section("Additional Comments")
+                 Section(header: Text("Additional Comments").font(.subheadline))
                  {
                      TextField("Comments", text: $product.comments ?? "")
                          .autocapitalization(.none)
@@ -104,7 +104,7 @@ struct EditProductView: View {
 
              }
              .navigationTitle(Text("Edit Product"))
-             .navigationBarTitleDisplayMode(.inline)
+             .navigationBarTitleDisplayMode(.large)
              .navigationBarItems(
                  leading: Button(action: {showEditModalView.toggle()}, label: {Text("Cancel").fontWeight(.regular)}),
                  trailing: Button(action: {editItem()}, label: {Text("Done").bold()}).disabled((product.color == "" || product.yearAcquired == nil || product.estimatedValue == nil || product.workingStatus == nil || product.condition == nil || product.acquiredAs == nil || product.warranty == nil || product.physicalDamage == nil || product.originalBox == nil) || (product.iPhoneModel == nil && product.iPadModel == nil && product.MacModel == nil && product.AppleWatchModel == nil && product.AirPodsModel == nil && product.AppleTVModel == nil && product.iPodModel == nil)))
@@ -310,7 +310,7 @@ struct ModelPickerView : View
         if(product.type == DeviceType.iPhone){
             Picker("Model", selection: $product.iPhoneModel) {
                 ForEach(iPhoneModel.allCases, id: \.id) { status in
-                    Text(status.id)
+                    Label(status.id, systemImage: status.getIcon())
                     .tag(status as iPhoneModel?)
                     }
             }
@@ -322,7 +322,7 @@ struct ModelPickerView : View
         if(product.type == DeviceType.iPad){
             Picker("Model", selection: $product.iPadModel) {
                 ForEach(iPadModel.allCases, id: \.id) { status in
-                    Text(status.id)
+                    Label(status.id, systemImage: status.getIcon())
                     .tag(status as iPadModel?)
                     }
             }
@@ -334,7 +334,7 @@ struct ModelPickerView : View
         if(product.type == DeviceType.Mac){
             Picker("Model", selection: $product.MacModel) {
                 ForEach(MacModel.allCases, id: \.id) { status in
-                    Text(status.id)
+                    Label(status.id, systemImage: status.getIcon())
                     .tag(status as MacModel?)
                 }
             }
@@ -346,7 +346,7 @@ struct ModelPickerView : View
         if(product.type == DeviceType.AppleWatch){
             Picker("Model", selection: $product.AppleWatchModel) {
                 ForEach(AppleWatchModel.allCases, id: \.id) { status in
-                    Text(status.id)
+                    Label(status.id, systemImage: status.getIcon())
                     .tag(status as AppleWatchModel?)
                     }
             }
@@ -358,7 +358,7 @@ struct ModelPickerView : View
         if(product.type == DeviceType.AirPods){
             Picker("Model", selection: $product.AirPodsModel) {
                 ForEach(AirPodsModel.allCases, id: \.id) { status in
-                    Text(status.id)
+                    Label(status.id, systemImage: status.getIcon())
                     .tag(status as AirPodsModel?)
                     }
             }
@@ -370,7 +370,7 @@ struct ModelPickerView : View
         if(product.type == DeviceType.AppleTV){
             Picker("Model", selection: $product.AppleTVModel) {
                 ForEach(AppleTVModel.allCases, id: \.id) { status in
-                    Text(status.id)
+                    Label(status.id, systemImage: status.getIcon())
                     .tag(status as AppleTVModel?)
                     }
             }
@@ -382,7 +382,7 @@ struct ModelPickerView : View
         if(product.type == DeviceType.iPod){
             Picker("Model", selection: $product.iPodModel) {
                 ForEach(iPodModel.allCases, id: \.id) { status in
-                    Text(status.id)
+                    Label(status.id, systemImage: status.getIcon())
                     .tag(status as iPodModel?)
                     }
             }

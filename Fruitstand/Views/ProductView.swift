@@ -64,7 +64,7 @@ struct ProductView: View {
         List {
             if(!searchText.isEmpty)
             {
-                Section(header: Text(resultsText).fontWeight(.medium).font(.title3).textCase(nil)) {}
+                Section(header: Text(resultsText).fontWeight(.medium).font(.system(.title3, design: .rounded)).textCase(nil)) {}
                 .listRowInsets(EdgeInsets(top: 20, leading: 7, bottom: -500, trailing: 0))
             }
             ForEach(searchResults, id: \.self) { product in
@@ -80,12 +80,11 @@ struct ProductView: View {
                 VStack(spacing: 15)
                 {
                     Image(systemName: getProductIcon(product: ProductInfo(type: DeviceType(rawValue: deviceType.rawValue), model: model)))
-                        .font(.system(size: 72))
+                        .font(.system(size: 72, design: .rounded))
                     Text(model)
-                        .font(.title)
+                        .font(.system(.title, design: .rounded))
                         .fontWeight(.bold)
                     Text("Collection is empty.")
-                        .font(.body)
                 }
             }
         })
@@ -152,7 +151,8 @@ struct ProductCardView: View {
                 Spacer()
                 Text("\(product.model ?? "Unknown Model")")
                     .fontWeight(.bold)
-                    .font(.title3)
+                .font(.system(.title3, design: .rounded))
+                
             }
             SpecificsHeaderView(product: product)
             Spacer()
@@ -245,7 +245,8 @@ struct SpecificsHeaderView: View {
             Spacer()
         Text(getCommonHeaderName(product: product, toDisplay: true))
                 .fontWeight(.bold)
-                .font(.title3)
+        .font(.system(.title3, design: .rounded))
+        
     }
 }
 
@@ -292,7 +293,7 @@ struct HorizontalOneAttributeView: View {
         VStack(alignment: alignment)
         {
             Text(description)
-                .font(.subheadline)
+                .font(.system(.subheadline, design: .rounded))
                 .foregroundColor(.gray)
                 .textSelection(.enabled)
                 .fixedSize()
@@ -316,7 +317,7 @@ struct HorizontalOneBooleanView: View {
         VStack(alignment: alignment)
         {
             Text(description)
-                .font(.subheadline)
+                .font(.system(.subheadline, design: .rounded))
                 .foregroundColor(.gray)
                 .textSelection(.enabled)
                 .fixedSize()

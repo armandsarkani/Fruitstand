@@ -28,7 +28,7 @@ struct SettingsView: View {
         NavigationView {
             List
             {
-                Section("General")
+                Section(header: Text("General").font(.subheadline))
                 {
                     Button(action: {confirmationShown.toggle()}) {
                         Label("Erase Collection", systemImage: "trash")
@@ -71,7 +71,7 @@ struct SettingsView: View {
                         )
                     }
                 }
-                Section("Manage Collection")
+                Section(header: Text("Manage Collection").font(.subheadline))
                 {
                     Button(action: {
                         CSVCollectionModel(collectionModel: collectionModel).loadSampleCollection()
@@ -99,7 +99,7 @@ struct SettingsView: View {
                         Label("Import Collection from CSV", systemImage: "arrow.down.doc.fill")
                     }
                 }
-                Section("Appearance")
+                Section(header: Text("Appearance").font(.subheadline))
                 {
                     HStack {
                         Text("Accent Color")
@@ -119,7 +119,8 @@ struct SettingsView: View {
                             }
                     }
                 }
-                Section("Fruitstand Info"){
+                Section(header: Text("Fruitstand Info").font(.subheadline))
+                {
                     HStack {
                         Text("Version Number")
                         Spacer()
@@ -187,7 +188,7 @@ struct SettingsView: View {
                 )
             }
             .navigationTitle(Text("Settings"))
-            .navigationBarTitleDisplayMode(.inline)
+            .navigationBarTitleDisplayMode(.large)
             .navigationBarItems(
                 leading: Button(action: {self.showSettingsModalView.toggle()}, label: {Text("Close").fontWeight(.regular)}))
         }

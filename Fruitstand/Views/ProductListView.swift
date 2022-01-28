@@ -42,7 +42,7 @@ struct ProductListView: View {
         {
             if(!searchText.isEmpty)
             {
-                Section(header: Text(resultsText).fontWeight(.medium).font(.title3).textCase(nil)) {}
+                Section(header: Text(resultsText).fontWeight(.medium).font(.system(.title3, design: .rounded)).textCase(nil)) {}
                 .listRowInsets(EdgeInsets(top: 20, leading: 7, bottom: -500, trailing: 0))
             }
             ForEach(searchResults, id: \.self) { model in
@@ -70,12 +70,11 @@ struct ProductListView: View {
                 VStack(spacing: 15)
                 {
                     Image(systemName: icons[deviceType.rawValue]!)
-                        .font(.system(size: 72))
+                        .font(.system(size: 72, design: .rounded))
                     Text(deviceType.rawValue)
-                        .font(.title)
+                        .font(.system(.title, design: .rounded))
                         .fontWeight(.bold)
                     Text("Collection is empty.")
-                        .font(.body)
                 }
             }
         })

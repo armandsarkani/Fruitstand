@@ -32,10 +32,20 @@ struct ContentView: View {
     @EnvironmentObject var collectionModel: CollectionModel
     @EnvironmentObject var accentColor: AccentColor
     @Environment(\.isPresented) var presentation
+    init() {
+        let design = UIFontDescriptor.SystemDesign.rounded
+        let largeTitleDescriptor = UIFontDescriptor.preferredFontDescriptor(withTextStyle: .largeTitle).withDesign(design)!.withSymbolicTraits(.traitBold)
+        let largeTitleFont = UIFont.init(descriptor: largeTitleDescriptor!, size: largeTitleDescriptor!.pointSize)
+        UINavigationBar.appearance().largeTitleTextAttributes = [.font : largeTitleFont]
+        let inlineDescriptor = UIFontDescriptor.preferredFontDescriptor(withTextStyle: .body).withDesign(design)!.withSymbolicTraits(.traitBold)
+        let inlineFont = UIFont.init(descriptor: inlineDescriptor!, size: inlineDescriptor!.pointSize)
+        UINavigationBar.appearance().titleTextAttributes = [.font: inlineFont]
+
+    }
     var body: some View {
         NavigationView {
             List {
-                Section(header: Text("Devices"))
+                Section(header: Text("Devices").font(.subheadline))
                 {
                     ForEach(DeviceType.allCases, id: \.self) { label in
                         NavigationLink(destination: ProductListView(deviceType: label).environmentObject(collectionModel).environmentObject(accentColor)){
@@ -48,7 +58,7 @@ struct ContentView: View {
                         }
                     }
                 }
-                Section(header: Text("Statistics"))
+                Section(header: Text("Statistics").font(.subheadline))
                 {
                     NavigationLink(destination: ValuesView().environmentObject(collectionModel)){
                         Label("Values", systemImage: "dollarsign.circle.fill")
@@ -66,7 +76,7 @@ struct ContentView: View {
             }
             .listStyle(InsetGroupedListStyle())
             .environment(\.horizontalSizeClass, .regular)
-            .navigationTitle(Text("My Collection"))
+            .navigationTitle("My Collection")
             .navigationBarItems(
                 leading:
                     Button(action: {

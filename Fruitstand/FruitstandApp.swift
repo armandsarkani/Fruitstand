@@ -22,9 +22,11 @@ struct FruitstandApp: App {
                         titlebar.toolbar = nil
                     }
                     #endif
-                } 
+                }
+                .environment(\.font, Font.system(.body, design: .rounded))
                 .accentColor(accentColor.color)
         }
+        
     }
     
 }
@@ -48,7 +50,11 @@ class AccentColor: ObservableObject {
     }
 
 }
-
+extension Font {
+    public static var subheadline: Font {
+        return Font.system(.subheadline, design: .rounded)
+       }
+}
 extension UserDefaults {
   func colorForKey(key: String) -> UIColor? {
     var colorReturnded: UIColor?

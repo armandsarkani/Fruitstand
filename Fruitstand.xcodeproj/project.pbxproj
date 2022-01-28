@@ -559,7 +559,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 2361;
+				CURRENT_PROJECT_VERSION = 2362;
 				DEVELOPMENT_ASSET_PATHS = "\"Fruitstand/Preview Content\"";
 				DEVELOPMENT_TEAM = 86LR2G8L2C;
 				ENABLE_PREVIEWS = YES;
@@ -593,7 +593,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 2361;
+				CURRENT_PROJECT_VERSION = 2362;
 				DEVELOPMENT_ASSET_PATHS = "\"Fruitstand/Preview Content\"";
 				DEVELOPMENT_TEAM = 86LR2G8L2C;
 				ENABLE_PREVIEWS = YES;
@@ -625,7 +625,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2361;
+				CURRENT_PROJECT_VERSION = 2362;
 				DEVELOPMENT_TEAM = 86LR2G8L2C;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "Fruitstand Widget/Info.plist";
@@ -658,7 +658,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2361;
+				CURRENT_PROJECT_VERSION = 2362;
 				DEVELOPMENT_TEAM = 86LR2G8L2C;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "Fruitstand Widget/Info.plist";

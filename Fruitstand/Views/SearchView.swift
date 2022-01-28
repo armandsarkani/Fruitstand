@@ -63,12 +63,12 @@ struct SearchView: View {
         {
             if(!searchText.isEmpty)
             {
-                Section(header: Text(resultsText).fontWeight(.medium).font(.title3).textCase(nil)) {}
+                Section(header: Text(resultsText).fontWeight(.medium).font(.system(.title3, design: .rounded)).textCase(nil)) {}
                 .listRowInsets(EdgeInsets(top: 15, leading: 7, bottom: -1000, trailing: 0))
             }
             if(searchText.isEmpty)
             {
-                Section("Suggestions")
+                Section(header: Text("Suggestions").font(.subheadline))
                 {
                     ForEach(suggestions.choose(4), id: \.self) { suggestion in
                         Button(action: {generator.notificationOccurred(.success); searchText = suggestion})
@@ -78,7 +78,7 @@ struct SearchView: View {
                         }
                     }
                 }
-                Picker("Filter By Device Type", selection: $deviceTypeFilter) {
+                Picker(selection: $deviceTypeFilter, label: Text("Filter By Device Type").font(.subheadline)) {
                     ForEach(deviceTypeFilters, id: \.self) { filter in
                         Label(filter, systemImage: (icons[filter] ?? "circle.hexagongrid"))
                     }
