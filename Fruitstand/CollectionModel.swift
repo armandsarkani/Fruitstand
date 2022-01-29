@@ -323,6 +323,18 @@ class CollectionModel: ObservableObject {
             modelList[deviceType] = modelCountsArray
         }
     }
+    func getModelCount(model: String) -> Int
+    {
+        for deviceType in modelList.keys {
+            for modelAndCount in modelList[deviceType]! {
+                if(modelAndCount.model == model)
+                {
+                    return modelAndCount.count!
+                }
+            }
+        }
+        return 0
+    }
 
 
 }

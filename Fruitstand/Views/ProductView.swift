@@ -36,10 +36,11 @@ struct ProductView: View {
     @EnvironmentObject var accentColor: AccentColor
     var model: String
     var deviceType: DeviceType
+    var fromSearch: Bool = false
     @State var showInfoModalView: Bool = false
     @State private var searchText = ""
     @State private var collectionFull: Bool = false
-    init(model: String, deviceType: DeviceType)
+    init(model: String, deviceType: DeviceType, fromSearch: Bool)
     {
         self.model = model
         self.deviceType = deviceType
@@ -91,14 +92,18 @@ struct ProductView: View {
         .navigationTitle(model)
         .navigationBarTitleDisplayMode(.large)
         .if(UIDevice.current.model.hasPrefix("iPhone")) {
-            $0.navigationBarItems(trailing:
-                    HStack {
-                NavigationLink(destination: SearchView().environmentObject(collectionModel).environmentObject(accentColor))
+            $0.toolbar {
+                ToolbarItem(placement: .navigationBarTrailing)
+                {
+                    HStack
+                    {
+                        NavigationLink(destination: SearchView(previousModelDetailView: model).environmentObject(collectionModel).environmentObject(accentColor))
                         {
                             Image(systemName: "magnifyingglass")
                                 .imageScale(.large)
                                 .frame(height: 96, alignment: .trailing)
                         }
+                        .keyboardShortcut("f", modifiers: .command)
                         Button(action: {
                             if(collectionModel.collectionSize >= 1000)
                             {
@@ -110,11 +115,18 @@ struct ProductView: View {
                                 showInfoModalView.toggle()
                             }
                             }) {
-                        Image(systemName: "plus")
-                            .imageScale(.large)
-                            .frame(height: 96, alignment: .trailing)
+                                Image(systemName: "plus")
+                                    .imageScale(.large)
+                                    .frame(height: 96, alignment: .trailing)
+                            }
+                            #if targetEnvironment(macCatalyst)
+                            .keyboardShortcut("a", modifiers: .command)
+                            #else
+                            .keyboardShortcut("+", modifiers: .command)
+                            #endif
                     }
-            })
+                }
+            }
         }
         .if(UIDevice.current.model.hasPrefix("iPhone")) {
             $0.alert(isPresented: $collectionFull) {
@@ -155,6 +167,16 @@ struct ProductCardView: View {
                 
             }
             SpecificsHeaderView(product: product)
+                .contextMenu {
+                    Button(action: {UIPasteboard.general.string = getCommonName(product: product, toDisplay: true)})
+                    {
+                        Label("Copy Model Name", systemImage: "doc.on.doc")
+                    }
+                    Button(action: {UIPasteboard.general.string = product.uuid})
+                    {
+                        Label("Copy Debug UUID", systemImage: "ant.fill")
+                    }
+                }
             Spacer()
             HStack
             {
@@ -228,13 +250,19 @@ struct ProductCardView: View {
                               action: {
                                   collectionModel.eraseProduct(product: selectedProduct!)}))
         }
-        HorizontalMixedAttributeBooleanView(descriptionLeft: "Year Acquired", dataLeft: (product.yearAcquired != nil ? String(product.yearAcquired!): "Unknown"), descriptionRight: "Working status", dataRight: (product.workingStatus != nil ? product.workingStatus!.id: "Unknown"), rightStatus: workingStatusMap[product.workingStatus ?? WorkingStatus.Working] ?? "unknown")
-        HorizontalTwoAttributeView(descriptionLeft: "Condition", dataLeft: (product.condition != nil ? product.condition!.id: "Unknown"), descriptionRight: "Acquired as", dataRight: (product.acquiredAs != nil ? product.acquiredAs!.id: "Unknown"))
-        HorizontalTwoAttributeView(descriptionLeft: "Estimated value", dataLeft: (product.estimatedValue != nil ?  String(format: "$%d", locale: Locale.current, product.estimatedValue!): "Unknown"), descriptionRight: "Warranty", dataRight: (product.warranty != nil ? product.warranty!.id: "Unknown"))
-        HorizontalTwoBooleanView(descriptionLeft: "Physical damage", dataLeft: boolToTextScheme1[product.physicalDamage ?? false]!, descriptionRight: "Original box", dataRight: boolToTextScheme1[product.originalBox ?? false]!, leftStatus: boolToStatusScheme2[product.physicalDamage ?? false]!, rightStatus: boolToStatusScheme1[product.originalBox ?? false]!)
+        HorizontalMixedAttributeBooleanView(descriptionLeft: "Year Acquired", dataLeft: (product.yearAcquired != nil ? String(product.yearAcquired!): "Unknown"), descriptionRight: "Working Status", dataRight: (product.workingStatus != nil ? product.workingStatus!.id: "Unknown"), rightStatus: workingStatusMap[product.workingStatus ?? WorkingStatus.Working] ?? "unknown")
+        HorizontalTwoAttributeView(descriptionLeft: "Condition", dataLeft: (product.condition != nil ? product.condition!.id: "Unknown"), descriptionRight: "Acquired As", dataRight: (product.acquiredAs != nil ? product.acquiredAs!.id: "Unknown"))
+        HorizontalTwoAttributeView(descriptionLeft: "Estimated Value", dataLeft: (product.estimatedValue != nil ?  String(format: "$%d", locale: Locale.current, product.estimatedValue!): "Unknown"), descriptionRight: "Warranty", dataRight: (product.warranty != nil ? product.warranty!.id: "Unknown"))
+        HorizontalTwoBooleanView(descriptionLeft: "Physical Damage", dataLeft: boolToTextScheme1[product.physicalDamage ?? false]!, descriptionRight: "Original Box", dataRight: boolToTextScheme1[product.originalBox ?? false]!, leftStatus: boolToStatusScheme2[product.physicalDamage ?? false]!, rightStatus: boolToStatusScheme1[product.originalBox ?? false]!)
         SpecificsCardView(product: product)
         if(product.comments != nil && product.comments != "") {
             HorizontalOneAttributeView(description: "Comments", data: product.comments!, alignment: .leading)
+                .contextMenu {
+                    Button(action: {UIPasteboard.general.string = product.comments})
+                    {
+                        Label("Copy Comments", systemImage: "doc.on.doc")
+                    }
+                }
         }
     }
 }
@@ -272,6 +300,12 @@ struct SpecificsCardView: View {
         if(product.type == DeviceType.AppleWatch) {
             HorizontalOneBooleanView(description: "Activation Lock", data: boolToTextScheme2[product.activationLock ?? false]!, status: boolToStatusScheme2[product.activationLock ?? false]!, alignment: .leading)
             HorizontalOneAttributeView(description: "Original bands included", data: product.originalBands ?? "Unknown", alignment: .leading)
+            .contextMenu {
+                Button(action: {UIPasteboard.general.string = product.originalBands ?? "Unknown"})
+                {
+                    Label("Copy", systemImage: "doc.on.doc")
+                }
+            }
             
         }
         if(product.type == DeviceType.AppleTV) {
@@ -295,12 +329,10 @@ struct HorizontalOneAttributeView: View {
             Text(description)
                 .font(.system(.subheadline, design: .rounded))
                 .foregroundColor(.gray)
-                .textSelection(.enabled)
                 .fixedSize()
             Spacer(minLength: 5)
             Text(data)
                 .fixedSize(horizontal: false, vertical: true)
-                .textSelection(.enabled)
             Spacer(minLength: 5)
         }
     }
@@ -319,12 +351,10 @@ struct HorizontalOneBooleanView: View {
             Text(description)
                 .font(.system(.subheadline, design: .rounded))
                 .foregroundColor(.gray)
-                .textSelection(.enabled)
                 .fixedSize()
             Spacer(minLength: 5)
             Label(data, systemImage: statusToImage[status]!).foregroundColor(statusToColor[status])
                 .fixedSize(horizontal: false, vertical: true)
-                .textSelection(.enabled)
             Spacer(minLength: 5)
 
         }

@@ -278,7 +278,7 @@ struct LargeValuesWidgetView: View {
                                 .foregroundColor(.gray)
                                 .fontWeight(.medium)
                                 .font(.system(.headline, design: .rounded))
-                            Spacer().frame(width: 0.09*geo.size.width)
+                            Spacer().frame(width: 0.08*geo.size.width)
                             Text(String(format: "$%d", locale: Locale.current, entry.widgetModel.totalCollectionValue))
                                 .font(.system(size: 0.05*geo.size.width, design: .rounded))
                                 .fontWeight(.semibold)

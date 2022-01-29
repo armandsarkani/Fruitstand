@@ -38,32 +38,32 @@ struct ProductListView: View {
     }
     
     var body: some View {
-        List
-        {
-            if(!searchText.isEmpty)
+        GeometryReader { geo in
+            List
             {
-                Section(header: Text(resultsText).fontWeight(.medium).font(.system(.title3, design: .rounded)).textCase(nil)) {}
-                .listRowInsets(EdgeInsets(top: 20, leading: 7, bottom: -500, trailing: 0))
-            }
-            ForEach(searchResults, id: \.self) { model in
-                NavigationLink(destination: ProductView(model: model.model, deviceType: deviceType)              .environmentObject(collectionModel).environmentObject(accentColor))
-                    {
-                    if(model.model.count >= 30)
-                    {
-                        Label(model.model, systemImage: getProductIcon(product: ProductInfo(type: DeviceType(rawValue: deviceType.rawValue), model: model.model)))
-                            .minimumScaleFactor(0.5)
+                if(!searchText.isEmpty)
+                {
+                    Section(header: Text(resultsText).fontWeight(.medium).font(.system(.title3, design: .rounded)).textCase(nil)) {}
+                    .listRowInsets(EdgeInsets(top: 20, leading: 7, bottom: -500, trailing: 0))
+                }
+                ForEach(searchResults, id: \.self) { model in
+                    NavigationLink(destination: ProductView(model: model.model, deviceType: deviceType, fromSearch: false)              .environmentObject(collectionModel).environmentObject(accentColor))
+                        {
+                            Label(model.model, systemImage: getProductIcon(product: ProductInfo(type: DeviceType(rawValue: deviceType.rawValue), model: model.model)))
+                                .frame(width: 0.625*geo.size.width, alignment: .leading)
+                                .if(model.model.count < 30) {
+                                    $0.fixedSize()
+                                }
+                            Spacer()
+                            Text(String(model.count!))
+                                    .fixedSize()
+                                .foregroundColor(.gray)
+                        
                     }
-                    else
-                    {
-                        Label(model.model, systemImage: getProductIcon(product: ProductInfo(type: DeviceType(rawValue: deviceType.rawValue), model: model.model)))
-                            .fixedSize()
-                    }
-                    Spacer()
-                    Text(String(model.count!))
-                        .foregroundColor(.gray)
                 }
             }
         }
+
         .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .automatic)).autocapitalization(.none)
         .overlay(Group {
             if(collectionModel.modelList[deviceType]!.isEmpty){
@@ -81,14 +81,18 @@ struct ProductListView: View {
         .navigationTitle(Text(deviceType.rawValue))
         .navigationBarTitleDisplayMode(.large)
         .if(UIDevice.current.model.hasPrefix("iPhone")) {
-            $0.navigationBarItems(trailing:
-                    HStack {
-                NavigationLink(destination: SearchView().environmentObject(collectionModel).environmentObject(accentColor))
+            $0.toolbar {
+                ToolbarItem(placement: .navigationBarTrailing)
+                {
+                    HStack
+                    {
+                        NavigationLink(destination: SearchView().environmentObject(collectionModel).environmentObject(accentColor))
                         {
                             Image(systemName: "magnifyingglass")
                                 .imageScale(.large)
                                 .frame(height: 96, alignment: .trailing)
                         }
+                        .keyboardShortcut("f", modifiers: .command)
                         Button(action: {
                             if(collectionModel.collectionSize >= 1000)
                             {
@@ -100,11 +104,18 @@ struct ProductListView: View {
                                 showInfoModalView.toggle()
                             }
                             }) {
-                        Image(systemName: "plus")
-                            .imageScale(.large)
-                            .frame(height: 96, alignment: .trailing)
+                                Image(systemName: "plus")
+                                    .imageScale(.large)
+                                    .frame(height: 96, alignment: .trailing)
+                            }
+                            #if targetEnvironment(macCatalyst)
+                            .keyboardShortcut("a", modifiers: .command)
+                            #else
+                            .keyboardShortcut("+", modifiers: .command)
+                            #endif
                     }
-            })
+                }
+            }
         }
         .if(UIDevice.current.model.hasPrefix("iPhone")) {
             $0.alert(isPresented: $collectionFull) {

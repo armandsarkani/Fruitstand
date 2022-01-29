@@ -52,7 +52,7 @@ class AccentColor: ObservableObject {
 }
 extension Font {
     public static var subheadline: Font {
-        return Font.system(.subheadline, design: .rounded)
+        return Font.system(size: 14, design: .rounded)
        }
 }
 extension UserDefaults {

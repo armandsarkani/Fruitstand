@@ -131,7 +131,7 @@ struct ProductInfo: Codable, Hashable
     func contains(searchText: String) -> Bool
     {
         let lowercaseSearchText = searchText.lowercased()
-        if(getCommonName(product: self).lowercased().smartContains(lowercaseSearchText) || color!.lowercased().contains(lowercaseSearchText) || (comments ?? "").lowercased().contains(lowercaseSearchText) || (processor ?? "").lowercased().contains(lowercaseSearchText) || (storage ?? "").lowercased().contains(lowercaseSearchText) || lowercaseSearchText == "yearacquired: " + String(yearAcquired ?? 2022) || lowercaseSearchText == "acquired: " + String(yearAcquired ?? 2022) || (lowercaseSearchText.smartContains((storage ?? "").lowercased()) && lowercaseSearchText.contains(getCommonName(product: self).lowercased())))
+        if(getCommonName(product: self, toDisplay: false).lowercased().smartContains(lowercaseSearchText) || color!.lowercased().contains(lowercaseSearchText) || (comments ?? "").lowercased().contains(lowercaseSearchText) || (processor ?? "").lowercased().contains(lowercaseSearchText) || (storage ?? "").lowercased().contains(lowercaseSearchText) || lowercaseSearchText == "yearacquired: " + String(yearAcquired ?? 2022) || lowercaseSearchText == "acquired: " + String(yearAcquired ?? 2022) || (lowercaseSearchText.smartContains((storage ?? "").lowercased()) && lowercaseSearchText.contains(getCommonName(product: self, toDisplay: false).lowercased())))
         {
             return true
         }
@@ -177,7 +177,11 @@ func getCommonHeaderName(product: ProductInfo, toDisplay: Bool) -> String
     }
     else if(product.type == DeviceType.AppleWatch)
     {
-        return "\(product.caseSize != nil ? "\(String(product.caseSize!))mm": "") \(product.caseType != nil ? product.caseType!.id: "") \(product.watchConnectivity != nil ? product.watchConnectivity!.id: "")"
+        if(product.caseSize == nil && product.caseType == nil && product.watchConnectivity == nil)
+        {
+            return "Unknown Model"
+        }
+        return "\(product.caseSize != nil ? "\(String(product.caseSize!))mm": "Unknown Case Size") \(product.caseType != nil ? product.caseType!.id: "Unknown Case Type") \(product.watchConnectivity != nil ? product.watchConnectivity!.id: "Unknown Connectivity")"
     }
     else if(product.type == DeviceType.AirPods)
     {
@@ -194,14 +198,14 @@ func getCommonHeaderName(product: ProductInfo, toDisplay: Bool) -> String
     return ""
 }
 
-func getCommonName(product: ProductInfo) -> String
+func getCommonName(product: ProductInfo, toDisplay: Bool) -> String
 {
     var commonName: String = ""
     if(product.model != "Other" && product.model != "Earlier Models")
     {
         commonName += (product.model! + " ")
     }
-    commonName += getCommonHeaderName(product: product, toDisplay: false)
+    commonName += getCommonHeaderName(product: product, toDisplay: toDisplay)
     return commonName
     
 }

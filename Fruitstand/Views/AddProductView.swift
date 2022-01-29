@@ -17,11 +17,13 @@ var numFormatter: NumberFormatter = {
     return f
 }()
 
+
 struct AddProductView: View {
     @State var product: ProductInfo = ProductInfo(type: DeviceType.Mac)
     @Binding var showInfoModalView: Bool
     @EnvironmentObject var collectionModel: CollectionModel
     @EnvironmentObject var accentColor: AccentColor
+
     @Environment(\.isPresented) var presentation
     var body: some View {
            NavigationView {
@@ -51,11 +53,17 @@ struct AddProductView: View {
                     }
 
                 }
+                .padding(.top, 10)
                 .navigationTitle(Text("Add Product"))
                 .navigationBarTitleDisplayMode(.large)
-                .navigationBarItems(
-                    leading: Button(action: {self.showInfoModalView.toggle()}, label: {Text("Cancel").fontWeight(.regular)}),
-                    trailing: Button(action: {addItem()}, label: {Text("Add").bold()}).disabled((product.type == nil ||  product.color == nil || product.yearAcquired == nil || product.estimatedValue == nil || product.workingStatus == nil || product.condition == nil || product.acquiredAs == nil || product.warranty == nil || product.physicalDamage == nil || product.originalBox == nil) || (product.iPhoneModel == nil && product.iPadModel == nil && product.MacModel == nil && product.AppleWatchModel == nil && product.AirPodsModel == nil && product.AppleTVModel == nil && product.iPodModel == nil)))
+                .toolbar {
+                    ToolbarItem(placement: .navigationBarLeading) {
+                        Button(action: {self.showInfoModalView.toggle()}, label: {Text("Cancel").fontWeight(.regular)})
+                    }
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        Button(action: {addItem()}, label: {Text("Add").bold()}).disabled((product.type == nil ||  product.color == nil || product.yearAcquired == nil || product.estimatedValue == nil || product.workingStatus == nil || product.condition == nil || product.acquiredAs == nil || product.warranty == nil || product.physicalDamage == nil || product.originalBox == nil) || (product.iPhoneModel == nil && product.iPadModel == nil && product.MacModel == nil && product.AppleWatchModel == nil && product.AirPodsModel == nil && product.AppleTVModel == nil && product.iPodModel == nil))
+                    }
+                }
            }
            .accentColor(accentColor.color)
     }
@@ -103,11 +111,17 @@ struct EditProductView: View {
                  }
 
              }
+             .padding(.top, 10)
              .navigationTitle(Text("Edit Product"))
              .navigationBarTitleDisplayMode(.large)
-             .navigationBarItems(
-                 leading: Button(action: {showEditModalView.toggle()}, label: {Text("Cancel").fontWeight(.regular)}),
-                 trailing: Button(action: {editItem()}, label: {Text("Done").bold()}).disabled((product.color == "" || product.yearAcquired == nil || product.estimatedValue == nil || product.workingStatus == nil || product.condition == nil || product.acquiredAs == nil || product.warranty == nil || product.physicalDamage == nil || product.originalBox == nil) || (product.iPhoneModel == nil && product.iPadModel == nil && product.MacModel == nil && product.AppleWatchModel == nil && product.AirPodsModel == nil && product.AppleTVModel == nil && product.iPodModel == nil)))
+             .toolbar {
+                 ToolbarItem(placement: .navigationBarLeading) {
+                     Button(action: {showEditModalView.toggle()}, label: {Text("Cancel").fontWeight(.regular)})
+                 }
+                 ToolbarItem(placement: .navigationBarTrailing) {
+                     Button(action: {editItem()}, label: {Text("Done").bold()}).disabled((product.color == "" || product.yearAcquired == nil || product.estimatedValue == nil || product.workingStatus == nil || product.condition == nil || product.acquiredAs == nil || product.warranty == nil || product.physicalDamage == nil || product.originalBox == nil) || (product.iPhoneModel == nil && product.iPadModel == nil && product.MacModel == nil && product.AppleWatchModel == nil && product.AirPodsModel == nil && product.AppleTVModel == nil && product.iPodModel == nil))
+                 }
+             }
         }
         .accentColor(accentColor.color)
     }

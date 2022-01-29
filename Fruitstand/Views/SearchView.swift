@@ -8,10 +8,13 @@
 import Foundation
 import SwiftUI
 
+
 struct SearchView: View {
     @EnvironmentObject var collectionModel: CollectionModel
     @EnvironmentObject var accentColor: AccentColor
+    @State var previousModelDetailView: String?
     @State private var searchText = ""
+    @State private var cardTapped = false
     @State var deviceTypeFilter: String = "All Devices"
     let deviceTypeFilters = ["All Devices", "Mac", "iPhone", "iPad", "Apple Watch", "AirPods", "Apple TV", "iPod"]
     var suggestions: [String] {
@@ -30,6 +33,7 @@ struct SearchView: View {
 
            }
     }
+
     var resultsText: String {
         if searchText.isEmpty {
             return ""
@@ -39,64 +43,80 @@ struct SearchView: View {
         }
     }
     var body: some View {
-        Spacer()
-        if(!searchText.isEmpty)
-        {
-            Picker(selection: $deviceTypeFilter, label: Label("Device Type", systemImage: "square.3.layers.3d.down.left")) {
+        Picker(selection: $deviceTypeFilter, label: Label("Device Type", systemImage: "square.3.layers.3d.down.left")) {
+            if(!searchText.isEmpty) {
                 ForEach(deviceTypeFilters, id: \.self) { filter in
                     Image(systemName: (icons[filter] ?? "circle.hexagongrid"))
                 }
             }
-            .if(UIDevice.current.model.hasPrefix("iPhone"))
-            {
-                $0.frame(maxWidth: (UIScreen.main.bounds.width * 0.9))
-            }
-
-            .if(UIDevice.current.model.hasPrefix("iPad"))
-            {
-                $0.scaleEffect(0.9)
-            }
-            .scaledToFit()
-            .pickerStyle(.segmented)
         }
-        Form
+        .if(searchText.isEmpty)
         {
-            if(!searchText.isEmpty)
-            {
-                Section(header: Text(resultsText).fontWeight(.medium).font(.system(.title3, design: .rounded)).textCase(nil)) {}
-                .listRowInsets(EdgeInsets(top: 15, leading: 7, bottom: -1000, trailing: 0))
-            }
-            if(searchText.isEmpty)
-            {
-                Section(header: Text("Suggestions").font(.subheadline))
-                {
-                    ForEach(suggestions.choose(4), id: \.self) { suggestion in
-                        Button(action: {generator.notificationOccurred(.success); searchText = suggestion})
-                        {
-                            Label{Text(suggestion).foregroundColor(.primary)} icon: {Image(systemName: "arrow.up.right")}
-                            
-                        }
-                    }
-                }
-                Picker(selection: $deviceTypeFilter, label: Text("Filter By Device Type").font(.subheadline)) {
-                    ForEach(deviceTypeFilters, id: \.self) { filter in
-                        Label(filter, systemImage: (icons[filter] ?? "circle.hexagongrid"))
-                    }
-                }
-                .pickerStyle(.inline)
-            }
-            ForEach(searchResults, id: \.self) { product in
-                Section {
-                    ProductCardView(product: product, fullSearchable: true).environmentObject(collectionModel).environmentObject(accentColor)
-                }
-            }
-            
+            $0.padding(.top, -100)
+
         }
-        .edgesIgnoringSafeArea(.all)
-        .environment(\.defaultMinListHeaderHeight, 20)
-        .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .always), prompt: "Search all products ").autocapitalization(.none)
-        .navigationTitle("Search")
-        .navigationBarTitleDisplayMode(.large)
+        #if targetEnvironment(macCatalyst)
+        .if(!searchText.isEmpty)
+        {
+            $0.padding(.top, 15)
+        }
+        #endif
+        .scaledToFit()
+        .pickerStyle(.segmented)
+        .if(UIDevice.current.model.hasPrefix("iPhone") && !searchText.isEmpty)
+        {
+            $0.frame(maxWidth: (UIScreen.main.bounds.width * 0.9))
+        }
+
+        .if(UIDevice.current.model.hasPrefix("iPad") && !searchText.isEmpty)
+        {
+            $0.scaleEffect(0.9)
+        }
+       List
+       {
+           if(!searchText.isEmpty)
+           {
+               Section(header: Text(resultsText).fontWeight(.medium).font(.system(.title3, design: .rounded)).textCase(nil)) {}
+               .listRowInsets(EdgeInsets(top: 15, leading: 7, bottom: -1000, trailing: 0))
+           }
+           if(searchText.isEmpty)
+           {
+               Section(header: Text("Suggestions").font(.subheadline))
+               {
+                   ForEach(suggestions.choose(4), id: \.self) { suggestion in
+                       Button(action: {generator.notificationOccurred(.success); searchText = suggestion})
+                       {
+                           Label{Text(suggestion).foregroundColor(.primary)} icon: {Image(systemName: "arrow.up.right")}
+                           
+                       }
+                   }
+               }
+               
+               Picker(selection: $deviceTypeFilter, label: Text("Filter By Device Type").font(.subheadline)) {
+                   ForEach(deviceTypeFilters, id: \.self) { filter in
+                       Label(filter, systemImage: (icons[filter] ?? "circle.hexagongrid"))
+                   }
+               }
+               .pickerStyle(.inline)
+           }
+           ForEach(searchResults, id: \.self) { product in
+               Section {
+                   ProductCardView(product: product, fullSearchable: true).environmentObject(collectionModel)
+                   if(collectionModel.getModelCount(model: product.model!) > 1)
+                   {
+                       NavigationLink(destination: ProductView(model: product.model!, deviceType: product.type!, fromSearch: true).environmentObject(collectionModel).environmentObject(accentColor))
+                       {
+                           Label("View All", systemImage: "rectangle.stack")
+                               .foregroundColor(accentColor.color)
+                       }
+                   }
+               }
+           }
+       }
+       .environment(\.defaultMinListHeaderHeight, 20)
+       .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .always), prompt: "Search all products ").autocapitalization(.none)
+       .navigationTitle("Search")
+       .navigationBarTitleDisplayMode(.large)
     }
     func getSearchSuggestions(deviceTypeFilter: String) -> [String]
     {
@@ -106,34 +126,45 @@ struct SearchView: View {
         }
         else if(deviceTypeFilter == "iPhone")
         {
-            return ["iPhone 13", "iPhone 13 mini", "iPhone 13 Pro", "iPhone 13 Pro Max", "iPhone SE", "Unable to power on", "First iPhone", "64GB", "128GB", "256GB", "512GB", "Activation Lock", "AppleCare+"]
+            return ["iPhone 13", "iPhone 13 mini", "iPhone 13 Pro", "iPhone 13 Pro Max", "iPhone SE", "Unable to power on", "First iPhone", "64GB", "128GB", "256GB", "512GB", "Activation Lock"]
         }
         else if(deviceTypeFilter == "iPad")
         {
-            return ["iPad Pro", "iPad Air", "iPad mini", "Unable to power on", "First iPad", "64GB", "128GB", "256GB", "512GB", "Activation Lock", "AppleCare+"]
+            return ["iPad Pro", "iPad Air", "iPad mini", "Unable to power on", "First iPad", "64GB", "128GB", "256GB", "512GB", "Activation Lock"]
         }
         else if(deviceTypeFilter == "Mac")
         {
-            return ["M1 Max", "M1", "2019", "2020", "2021", "2022", "Intel Core i5", "Intel Core i7", "Intel Core i9", "MacBook Air (retina)", "MacBook Pro (retina)", "MacBook Pro (unibody)", "iMac Pro", "Retina", "Unable to power on", "SSD", "First Mac", "Activation Lock", "AppleCare+"]
+            return ["M1 Max", "M1", "2019", "2020", "2021", "2022", "Intel Core i5", "Intel Core i7", "Intel Core i9", "MacBook Air (retina)", "MacBook Pro (retina)", "MacBook Pro (unibody)", "iMac Pro", "Retina", "Unable to power on", "SSD", "First Mac", "Activation Lock"]
         }
         else if(deviceTypeFilter == "Apple Watch")
         {
-            return ["Apple Watch SE", "Apple Watch Series 7", "Apple Watch Series 6", "Unable to power on", "First Apple Watch", "Titanium", "Stainless steel", "Aluminum", "Activation Lock", "AppleCare+"]
+            return ["Apple Watch SE", "Apple Watch Series 7", "Apple Watch Series 6", "Unable to power on", "First Apple Watch", "Titanium", "Stainless steel", "Aluminum", "Activation Lock"]
 
         }
         else if(deviceTypeFilter == "AirPods")
         {
-            return ["AirPods Pro", "3rd gen", "AirPods Max", "First AirPods", "MagSafe", "AppleCare+"]
+            return ["AirPods Pro", "3rd gen", "AirPods Max", "First AirPods", "MagSafe"]
 
         }
         else if(deviceTypeFilter == "Apple TV")
         {
-            return ["Apple TV 4K", "Apple TV HD", "First Apple TV", "AppleCare+"]
+            return ["Apple TV 4K", "Apple TV HD", "First Apple TV"]
         }
         else
         {
-            return ["32GB", "16GB", "8GB", "iPod classic", "iPod touch", "iPod nano", "iPod shuffle", "iPod + HP", "First iPod", "AppleCare+"]
+            return ["32GB", "16GB", "8GB", "iPod classic", "iPod touch", "iPod nano", "iPod shuffle", "iPod + HP", "First iPod"]
 
         }
+    }
+}
+
+struct PreventCollapseView: View {
+
+    private var mostlyClear = Color(UIColor(white: 0.0, alpha: 0.0005))
+
+    var body: some View {
+        Rectangle()
+            .fill(mostlyClear)
+            .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: 1)
     }
 }

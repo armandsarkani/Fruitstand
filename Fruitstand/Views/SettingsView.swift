@@ -22,7 +22,8 @@ struct SettingsView: View {
     @State private var importError: Bool = false
     @State private var confirmationShown = false
     @EnvironmentObject var accentColor: AccentColor
-
+    let appearances: [SwiftUI.ColorScheme] = [.light, .dark]
+    @Environment(\.colorScheme) var colorScheme
     @Environment(\.isPresented) var presentation
     var body: some View {
         NavigationView {
@@ -115,6 +116,7 @@ struct SettingsView: View {
                             .contextMenu {
                                 Button(action: {accentColor.color = Color.accentColor; accentColor.saveColor()}) {
                                     Label("Reset to Default", systemImage: "arrow.counterclockwise")
+
                                 }
                             }
                     }
@@ -187,10 +189,15 @@ struct SettingsView: View {
                     dismissButton: .default(Text("OK"))
                 )
             }
+            .padding(.top, -15)
             .navigationTitle(Text("Settings"))
             .navigationBarTitleDisplayMode(.large)
-            .navigationBarItems(
-                leading: Button(action: {self.showSettingsModalView.toggle()}, label: {Text("Close").fontWeight(.regular)}))
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading)
+                {
+                    Button(action: {self.showSettingsModalView.toggle()}, label: {Text("Close").fontWeight(.regular)})
+                }
+            }
         }
         .alert(isPresented: $collectionFull) {
             Alert(

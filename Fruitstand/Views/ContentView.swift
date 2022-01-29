@@ -60,7 +60,7 @@ struct ContentView: View {
                 }
                 Section(header: Text("Statistics").font(.subheadline))
                 {
-                    NavigationLink(destination: ValuesView().environmentObject(collectionModel)){
+                    NavigationLink(destination: ValuesView().environmentObject(collectionModel).environmentObject(accentColor)){
                         Label("Values", systemImage: "dollarsign.circle.fill")
                     }
                     HStack
@@ -77,16 +77,18 @@ struct ContentView: View {
             .listStyle(InsetGroupedListStyle())
             .environment(\.horizontalSizeClass, .regular)
             .navigationTitle("My Collection")
-            .navigationBarItems(
-                leading:
-                    Button(action: {
-                            showSettingsModalView.toggle()
-                            }) {
-                                Image(systemName: "gearshape")
-                                    .imageScale(.large)
-                                    .frame(height: 96, alignment: .trailing)
-                                },
-                    trailing:
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading)
+                {
+                    Button(action: { showSettingsModalView.toggle()}) {
+                        Image(systemName: "gearshape")
+                            .imageScale(.large)
+                            .frame(height: 96, alignment: .trailing)
+                    }
+
+                }
+                ToolbarItem(placement: .navigationBarTrailing)
+                {
                     HStack
                     {
                         NavigationLink(destination: SearchView().environmentObject(collectionModel).environmentObject(accentColor))
@@ -116,22 +118,26 @@ struct ContentView: View {
                             #else
                             .keyboardShortcut("+", modifiers: .command)
                             #endif
-
-                        })
-                        .alert(isPresented: $collectionFull) {
-                            Alert(
-                                title: Text("1000 Product Limit Reached"),
-                                message: Text("Remove at least one product from your collection before adding new ones."),
-                                dismissButton: .default(Text("OK"))
-                            )
-                        }
-
-
+                    }
+                }
+            }
+            .alert(isPresented: $collectionFull) {
+                Alert(
+                    title: Text("1000 Product Limit Reached"),
+                    message: Text("Remove at least one product from your collection before adding new ones."),
+                    dismissButton: .default(Text("OK"))
+                )
+            }
             .onAppear {
                 collectionModel.loadCollection(count: count)
                 count += 1
             }
             
+        }
+        .if(UIDevice.current.model.hasPrefix("iPhone"))
+        {
+            $0.navigationViewStyle(StackNavigationViewStyle())
+
         }
         .sheet(isPresented: $showInfoModalView) {
             AddProductView(showInfoModalView: self.$showInfoModalView).environmentObject(collectionModel).environmentObject(accentColor)

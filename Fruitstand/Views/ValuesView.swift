@@ -10,6 +10,9 @@ import SwiftUI
 
 struct ValuesView: View {
     @EnvironmentObject var collectionModel: CollectionModel
+    @State private var collectionFull: Bool = false
+    @State var showInfoModalView: Bool = false
+    @EnvironmentObject var accentColor: AccentColor
     var body: some View {
         if(collectionModel.isEmpty()) {
             VStack(spacing: 15)
@@ -27,7 +30,7 @@ struct ValuesView: View {
             List {
                 HStack
                 {
-                    Label("Total Collection Value", systemImage: "dollarsign.circle.fill")
+                    Label("Collection Value", systemImage: "dollarsign.circle.fill")
                         .fixedSize()
                     Spacer()
                     Text(String(format: "$%d", locale: Locale.current, getTotalCollectionValue(collection: collectionModel.collection)))
@@ -62,8 +65,59 @@ struct ValuesView: View {
             }
             .navigationTitle("Values")
             .navigationBarTitleDisplayMode(.large)
+            .if(UIDevice.current.model.hasPrefix("iPhone")) {
+                $0.toolbar {
+                    ToolbarItem(placement: .navigationBarTrailing)
+                    {
+                        HStack
+                        {
+                            NavigationLink(destination: SearchView().environmentObject(collectionModel).environmentObject(accentColor))
+                            {
+                                Image(systemName: "magnifyingglass")
+                                    .imageScale(.large)
+                                    .frame(height: 96, alignment: .trailing)
+                            }
+                            .keyboardShortcut("f", modifiers: .command)
+                            Button(action: {
+                                if(collectionModel.collectionSize >= 1000)
+                                {
+                                    generator.notificationOccurred(.error)
+                                    collectionFull.toggle()
+                                }
+                                else {
+                                    generator.notificationOccurred(.success)
+                                    showInfoModalView.toggle()
+                                }
+                                }) {
+                                    Image(systemName: "plus")
+                                        .imageScale(.large)
+                                        .frame(height: 96, alignment: .trailing)
+                                }
+                                #if targetEnvironment(macCatalyst)
+                                .keyboardShortcut("a", modifiers: .command)
+                                #else
+                                .keyboardShortcut("+", modifiers: .command)
+                                #endif
+                        }
+                    }
+                }
+            }
+            .if(UIDevice.current.model.hasPrefix("iPhone")) {
+                $0.alert(isPresented: $collectionFull) {
+                    Alert(
+                        title: Text("1000 Product Limit Reached"),
+                        message: Text("Remove at least one product from your collection before adding new ones."),
+                        dismissButton: .default(Text("OK"))
+                    )
+                }
+            }
+            .sheet(isPresented: $showInfoModalView) {
+                AddProductView(showInfoModalView: self.$showInfoModalView).environmentObject(collectionModel).environmentObject(accentColor)
+            }
+
 
         }
     }
     
 }
+
