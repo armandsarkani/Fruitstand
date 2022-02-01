@@ -10,16 +10,36 @@ import SwiftUI
 import UniformTypeIdentifiers
 import SwiftCSV
 
+enum FileError: Error {
+    case fileNameError
+    case collectionSizeError
+    case decodeError
+}
+
+struct AlertInfo: Identifiable {
+
+    enum AlertType {
+        case importSuccessful
+        case loadSampleCollectionSuccessful
+        case fileNameError
+        case collectionSizeError
+        case decodeError
+    }
+    
+    let id: AlertType
+    let title: String
+    let message: String
+}
+
+
+
 struct SettingsView: View {
     @EnvironmentObject var collectionModel: CollectionModel
     @Binding var showSettingsModalView: Bool
     @State private var noiCloudAccount: Bool = false
     @State private var isExporting: Bool = false
     @State private var isImporting: Bool = false
-    @State private var importSuccessful: Bool = false
-    @State private var loadSampleCollectionSuccessful: Bool = false
-    @State private var collectionFull: Bool = false
-    @State private var importError: Bool = false
+    @State private var alertInfo: AlertInfo?
     @State private var confirmationShown = false
     @EnvironmentObject var accentColor: AccentColor
     let appearances: [SwiftUI.ColorScheme] = [.light, .dark]
@@ -77,21 +97,14 @@ struct SettingsView: View {
                     Button(action: {
                         CSVCollectionModel(collectionModel: collectionModel).loadSampleCollection()
                         if(collectionModel.collectionSize >= 1000) {
-                            collectionFull.toggle()
+                            alertInfo = AlertInfo(id: .collectionSizeError, title: "1000 Product Limit Reached", message: "Some products may not have been loaded into your collection.")
                         }
                         else {
-                            loadSampleCollectionSuccessful.toggle()
+                            alertInfo = AlertInfo(id: .collectionSizeError, title: "Sample Collection Successfully Loaded", message: "The sample products have been successfully loaded into your collection.")
                         }
                         
                     }) {
                         Label("Load Sample Collection", systemImage: "square.and.arrow.down")
-                    }
-                    .alert(isPresented: $loadSampleCollectionSuccessful) {
-                        Alert(
-                            title: Text("Sample Collection Successfully Loaded"),
-                            message: Text("The sample products have been successfully loaded into your collection."),
-                            dismissButton: .default(Text("OK"))
-                        )
                     }
                     Button(action: {isExporting.toggle()}) {
                         Label("Export Collection to CSV", systemImage: "arrow.up.doc.fill")
@@ -155,41 +168,50 @@ struct SettingsView: View {
                         for file in selectedFiles
                         {
                             let fileName = String(file.lastPathComponent)
-                            if(!acceptableFileNames.contains(fileName))
-                            {
-                                importError.toggle()
-                                break
+                            if(!acceptableFileNames.contains(fileName)) {
+                                
+                                throw FileError.fileNameError
                             }
-                            guard let CSVString = String(data: try Data(contentsOf: file), encoding: .utf8) else { return }
-                            CSVStrings[fileNamesToDeviceTypes[fileName]!] = CSVString
+                            if file.startAccessingSecurityScopedResource() {
+                                guard let CSVString = String(data: try Data(contentsOf: file), encoding: .utf8) else {throw FileError.decodeError }
+                                CSVStrings[fileNamesToDeviceTypes[fileName]!] = CSVString
+                                do { file.stopAccessingSecurityScopedResource() }
+                            }
+                            else {
+                               print("Access denied!")
+                            }
                         }
                         CSVCollectionModel(collectionModel: collectionModel).loadImportCollection(CSVStrings: CSVStrings)
                         if(collectionModel.collectionSize >= 1000)
                         {
-                            collectionFull.toggle()
+                            throw FileError.collectionSizeError
                         }
                         else {
-                            importSuccessful.toggle()
+                            alertInfo = AlertInfo(id: .importSuccessful, title: "Import Successful", message: "Your products have been loaded into your collection.")
                         }
                     }
                     catch {
+                        print(error.localizedDescription)
+                        switch(error)
+                        {
+                        case FileError.decodeError:
+                            alertInfo = AlertInfo(id: .fileNameError, title: "File Decoding Error", message: "Error decoding file. Please try again.")
+                        case FileError.fileNameError:
+                            alertInfo = AlertInfo(id: .fileNameError, title: "File Naming Error", message: "Some of your files were not imported. Please rename your CSV files for each product type as follows: \n iPhone.csv \n iPad.csv \n Mac.csv \n AppleWatch.csv \n AirPods.csv \n AppleTV.csv \n iPod.csv")
+                        case FileError.collectionSizeError:
+                            alertInfo = AlertInfo(id: .collectionSizeError, title: "1000 Product Limit Reached", message: "Some products may not have been loaded into your collection.")
+                        default:
+                            alertInfo = AlertInfo(id: .collectionSizeError, title: "Unknown Error", message: "Please try again.")
+                            
+                        }
                     }
+                  
             }
-            .alert(isPresented: $importError) {
-                Alert(
-                    title: Text("File Naming Error"),
-                    message: Text("Some of your files were not imported. Please rename your CSV files for each product type as follows: \n iPhone.csv \n iPad.csv \n Mac.csv \n AppleWatch.csv \n AirPods.csv \n AppleTV.csv \n iPod.csv"),
-                    dismissButton: .default(Text("OK"))
-                )
-            }
-            .alert(isPresented: $importSuccessful) {
-                Alert(
-                    title: Text("Import Successful"),
-                    message: Text("Your products have been loaded into your collection."),
-                    dismissButton: .default(Text("OK"))
-                )
-            }
-            .padding(.top, -15)
+            .alert(item: $alertInfo, content: { info in
+                Alert(title: Text(info.title),
+                    message: Text(info.message),
+                    dismissButton: .default(Text("OK")))
+            })
             .navigationTitle(Text("Settings"))
             .navigationBarTitleDisplayMode(.large)
             .toolbar {
@@ -198,13 +220,6 @@ struct SettingsView: View {
                     Button(action: {self.showSettingsModalView.toggle()}, label: {Text("Close").fontWeight(.regular)})
                 }
             }
-        }
-        .alert(isPresented: $collectionFull) {
-            Alert(
-                title: Text("1000 Product Limit Reached"),
-                message: Text("Some products may not have been loaded into your collection."),
-                dismissButton: .default(Text("OK"))
-            )
         }
         .accentColor(accentColor.color)
     }

@@ -50,10 +50,9 @@ struct SearchView: View {
                 }
             }
         }
-        .if(searchText.isEmpty)
+       .if(searchText.isEmpty)
         {
             $0.padding(.top, -100)
-
         }
         #if targetEnvironment(macCatalyst)
         .if(!searchText.isEmpty)

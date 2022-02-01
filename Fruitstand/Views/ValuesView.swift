@@ -7,11 +7,13 @@
 
 import Foundation
 import SwiftUI
+import AlertToast
 
 struct ValuesView: View {
     @EnvironmentObject var collectionModel: CollectionModel
     @State private var collectionFull: Bool = false
     @State var showInfoModalView: Bool = false
+    @State private var showToast: Bool = false
     @EnvironmentObject var accentColor: AccentColor
     var body: some View {
         if(collectionModel.isEmpty()) {
@@ -111,10 +113,18 @@ struct ValuesView: View {
                     )
                 }
             }
-            .sheet(isPresented: $showInfoModalView) {
-                AddProductView(showInfoModalView: self.$showInfoModalView).environmentObject(collectionModel).environmentObject(accentColor)
+            .toast(isPresenting: $showToast, duration: 1) {
+                AlertToast(type: .complete(accentColor.color), title: "Product Added", style: AlertToast.AlertStyle.style(titleFont: Font.system(.title3, design: .rounded).bold()))
             }
-
+            .sheet(isPresented: $showInfoModalView, onDismiss: {
+                if(collectionModel.productJustAdded) {
+                    showToast.toggle()
+                    collectionModel.productJustAdded = false
+                }
+            }) {
+                AddProductView(showInfoModalView: self.$showInfoModalView).environmentObject(collectionModel).environmentObject(accentColor)
+                
+            }
 
         }
     }

@@ -8,7 +8,7 @@
 // This module is responsible for the view for displaying a list of products for a given model.
 
 import SwiftUI
-
+import AlertToast
 
 // Global variables
 let boolToTextScheme1: [Bool: String] = [true: "Yes", false: "No"]
@@ -38,6 +38,7 @@ struct ProductView: View {
     var deviceType: DeviceType
     var fromSearch: Bool = false
     @State var showInfoModalView: Bool = false
+    @State private var showToast: Bool = false
     @State private var searchText = ""
     @State private var collectionFull: Bool = false
     init(model: String, deviceType: DeviceType, fromSearch: Bool)
@@ -137,8 +138,17 @@ struct ProductView: View {
                 )
             }
         }
-        .sheet(isPresented: $showInfoModalView) {
+        .toast(isPresenting: $showToast, duration: 1) {
+            AlertToast(type: .complete(accentColor.color), title: "Product Added", style: AlertToast.AlertStyle.style(titleFont: Font.system(.title3, design: .rounded).bold()))
+        }
+        .sheet(isPresented: $showInfoModalView, onDismiss: {
+            if(collectionModel.productJustAdded) {
+                showToast.toggle()
+                collectionModel.productJustAdded = false
+            }
+        }) {
             AddProductView(showInfoModalView: self.$showInfoModalView).environmentObject(collectionModel).environmentObject(accentColor)
+            
         }
     }
 }
@@ -250,10 +260,10 @@ struct ProductCardView: View {
                               action: {
                                   collectionModel.eraseProduct(product: selectedProduct!)}))
         }
-        HorizontalMixedAttributeBooleanView(descriptionLeft: "Year Acquired", dataLeft: (product.yearAcquired != nil ? String(product.yearAcquired!): "Unknown"), descriptionRight: "Working Status", dataRight: (product.workingStatus != nil ? product.workingStatus!.id: "Unknown"), rightStatus: workingStatusMap[product.workingStatus ?? WorkingStatus.Working] ?? "unknown")
-        HorizontalTwoAttributeView(descriptionLeft: "Condition", dataLeft: (product.condition != nil ? product.condition!.id: "Unknown"), descriptionRight: "Acquired As", dataRight: (product.acquiredAs != nil ? product.acquiredAs!.id: "Unknown"))
-        HorizontalTwoAttributeView(descriptionLeft: "Estimated Value", dataLeft: (product.estimatedValue != nil ?  String(format: "$%d", locale: Locale.current, product.estimatedValue!): "Unknown"), descriptionRight: "Warranty", dataRight: (product.warranty != nil ? product.warranty!.id: "Unknown"))
-        HorizontalTwoBooleanView(descriptionLeft: "Physical Damage", dataLeft: boolToTextScheme1[product.physicalDamage ?? false]!, descriptionRight: "Original Box", dataRight: boolToTextScheme1[product.originalBox ?? false]!, leftStatus: boolToStatusScheme2[product.physicalDamage ?? false]!, rightStatus: boolToStatusScheme1[product.originalBox ?? false]!)
+        HorizontalMixedAttributeBooleanView(descriptionLeft: "Year acquired", dataLeft: (product.yearAcquired != nil ? String(product.yearAcquired!): "Unknown"), descriptionRight: "Working status", dataRight: (product.workingStatus != nil ? product.workingStatus!.id: "Unknown"), rightStatus: workingStatusMap[product.workingStatus ?? WorkingStatus.Working] ?? "unknown")
+        HorizontalTwoAttributeView(descriptionLeft: "Condition", dataLeft: (product.condition != nil ? product.condition!.id: "Unknown"), descriptionRight: "Acquired as", dataRight: (product.acquiredAs != nil ? product.acquiredAs!.id: "Unknown"))
+        HorizontalTwoAttributeView(descriptionLeft: "Estimated value", dataLeft: (product.estimatedValue != nil ?  String(format: "$%d", locale: Locale.current, product.estimatedValue!): "Unknown"), descriptionRight: "Warranty", dataRight: (product.warranty != nil ? product.warranty!.id: "Unknown"))
+        HorizontalTwoBooleanView(descriptionLeft: "Physical damage", dataLeft: boolToTextScheme1[product.physicalDamage ?? false]!, descriptionRight: "Original box", dataRight: boolToTextScheme1[product.originalBox ?? false]!, leftStatus: boolToStatusScheme2[product.physicalDamage ?? false]!, rightStatus: boolToStatusScheme1[product.originalBox ?? false]!)
         SpecificsCardView(product: product)
         if(product.comments != nil && product.comments != "") {
             HorizontalOneAttributeView(description: "Comments", data: product.comments!, alignment: .leading)
@@ -309,7 +319,7 @@ struct SpecificsCardView: View {
             
         }
         if(product.type == DeviceType.AppleTV) {
-            HorizontalOneBooleanView(description: "Has Remote", data: boolToTextScheme1[product.hasRemote ?? false]!, status: boolToStatusScheme1[product.hasRemote ?? false]!, alignment: .leading)
+            HorizontalOneBooleanView(description: "Has remote", data: boolToTextScheme1[product.hasRemote ?? false]!, status: boolToStatusScheme1[product.hasRemote ?? false]!, alignment: .leading)
             
         }
         if(product.type == DeviceType.iPod) {

@@ -53,7 +53,10 @@ struct AddProductView: View {
                     }
 
                 }
-                .padding(.top, 10)
+                .gesture(
+                    DragGesture()
+                        .onChanged { _ in self.hideKeyboard() }
+                    )
                 .navigationTitle(Text("Add Product"))
                 .navigationBarTitleDisplayMode(.large)
                 .toolbar {
@@ -72,8 +75,8 @@ struct AddProductView: View {
         generator.notificationOccurred(.success)
         product.model = getProductModel(product: product)
         collectionModel.saveOneProduct(product: &product)
+        collectionModel.productJustAdded = true
         self.showInfoModalView.toggle()
-
     }
 }
 
@@ -111,7 +114,10 @@ struct EditProductView: View {
                  }
 
              }
-             .padding(.top, 10)
+             .gesture(
+                 DragGesture()
+                     .onChanged { _ in self.hideKeyboard() }
+                 )
              .navigationTitle(Text("Edit Product"))
              .navigationBarTitleDisplayMode(.large)
              .toolbar {

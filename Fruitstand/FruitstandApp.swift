@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import UIKit
 
 @main
 struct FruitstandApp: App {
@@ -29,6 +30,12 @@ struct FruitstandApp: App {
         
     }
     
+}
+
+extension View {
+    func hideKeyboard() {
+        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+    }
 }
 
 class AccentColor: ObservableObject {

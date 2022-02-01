@@ -70,7 +70,7 @@ enum iPadConnectivity: String, CaseIterable, Identifiable, Codable {
 enum WatchConnectivity: String, CaseIterable, Identifiable, Codable {
     case GPS
     case Cellular = "GPS + Cellular"
-    case None
+    case None = "None"
     var id: String { self.rawValue }
 }
 

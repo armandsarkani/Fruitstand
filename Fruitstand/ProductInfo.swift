@@ -9,6 +9,7 @@
 
 import Foundation
 import Combine
+import SwiftUI
 
 extension UserDefaults
 {
@@ -128,10 +129,11 @@ struct ProductInfo: Codable, Hashable
     // AirPods only
     var APCaseType: AirPodsCaseType?
     
+    
     func contains(searchText: String) -> Bool
     {
         let lowercaseSearchText = searchText.lowercased()
-        if(getCommonName(product: self, toDisplay: false).lowercased().smartContains(lowercaseSearchText) || color!.lowercased().contains(lowercaseSearchText) || (comments ?? "").lowercased().contains(lowercaseSearchText) || (processor ?? "").lowercased().contains(lowercaseSearchText) || (storage ?? "").lowercased().contains(lowercaseSearchText) || lowercaseSearchText == "yearacquired: " + String(yearAcquired ?? 2022) || lowercaseSearchText == "acquired: " + String(yearAcquired ?? 2022) || (lowercaseSearchText.smartContains((storage ?? "").lowercased()) && lowercaseSearchText.contains(getCommonName(product: self, toDisplay: false).lowercased())))
+        if(getCommonName(product: self, toDisplay: false).lowercased().smartContains(lowercaseSearchText) || getCommonName(product: self, toDisplay: true).lowercased().contains(lowercaseSearchText) || uuid!.lowercased() == lowercaseSearchText || color!.lowercased().contains(lowercaseSearchText) || (comments ?? "").lowercased().contains(lowercaseSearchText) || (processor ?? "").lowercased().contains(lowercaseSearchText) || (storage ?? "").lowercased().contains(lowercaseSearchText) ||  lowercaseSearchText == "yearacquired: " + String(yearAcquired ?? 2022) || lowercaseSearchText == "acquired: " + String(yearAcquired ?? 2022) || lowercaseSearchText == "activation lock: " + String(activationLock ?? false) || lowercaseSearchText == "icloud: " + String(activationLock ?? false) || lowercaseSearchText == "icloud lock: " + String(activationLock ?? false) || lowercaseSearchText == "activationlock: " + String(activationLock ?? false) || lowercaseSearchText == "icloudlock: " + String(activationLock ?? false) || (lowercaseSearchText.smartContains((storage ?? "").lowercased()) && lowercaseSearchText.contains(getCommonName(product: self, toDisplay: false).lowercased())))
         {
             return true
         }
@@ -180,6 +182,9 @@ func getCommonHeaderName(product: ProductInfo, toDisplay: Bool) -> String
         if(product.caseSize == nil && product.caseType == nil && product.watchConnectivity == nil)
         {
             return "Unknown Model"
+        }
+        if(product.watchConnectivity == WatchConnectivity.None) {
+            return "\(product.caseSize != nil ? "\(String(product.caseSize!))mm": "Unknown Case Size") \(product.caseType != nil ? product.caseType!.id: "Unknown Case Type")"
         }
         return "\(product.caseSize != nil ? "\(String(product.caseSize!))mm": "Unknown Case Size") \(product.caseType != nil ? product.caseType!.id: "Unknown Case Type") \(product.watchConnectivity != nil ? product.watchConnectivity!.id: "Unknown Connectivity")"
     }

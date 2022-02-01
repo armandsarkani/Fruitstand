@@ -18,6 +18,7 @@
 		1624C744279E7D5700258513 /* Fruitstand_Widget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1624C743279E7D5700258513 /* Fruitstand_Widget.swift */; };
 		1624C749279E7D5800258513 /* Fruitstand_Widget.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = 1624C745279E7D5700258513 /* Fruitstand_Widget.intentdefinition */; };
 		1624C74A279E7D5800258513 /* Fruitstand_Widget.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = 1624C745279E7D5700258513 /* Fruitstand_Widget.intentdefinition */; };
+		1625662E27A7E5580029AB3A /* AlertToast in Frameworks */ = {isa = PBXBuildFile; productRef = 1625662D27A7E5580029AB3A /* AlertToast */; };
 		162C058D279794FE006FDA48 /* CollectionStatistics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 162C058C279794FE006FDA48 /* CollectionStatistics.swift */; };
 		167E160E279FA47B008427F1 /* CSV in Frameworks */ = {isa = PBXBuildFile; productRef = 167E160D279FA47B008427F1 /* CSV */; };
 		1690B4902790197900CFAD06 /* AddProductView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1690B48F2790197900CFAD06 /* AddProductView.swift */; };
@@ -116,6 +117,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				167E160E279FA47B008427F1 /* CSV in Frameworks */,
+				1625662E27A7E5580029AB3A /* AlertToast in Frameworks */,
 				16B2D1E1278A5289006242BC /* CloudKit.framework in Frameworks */,
 				16C5AE0E27922D1200C837F4 /* SwiftCSV in Frameworks */,
 			);
@@ -256,6 +258,7 @@
 			packageProductDependencies = (
 				16C5AE0D27922D1200C837F4 /* SwiftCSV */,
 				167E160D279FA47B008427F1 /* CSV */,
+				1625662D27A7E5580029AB3A /* AlertToast */,
 			);
 			productName = Fruitstand;
 			productReference = 16022E042652F8710098BD95 /* Fruitstand.app */;
@@ -329,6 +332,7 @@
 			packageReferences = (
 				16C5AE0C27922D1200C837F4 /* XCRemoteSwiftPackageReference "SwiftCSV" */,
 				167E160C279FA47B008427F1 /* XCRemoteSwiftPackageReference "CSV" */,
+				1625662C27A7E5580029AB3A /* XCRemoteSwiftPackageReference "AlertToast" */,
 			);
 			productRefGroup = 16022E052652F8710098BD95 /* Products */;
 			projectDirPath = "";
@@ -559,7 +563,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 2400;
+				CURRENT_PROJECT_VERSION = 2410;
 				DEVELOPMENT_ASSET_PATHS = "\"Fruitstand/Preview Content\"";
 				DEVELOPMENT_TEAM = 86LR2G8L2C;
 				ENABLE_PREVIEWS = YES;
@@ -593,7 +597,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 2400;
+				CURRENT_PROJECT_VERSION = 2410;
 				DEVELOPMENT_ASSET_PATHS = "\"Fruitstand/Preview Content\"";
 				DEVELOPMENT_TEAM = 86LR2G8L2C;
 				ENABLE_PREVIEWS = YES;
@@ -625,7 +629,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2400;
+				CURRENT_PROJECT_VERSION = 2410;
 				DEVELOPMENT_TEAM = 86LR2G8L2C;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "Fruitstand Widget/Info.plist";
@@ -658,7 +662,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2400;
+				CURRENT_PROJECT_VERSION = 2410;
 				DEVELOPMENT_TEAM = 86LR2G8L2C;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "Fruitstand Widget/Info.plist";
@@ -761,6 +765,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		1625662C27A7E5580029AB3A /* XCRemoteSwiftPackageReference "AlertToast" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/elai950/AlertToast";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.0;
+			};
+		};
 		167E160C279FA47B008427F1 /* XCRemoteSwiftPackageReference "CSV" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/yaslab/CSV.swift";
@@ -780,6 +792,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		1625662D27A7E5580029AB3A /* AlertToast */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1625662C27A7E5580029AB3A /* XCRemoteSwiftPackageReference "AlertToast" */;
+			productName = AlertToast;
+		};
 		167E160D279FA47B008427F1 /* CSV */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 167E160C279FA47B008427F1 /* XCRemoteSwiftPackageReference "CSV" */;

@@ -93,7 +93,7 @@ struct MediumCountsWidgetView: View {
                     .foregroundColor(.gray)
                     .fontWeight(.medium)
                     .font(.system(.headline, design: .rounded))
-                HStack {
+                HStack(alignment: .center) {
                     VStack(alignment: .leading, spacing: 0.06*geo.size.height) {
                         ForEach([0, 2], id: \.self) { element in
                             MediumCountsWidgetDetailView(entry: entry, element: element, geo: geo)
@@ -134,7 +134,7 @@ struct MediumCountsWidgetDetailView: View {
     var element: Int
     var geo: GeometryProxy
     var body: some View {
-        HStack {
+        HStack(alignment: .center) {
             Image(systemName: icons[entry.widgetModel.deviceTypeCounts[element].deviceType.id]!)
                 .frame(width: 0.05*geo.size.width)
                 .foregroundColor(entry.widgetModel.accentColor)
@@ -143,7 +143,7 @@ struct MediumCountsWidgetDetailView: View {
                 .frame(width: 0.08*geo.size.width)
             VStack(alignment: .leading) {
                 Text(String(entry.widgetModel.deviceTypeCounts[element].count))
-                    .font(.system(size: 0.07*geo.size.width, design: .rounded))
+                    .font(.system(size: 0.06*geo.size.width, design: .rounded))
                     .fontWeight(.semibold)
                     .fixedSize()
                 Text(entry.widgetModel.deviceTypeCounts[element].deviceType.id)
@@ -198,7 +198,7 @@ struct MediumValuesWidgetView: View {
                     .foregroundColor(.gray)
                     .fontWeight(.medium)
                     .font(.system(.headline, design: .rounded))
-                HStack {
+                HStack(alignment: .center) {
                     VStack(alignment: .leading, spacing: 0.06*geo.size.height) {
                         ForEach([0, 2], id: \.self) { element in
                             MediumValuesWidgetDetailView(entry: entry, element: element, geo: geo)
@@ -225,7 +225,7 @@ struct MediumValuesWidgetDetailView: View {
     var geo: GeometryProxy
     
     var body: some View {
-        HStack {
+        HStack(alignment: .center) {
             Image(systemName: icons[entry.widgetModel.deviceTypeValues[element].deviceType.id]!)
                 .frame(width: 0.05*geo.size.width)
                 .foregroundColor(entry.widgetModel.accentColor)
@@ -265,29 +265,25 @@ struct LargeValuesWidgetView: View {
                                 ForEach([0, 2], id: \.self) { element in
                                     AverageValuesDetailView(entry: entry, element: element, geo: geo)
                                 }
+                                Text("Collection Value")
+                                    .foregroundColor(.gray)
+                                    .fontWeight(.medium)
+                                    .font(.system(.headline, design: .rounded))
+                                    .fixedSize()
                             }
                             Spacer().frame(width: 0.13*geo.size.width)
                             VStack(alignment: .leading, spacing:  0.06*geo.size.height) {
                                 ForEach([1, 3], id: \.self) { element in
                                     AverageValuesDetailView(entry: entry, element: element, geo: geo)
                                 }
+                                Text(String(format: "$%d", locale: Locale.current, entry.widgetModel.totalCollectionValue))
+                                    .font(.system(size: 0.05*geo.size.width, design: .rounded))
+                                    .fontWeight(.semibold)
+                                    .fixedSize()
+                                    .padding(5)
+                                    .background(RoundedRectangle(cornerRadius: 10).fill(entry.widgetModel.accentColor))
                             }
                         }
-                        HStack() {
-                            Text("Collection Value")
-                                .foregroundColor(.gray)
-                                .fontWeight(.medium)
-                                .font(.system(.headline, design: .rounded))
-                            Spacer().frame(width: 0.08*geo.size.width)
-                            Text(String(format: "$%d", locale: Locale.current, entry.widgetModel.totalCollectionValue))
-                                .font(.system(size: 0.05*geo.size.width, design: .rounded))
-                                .fontWeight(.semibold)
-                                .fixedSize()
-                                .padding(5)
-                                .background(RoundedRectangle(cornerRadius: 10).fill(entry.widgetModel.accentColor))
-                        }
-                    
-
                         
                     }
                     .frame(width: geo.size.width*0.9, alignment: .leading)

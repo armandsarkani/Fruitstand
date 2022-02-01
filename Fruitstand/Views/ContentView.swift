@@ -9,6 +9,7 @@
 
 
 import SwiftUI
+import AlertToast
 
 // Global variables
 var keyStore = NSUbiquitousKeyValueStore()
@@ -28,6 +29,7 @@ struct ContentView: View {
     @State var showInfoModalView: Bool = false
     @State private var collectionFull: Bool = false
     @State var showSettingsModalView: Bool = false
+    @State private var showToast: Bool = false
     @State var count = 1
     @EnvironmentObject var collectionModel: CollectionModel
     @EnvironmentObject var accentColor: AccentColor
@@ -40,7 +42,6 @@ struct ContentView: View {
         let inlineDescriptor = UIFontDescriptor.preferredFontDescriptor(withTextStyle: .body).withDesign(design)!.withSymbolicTraits(.traitBold)
         let inlineFont = UIFont.init(descriptor: inlineDescriptor!, size: inlineDescriptor!.pointSize)
         UINavigationBar.appearance().titleTextAttributes = [.font: inlineFont]
-
     }
     var body: some View {
         NavigationView {
@@ -139,7 +140,15 @@ struct ContentView: View {
             $0.navigationViewStyle(StackNavigationViewStyle())
 
         }
-        .sheet(isPresented: $showInfoModalView) {
+        .toast(isPresenting: $showToast, duration: 1) {
+            AlertToast(type: .complete(accentColor.color), title: "Product Added", style: AlertToast.AlertStyle.style(titleFont: Font.system(.title3, design: .rounded).bold()))
+        }
+        .sheet(isPresented: $showInfoModalView, onDismiss: {
+            if(collectionModel.productJustAdded) {
+                showToast.toggle()
+                collectionModel.productJustAdded = false
+            }
+        }) {
             AddProductView(showInfoModalView: self.$showInfoModalView).environmentObject(collectionModel).environmentObject(accentColor)
             
         }
