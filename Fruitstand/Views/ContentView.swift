@@ -33,6 +33,7 @@ struct ContentView: View {
     @State var count = 1
     @EnvironmentObject var collectionModel: CollectionModel
     @EnvironmentObject var accentColor: AccentColor
+    @State var showiPadWelcomeScreen: Bool
     @Environment(\.isPresented) var presentation
     init() {
         let design = UIFontDescriptor.SystemDesign.rounded
@@ -42,6 +43,21 @@ struct ContentView: View {
         let inlineDescriptor = UIFontDescriptor.preferredFontDescriptor(withTextStyle: .body).withDesign(design)!.withSymbolicTraits(.traitBold)
         let inlineFont = UIFont.init(descriptor: inlineDescriptor!, size: inlineDescriptor!.pointSize)
         UINavigationBar.appearance().titleTextAttributes = [.font: inlineFont]
+        #if targetEnvironment(macCatalyst)
+            showiPadWelcomeScreen = false
+        #else
+            if(UIDevice.current.model.hasPrefix("iPad")) {
+                if UserDefaults.standard.object(forKey: "launchedBefore") != nil {
+                    showiPadWelcomeScreen = false
+                }
+                else {
+                    showiPadWelcomeScreen = true
+                }
+            }
+            else {
+                showiPadWelcomeScreen = false
+            }
+        #endif
     }
     var body: some View {
         NavigationView {
@@ -75,7 +91,6 @@ struct ContentView: View {
                 }
                
             }
-            .listStyle(InsetGroupedListStyle())
             .environment(\.horizontalSizeClass, .regular)
             .navigationTitle("My Collection")
             .toolbar {
@@ -154,6 +169,16 @@ struct ContentView: View {
         }
         .sheet(isPresented: $showSettingsModalView) {
             SettingsView(showSettingsModalView: self.$showSettingsModalView).environmentObject(collectionModel).environmentObject(accentColor)
+        }
+        .sheet(isPresented: $showiPadWelcomeScreen) {
+            WelcomeView()
+            Button(action: {
+                showiPadWelcomeScreen.toggle()
+            }) {
+                Text("Continue")
+                    .customButton()
+            }
+            .padding(.horizontal)
         }
     }
 }

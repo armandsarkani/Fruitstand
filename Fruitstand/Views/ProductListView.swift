@@ -23,7 +23,13 @@ struct ProductListView: View {
             return ""
         }
         else {
-            return "\(searchResults.count) Results"
+            if(searchResults.count == 1)
+            {
+                return "\(searchResults.count) Result"
+            }
+            else {
+                return "\(searchResults.count) Results"
+            }
         }
     }
     init(deviceType: DeviceType)
@@ -65,7 +71,6 @@ struct ProductListView: View {
                 }
             }
         }
-
         .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .automatic)).autocapitalization(.none)
         .overlay(Group {
             if(collectionModel.modelList[deviceType]!.isEmpty){

@@ -39,7 +39,13 @@ struct SearchView: View {
             return ""
         }
         else {
-            return "\(searchResults.count) Results"
+            if(searchResults.count == 1)
+            {
+                return "\(searchResults.count) Result"
+            }
+            else {
+                return "\(searchResults.count) Results"
+            }
         }
     }
     var body: some View {
@@ -100,7 +106,7 @@ struct SearchView: View {
            }
            ForEach(searchResults, id: \.self) { product in
                Section {
-                   ProductCardView(product: product, fullSearchable: true).environmentObject(collectionModel)
+                   ProductCardView(product: product, fullySearchable: true, showButtons: true).environmentObject(collectionModel)
                    if(collectionModel.getModelCount(model: product.model!) > 1)
                    {
                        NavigationLink(destination: ProductView(model: product.model!, deviceType: product.type!, fromSearch: true).environmentObject(collectionModel).environmentObject(accentColor))

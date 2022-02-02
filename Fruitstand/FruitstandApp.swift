@@ -13,23 +13,81 @@ struct FruitstandApp: App {
     @StateObject var collectionModel: CollectionModel = CollectionModel()
     @StateObject var accentColor: AccentColor = AccentColor()
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+    let appLaunchedBefore = UserDefaults.standard.object(forKey: "launchedBefore")
+    @State var continuePressed: Bool = false
+    var isiPad: Bool {
+        #if targetEnvironment(macCatalyst)
+        return false
+        #else
+        if(UIDevice.current.model.hasPrefix("iPad")) {
+            return true
+        }
+        else {
+            return false
+        }
+        #endif
+    }
     var body: some Scene {
         WindowGroup {
-            ContentView().environmentObject(collectionModel).environmentObject(accentColor)
-                .withHostingWindow { window in
-                    #if targetEnvironment(macCatalyst)
-                    if let titlebar = window?.windowScene?.titlebar {
-                        titlebar.titleVisibility = .hidden
-                        titlebar.toolbar = nil
-                    }
-                    #endif
+            if(appLaunchedBefore == nil && !continuePressed && !isiPad)
+            {
+                WelcomeView()
+                Button(action: {
+                    continuePressed.toggle()
+                }) {
+                    Text("Continue")
+                        .customButton()
                 }
-                .environment(\.font, Font.system(.body, design: .rounded))
-                .accentColor(accentColor.color)
+                .padding(.horizontal)
+            }
+            if((appLaunchedBefore != nil || continuePressed) || isiPad)
+            {
+                ContentView().environmentObject(collectionModel).environmentObject(accentColor)
+                    .withHostingWindow { window in
+                        #if targetEnvironment(macCatalyst)
+                        if let titlebar = window?.windowScene?.titlebar {
+                            titlebar.titleVisibility = .hidden
+                            titlebar.toolbar = nil
+                        }
+                        #endif
+                    }
+                    .environment(\.font, Font.system(.body, design: .rounded))
+                    .accentColor(accentColor.color)
+            }
         }
         
     }
     
+}
+
+extension UIView {
+    func scale(by scale: CGFloat) {
+          self.contentScaleFactor = scale
+          for subview in self.subviews {
+              subview.scale(by: scale)
+          }
+    }
+     
+}
+
+extension View {
+    func snapshot() -> UIImage {
+        let controller = UIHostingController(rootView: self)
+        let view = controller.view
+        let targetSize = CGSize(width: 500, height: 750)
+        view?.bounds = CGRect(origin: .zero, size: targetSize)
+        
+        let newScale = UIScreen.main.scale
+        view?.scale(by: newScale)
+        let format = UIGraphicsImageRendererFormat()
+        format.scale = newScale
+
+        let renderer = UIGraphicsImageRenderer(size: targetSize)
+
+        return renderer.image { _ in
+            view?.drawHierarchy(in: controller.view.bounds, afterScreenUpdates: true)
+        }
+    }
 }
 
 extension View {

@@ -9,6 +9,10 @@
 
 import SwiftUI
 import AlertToast
+import LinkPresentation
+import UniformTypeIdentifiers
+import ActivityView
+
 
 // Global variables
 let boolToTextScheme1: [Bool: String] = [true: "Yes", false: "No"]
@@ -59,7 +63,13 @@ struct ProductView: View {
             return ""
         }
         else {
-            return "\(searchResults.count) Results"
+            if(searchResults.count == 1)
+            {
+                return "\(searchResults.count) Result"
+            }
+            else {
+                return "\(searchResults.count) Results"
+            }
         }
     }
     var body: some View {
@@ -72,7 +82,7 @@ struct ProductView: View {
             ForEach(searchResults, id: \.self) { product in
                 Section
                 {
-                    ProductCardView(product: product, fullSearchable: false).environmentObject(collectionModel).environmentObject(accentColor)
+                    ProductCardView(product: product, fullySearchable: false, showButtons: true).environmentObject(collectionModel).environmentObject(accentColor)
                 }
             }
         }
@@ -154,21 +164,23 @@ struct ProductView: View {
 }
 
 
-
 struct ProductCardView: View {
     @EnvironmentObject var collectionModel: CollectionModel
     @EnvironmentObject var accentColor: AccentColor
     let workingStatusMap: [WorkingStatus: String] = [WorkingStatus.NotWorking: "negative", WorkingStatus.MostlyWorking: "neutral", WorkingStatus.Working: "affirmative"]
     var product: ProductInfo
-    var fullSearchable: Bool
+    var fullySearchable: Bool
+    var showButtons: Bool
     @State var confirmationShown: Bool = false
     @State private var selectedProduct: ProductInfo? = nil
     @State var showEditModalView: Bool = false
+    @State private var item: ActivityItem?
+
     @Environment(\.colorScheme) var colorScheme
     var body: some View {
         VStack(alignment: .leading)
         {
-            if(fullSearchable && product.model != "Other" && product.model != "Earlier Models")
+            if(fullySearchable && product.model != "Other" && product.model != "Earlier Models")
             {
                 Spacer()
                 Text("\(product.model ?? "Unknown Model")")
@@ -185,6 +197,18 @@ struct ProductCardView: View {
                     Button(action: {UIPasteboard.general.string = product.uuid})
                     {
                         Label("Copy Debug UUID", systemImage: "ant.fill")
+                    }
+                    Button(action: {
+                        #if targetEnvironment(macCatalyst)
+                        item = ActivityItem(items: ProductCardSnapshotView(product: product, fullySearchable: true).environmentObject(collectionModel).environmentObject(accentColor).snapshot())
+                        #else
+                        item = ActivityItem(items: ProductCardSnapshotView(product: product, fullySearchable: true).environmentObject(collectionModel).environmentObject(accentColor).snapshot(), MetadataActivityItem(title: product.model!, text: "Share a snapshot of this product"))
+
+                        #endif
+
+                    })
+                    {
+                        Label("Share", systemImage: "square.and.arrow.up")
                     }
                 }
             Spacer()
@@ -214,33 +238,36 @@ struct ProductCardView: View {
                     }
                 }
                 Text(product.color!)
-                HStack {
-                    Label("Delete", systemImage: "trash.fill")
-                        .hoverEffect(.lift)
-                        .labelStyle(.iconOnly)
-                        .font(Font.system(.body).bold())
-                        .imageScale(.medium)
-                        .foregroundColor(.red)
-                        .onTapGesture {
-                            generator.notificationOccurred(.error)
-                            selectedProduct = product
-                            confirmationShown.toggle()
-                        }
-                    Spacer().frame(width: 30)
-                    Label("Edit", systemImage: "pencil")
-                        .hoverEffect(.lift)
-                        .labelStyle(.iconOnly)
-                        .font(Font.system(.body).bold())
-                        .imageScale(.large)
-                        .foregroundColor(accentColor.color)
-                        .onTapGesture {
-                            showEditModalView.toggle()
-                            generator.notificationOccurred(.success)
-                        }
-                }.frame(maxWidth: .infinity, alignment: .trailing)
+                if(showButtons) {
+                    HStack {
+                        Label("Delete", systemImage: "trash.fill")
+                            .hoverEffect(.lift)
+                            .labelStyle(.iconOnly)
+                            .font(Font.system(.body).bold())
+                            .imageScale(.medium)
+                            .foregroundColor(.red)
+                            .onTapGesture {
+                                generator.notificationOccurred(.error)
+                                selectedProduct = product
+                                confirmationShown.toggle()
+                            }
+                        Spacer().frame(width: 30)
+                        Label("Edit", systemImage: "pencil")
+                            .hoverEffect(.lift)
+                            .labelStyle(.iconOnly)
+                            .font(Font.system(.body).bold())
+                            .imageScale(.large)
+                            .foregroundColor(accentColor.color)
+                            .onTapGesture {
+                                showEditModalView.toggle()
+                                generator.notificationOccurred(.success)
+                            }
+                    }.frame(maxWidth: .infinity, alignment: .trailing)
+                }
                
             }
-            
+            .activitySheet($item)
+
             Spacer()
         }
         .sheet(isPresented: $showEditModalView) {
@@ -273,6 +300,19 @@ struct ProductCardView: View {
                         Label("Copy Comments", systemImage: "doc.on.doc")
                     }
                 }
+            
+        }
+    }
+}
+
+struct ProductCardSnapshotView: View {
+    @EnvironmentObject var collectionModel: CollectionModel
+    @EnvironmentObject var accentColor: AccentColor
+    var product: ProductInfo
+    var fullySearchable: Bool
+    var body: some View {
+        List {
+            ProductCardView(product: product, fullySearchable: fullySearchable, showButtons: false).environmentObject(collectionModel).environmentObject(accentColor)
         }
     }
 }
@@ -280,7 +320,7 @@ struct ProductCardView: View {
 struct SpecificsHeaderView: View {
     var product: ProductInfo
     var body: some View {
-            Spacer()
+        Spacer()
         Text(getCommonHeaderName(product: product, toDisplay: true))
                 .fontWeight(.bold)
         .font(.system(.title3, design: .rounded))
@@ -342,7 +382,6 @@ struct HorizontalOneAttributeView: View {
                 .fixedSize()
             Spacer(minLength: 5)
             Text(data)
-                .fixedSize(horizontal: false, vertical: true)
             Spacer(minLength: 5)
         }
     }
@@ -433,3 +472,62 @@ struct HorizontalMixedAttributeBooleanView: View {
 
     }
 }
+
+struct ImageDocument: FileDocument {
+    
+    static var readableContentTypes: [UTType] { [.png] }
+
+    var image: UIImage
+
+    init(image: UIImage?) {
+        self.image = image ?? UIImage()
+    }
+
+    init(configuration: ReadConfiguration) throws {
+        guard let data = configuration.file.regularFileContents,
+              let image = UIImage(data: data)
+        else {
+            throw CocoaError(.fileReadCorruptFile)
+        }
+        self.image = image
+    }
+
+    func fileWrapper(configuration: WriteConfiguration) throws -> FileWrapper {
+        return FileWrapper(regularFileWithContents: image.pngData()!)
+    }
+    
+}
+
+class MetadataActivityItem: NSObject, UIActivityItemSource {
+    var title: String
+    var text: String
+    
+    init(title: String, text: String) {
+        self.title = title
+        self.text = text
+        super.init()
+    }
+    
+    func activityViewControllerPlaceholderItem(_ activityViewController: UIActivityViewController) -> Any {
+        return text
+    }
+    
+    func activityViewController(_ activityViewController: UIActivityViewController, itemForActivityType activityType: UIActivity.ActivityType?) -> Any? {
+        return text
+    }
+    
+    func activityViewController(_ activityViewController: UIActivityViewController, subjectForActivityType activityType: UIActivity.ActivityType?) -> String {
+        return title
+    }
+
+    func activityViewControllerLinkMetadata(_ activityViewController: UIActivityViewController) -> LPLinkMetadata? {
+        let metadata = LPLinkMetadata()
+        metadata.title = title
+        metadata.imageProvider = NSItemProvider(object: UIImage(named: "AppIcon")!)
+        metadata.originalURL = URL(fileURLWithPath: text)
+        return metadata
+    }
+
+}
+
+

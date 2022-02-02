@@ -9,13 +9,7 @@
 
 import Foundation
 import SwiftUI
-
-// Global variables
-var numFormatter: NumberFormatter = {
-    let f = NumberFormatter()
-    f.numberStyle = .none
-    return f
-}()
+import Combine
 
 
 struct AddProductView: View {
@@ -34,16 +28,18 @@ struct AddProductView: View {
                             Label(device.id, systemImage: icons[device.rawValue]!)
                             .tag(device as DeviceType?)
                             }
+                        .accentColor(accentColor.color)
                     }
                     ModelPickerView(product: $product)
+                        .accentColor(accentColor.color)
                     
                     Section(header: Text("Basics").font(.subheadline))
                     {
-                        BasicsView(numFormatter: numFormatter, product: $product)
+                        BasicsView(product: $product)
                     }
                     Section(header: Text("Device Specifics").font(.subheadline))
                     {
-                        SpecificsView(numFormatter: numFormatter, product: $product)
+                        SpecificsView(product: $product)
                     }
                    
                     Section(header: Text("Additional Comments").font(.subheadline))
@@ -97,14 +93,14 @@ struct EditProductView: View {
              Form
              {
                  ModelPickerView(product: $product)
-                 
+                     .accentColor(accentColor.color)
                  Section(header: Text("Basics").font(.subheadline))
                  {
-                     BasicsView(numFormatter: numFormatter, product: $product)
+                     BasicsView(product: $product)
                  }
                  Section(header: Text("Device Specifics").font(.subheadline))
                  {
-                     SpecificsView(numFormatter: numFormatter, product: $product)
+                     SpecificsView(product: $product)
                  }
                 
                  Section(header: Text("Additional Comments").font(.subheadline))
@@ -139,23 +135,23 @@ struct EditProductView: View {
         self.showEditModalView.toggle()
     }
 }
+
     
 struct BasicsView: View
 {
-    var numFormatter: NumberFormatter
     @Binding var product: ProductInfo
     var body: some View {
         Group
         {
             TextField("Color", text: $product.color ?? "")
                 .autocapitalization(.none)
-            TextField("Year Acquired", value: $product.yearAcquired, formatter: numFormatter)
+            TextField("Year Acquired", value: $product.yearAcquired, format: IntegerFormatStyle().grouping(.never))
                 .keyboardType(.numberPad)
                 .autocapitalization(.none)
             HStack
             {
                 Text("$")
-                TextField("Estimated Value", value: $product.estimatedValue, formatter: numFormatter)
+                TextField("Estimated Value", value: $product.estimatedValue, format: .number)
                     .keyboardType(.numberPad)
                     .autocapitalization(.none)
             }
@@ -205,7 +201,6 @@ struct BasicsView: View
 
 struct SpecificsView: View
 {
-    var numFormatter: NumberFormatter
     @Binding var product: ProductInfo
     var body: some View {
         if(product.type == DeviceType.iPhone || product.type == DeviceType.iPad || product.type == DeviceType.AppleTV || product.type == DeviceType.iPod)
@@ -252,7 +247,7 @@ struct SpecificsView: View
             {
                 HStack
                 {
-                    TextField("Screen Size", value: $product.screenSize, formatter: numFormatter)
+                    TextField("Screen Size", value: $product.screenSize, format: .number)
                         .keyboardType(.numberPad)
                         .autocapitalization(.none)
                     Text("in")
@@ -273,7 +268,7 @@ struct SpecificsView: View
         {
             HStack
             {
-                TextField("Case Size", value: $product.caseSize, formatter: numFormatter)
+                TextField("Case Size", value: $product.caseSize, format: .number)
                     .keyboardType(.numberPad)
                     .autocapitalization(.none)
                 Text("mm")

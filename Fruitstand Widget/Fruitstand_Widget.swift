@@ -252,7 +252,7 @@ struct LargeValuesWidgetView: View {
     var entry: Provider.Entry
     var body: some View {
         GeometryReader { geo in
-            VStack(alignment: .leading, spacing: -0.18*geo.size.height) {
+            VStack(alignment: .leading, spacing: -0.21*geo.size.height) {
                 MediumValuesWidgetView(entry: entry)
                 GeometryReader { geo in
                     VStack (alignment: .leading, spacing: 0.08*geo.size.height) {
@@ -260,7 +260,7 @@ struct LargeValuesWidgetView: View {
                             .foregroundColor(.gray)
                             .fontWeight(.medium)
                             .font(.system(.headline, design: .rounded))
-                        HStack {
+                        HStack(alignment: .center) {
                             VStack(alignment: .leading, spacing: 0.06*geo.size.height) {
                                 ForEach([0, 2], id: \.self) { element in
                                     AverageValuesDetailView(entry: entry, element: element, geo: geo)
@@ -270,6 +270,7 @@ struct LargeValuesWidgetView: View {
                                     .fontWeight(.medium)
                                     .font(.system(.headline, design: .rounded))
                                     .fixedSize()
+                                    .frame(width: 0.22*geo.size.width, alignment: .leading)
                             }
                             Spacer().frame(width: 0.13*geo.size.width)
                             VStack(alignment: .leading, spacing:  0.06*geo.size.height) {
@@ -282,6 +283,7 @@ struct LargeValuesWidgetView: View {
                                     .fixedSize()
                                     .padding(5)
                                     .background(RoundedRectangle(cornerRadius: 10).fill(entry.widgetModel.accentColor))
+                                    .frame(width: 0.22*geo.size.width, alignment: .leading)
                             }
                         }
                         
@@ -303,7 +305,7 @@ struct AverageValuesDetailView: View {
     var geo: GeometryProxy
     
     var body: some View {
-        HStack {
+        HStack(alignment: .center) {
             Image(systemName: icons[entry.widgetModel.averageValues[element].deviceType.id]!)
                 .frame(width: 0.05*geo.size.width)
                 .foregroundColor(entry.widgetModel.accentColor)
@@ -323,6 +325,7 @@ struct AverageValuesDetailView: View {
             }
             .frame(width: 0.22*geo.size.width, alignment: .leading)
         }
+
     }
 }
 

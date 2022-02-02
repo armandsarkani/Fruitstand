@@ -11,6 +11,7 @@
 		16022E0A2652F8710098BD95 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16022E092652F8710098BD95 /* ContentView.swift */; };
 		16022E0C2652F8720098BD95 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 16022E0B2652F8720098BD95 /* Assets.xcassets */; };
 		16022E0F2652F8720098BD95 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 16022E0E2652F8720098BD95 /* Preview Assets.xcassets */; };
+		1606260927A9C92E0026123A /* ActivityView in Frameworks */ = {isa = PBXBuildFile; productRef = 1606260827A9C92E0026123A /* ActivityView */; };
 		16205F0E279E848D005232E4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1624C746279E7D5800258513 /* Assets.xcassets */; };
 		16205F11279E84F8005232E4 /* Fruitstand WidgetExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 1624C73F279E7D5700258513 /* Fruitstand WidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		1624C740279E7D5700258513 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 162C825A279D5F81008002DF /* WidgetKit.framework */; };
@@ -23,6 +24,7 @@
 		167E160E279FA47B008427F1 /* CSV in Frameworks */ = {isa = PBXBuildFile; productRef = 167E160D279FA47B008427F1 /* CSV */; };
 		1690B4902790197900CFAD06 /* AddProductView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1690B48F2790197900CFAD06 /* AddProductView.swift */; };
 		169A919827924FEF00AC9088 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 169A919727924FEF00AC9088 /* AppDelegate.swift */; };
+		169D3E9C27A9D05D00C69987 /* WelcomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 169D3E9B27A9D05D00C69987 /* WelcomeView.swift */; };
 		169ED968279BCAAD00C1CFDA /* FruitstandUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 169ED967279BCAAD00C1CFDA /* FruitstandUITests.swift */; };
 		169ED96A279BCAAD00C1CFDA /* FruitstandUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 169ED969279BCAAD00C1CFDA /* FruitstandUITestsLaunchTests.swift */; };
 		16AAECCB27A27BAC00E80834 /* WidgetModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16AAECCA27A27BAC00E80834 /* WidgetModel.swift */; };
@@ -93,6 +95,7 @@
 		162C825C279D5F81008002DF /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
 		1690B48F2790197900CFAD06 /* AddProductView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddProductView.swift; sourceTree = "<group>"; };
 		169A919727924FEF00AC9088 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		169D3E9B27A9D05D00C69987 /* WelcomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeView.swift; sourceTree = "<group>"; };
 		169ED965279BCAAD00C1CFDA /* FruitstandUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FruitstandUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		169ED967279BCAAD00C1CFDA /* FruitstandUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FruitstandUITests.swift; sourceTree = "<group>"; };
 		169ED969279BCAAD00C1CFDA /* FruitstandUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FruitstandUITestsLaunchTests.swift; sourceTree = "<group>"; };
@@ -116,6 +119,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1606260927A9C92E0026123A /* ActivityView in Frameworks */,
 				167E160E279FA47B008427F1 /* CSV in Frameworks */,
 				1625662E27A7E5580029AB3A /* AlertToast in Frameworks */,
 				16B2D1E1278A5289006242BC /* CloudKit.framework in Frameworks */,
@@ -233,6 +237,7 @@
 				16F1CF0F279B5EFD0094CE89 /* ProductListView.swift */,
 				16B333CF2652F8B1003E4BCE /* ProductView.swift */,
 				1690B48F2790197900CFAD06 /* AddProductView.swift */,
+				169D3E9B27A9D05D00C69987 /* WelcomeView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -259,6 +264,7 @@
 				16C5AE0D27922D1200C837F4 /* SwiftCSV */,
 				167E160D279FA47B008427F1 /* CSV */,
 				1625662D27A7E5580029AB3A /* AlertToast */,
+				1606260827A9C92E0026123A /* ActivityView */,
 			);
 			productName = Fruitstand;
 			productReference = 16022E042652F8710098BD95 /* Fruitstand.app */;
@@ -333,6 +339,7 @@
 				16C5AE0C27922D1200C837F4 /* XCRemoteSwiftPackageReference "SwiftCSV" */,
 				167E160C279FA47B008427F1 /* XCRemoteSwiftPackageReference "CSV" */,
 				1625662C27A7E5580029AB3A /* XCRemoteSwiftPackageReference "AlertToast" */,
+				1606260727A9C92E0026123A /* XCRemoteSwiftPackageReference "ActivityView" */,
 			);
 			productRefGroup = 16022E052652F8710098BD95 /* Products */;
 			projectDirPath = "";
@@ -383,6 +390,7 @@
 				16B2D1E3278A6A35006242BC /* ProductAtttributes.swift in Sources */,
 				16022E0A2652F8710098BD95 /* ContentView.swift in Sources */,
 				16FC8BCB2798F9AF00EA6A64 /* CSVCollection.swift in Sources */,
+				169D3E9C27A9D05D00C69987 /* WelcomeView.swift in Sources */,
 				169A919827924FEF00AC9088 /* AppDelegate.swift in Sources */,
 				1690B4902790197900CFAD06 /* AddProductView.swift in Sources */,
 				16B2D1DD278A3EB7006242BC /* ProductInfo.swift in Sources */,
@@ -563,9 +571,10 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 2410;
+				CURRENT_PROJECT_VERSION = 2422;
 				DEVELOPMENT_ASSET_PATHS = "\"Fruitstand/Preview Content\"";
 				DEVELOPMENT_TEAM = 86LR2G8L2C;
+				"ENABLE_HARDENED_RUNTIME[sdk=macosx*]" = YES;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = Fruitstand/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.2;
@@ -597,9 +606,10 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 2410;
+				CURRENT_PROJECT_VERSION = 2422;
 				DEVELOPMENT_ASSET_PATHS = "\"Fruitstand/Preview Content\"";
 				DEVELOPMENT_TEAM = 86LR2G8L2C;
+				"ENABLE_HARDENED_RUNTIME[sdk=macosx*]" = YES;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = Fruitstand/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.2;
@@ -629,8 +639,9 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2410;
+				CURRENT_PROJECT_VERSION = 2422;
 				DEVELOPMENT_TEAM = 86LR2G8L2C;
+				"ENABLE_HARDENED_RUNTIME[sdk=macosx*]" = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "Fruitstand Widget/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "Fruitstand Widget";
@@ -662,8 +673,9 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2410;
+				CURRENT_PROJECT_VERSION = 2422;
 				DEVELOPMENT_TEAM = 86LR2G8L2C;
+				"ENABLE_HARDENED_RUNTIME[sdk=macosx*]" = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "Fruitstand Widget/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "Fruitstand Widget";
@@ -765,6 +777,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		1606260727A9C92E0026123A /* XCRemoteSwiftPackageReference "ActivityView" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SwiftUI-Plus/ActivityView";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.0;
+			};
+		};
 		1625662C27A7E5580029AB3A /* XCRemoteSwiftPackageReference "AlertToast" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/elai950/AlertToast";
@@ -792,6 +812,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		1606260827A9C92E0026123A /* ActivityView */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1606260727A9C92E0026123A /* XCRemoteSwiftPackageReference "ActivityView" */;
+			productName = ActivityView;
+		};
 		1625662D27A7E5580029AB3A /* AlertToast */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 1625662C27A7E5580029AB3A /* XCRemoteSwiftPackageReference "AlertToast" */;
