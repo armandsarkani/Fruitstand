@@ -22,6 +22,30 @@ let boolToStatusScheme2: [Bool: String] = [true: "negative", false: "affirmative
 let commonColorMapping: [String: Color] = ["black": Color.black, "space black": Color.black, "black & slate": Color.black, "white": Color.white, "white & silver": Color.white, "space gray": Color.gray, "gray": Color.gray, "silver": Color("Silver"), "red": Color.red, "(product)red": Color.red, "product red": Color.red, "green": Color.green, "blue": Color.blue, "gold": Color("Gold"), "rose gold": Color("Rose Gold"), "yellow": Color.yellow, "orange": Color.orange, "coral": Color("Coral"), "sierra blue": Color.cyan, "pacific blue": Color.blue, "graphite": Color.gray, "purple": Color.purple, "midnight green": Color.green, "starlight": Color("Starlight"), "platinum": Color("Starlight"), "blueberry": Color.blue, "key lime": Color.green, "tangerine": Color.orange, "indigo": Color.indigo, "jet black": Color.black, "pink": Color.pink]
 let generator = UINotificationFeedbackGenerator()
 
+enum SortStyle: String, CaseIterable, Identifiable, Codable {
+    case None
+    case YearAcquiredAscending = "Oldest to Newest Acquired"
+    case YearAcquiredDescending = "Newest to Oldest Acquired"
+    case EstimatedValueAscending = "Lowest to Highest Value"
+    case EstimatedValueDescending = "Highest to Lowest Value"
+    var id: String { self.rawValue }
+    var images: [String] {
+        if(self == SortStyle.YearAcquiredAscending) {
+            return ["calendar.circle.fill", "arrow.up"]
+        }
+        else if(self == SortStyle.YearAcquiredDescending) {
+            return ["calendar.circle.fill", "arrow.down"]
+        }
+        else if(self == SortStyle.EstimatedValueAscending) {
+            return ["dollarsign.circle.fill", "arrow.up"]
+        }
+        else if(self == SortStyle.EstimatedValueDescending) {
+            return ["dollarsign.circle.fill", "arrow.down"]
+        }
+        return []
+    }
+}
+
 
 func OptionalBinding<T>(_ binding: Binding<T?>, _ defaultValue: T) -> Binding<T> {
     return Binding<T>(get: {
@@ -41,6 +65,8 @@ struct ProductView: View {
     var model: String
     var deviceType: DeviceType
     var fromSearch: Bool = false
+    @Environment(\.horizontalSizeClass) var horizontalSizeClass
+    @State var sortStyle: SortStyle = SortStyle.None
     @State var showInfoModalView: Bool = false
     @State private var showToast: Bool = false
     @State private var searchText = ""
@@ -51,12 +77,25 @@ struct ProductView: View {
         self.deviceType = deviceType
     }
     var searchResults: [ProductInfo] {
-           if searchText.isEmpty {
-               return collectionModel.loadMatchingProductsByModel(deviceType: deviceType, model: model)
-           }
-           else {
-               return collectionModel.loadMatchingProductsByModel(deviceType: deviceType, model: model).filter { $0.contains(searchText: searchText)}
-           }
+        var products: [ProductInfo] = []
+        if searchText.isEmpty {
+           products =  collectionModel.loadMatchingProductsByModel(deviceType: deviceType, model: model)
+        }
+        else {
+           products = collectionModel.loadMatchingProductsByModel(deviceType: deviceType, model: model).filter {$0.contains(searchText: searchText)}
+        }
+        switch(sortStyle) {
+            case .YearAcquiredAscending:
+                return products.sorted{$0.yearAcquired! < $1.yearAcquired!}
+            case .YearAcquiredDescending:
+                return products.sorted{$0.yearAcquired! > $1.yearAcquired!}
+            case .EstimatedValueAscending:
+                return products.sorted{$0.estimatedValue! < $1.estimatedValue!}
+            case .EstimatedValueDescending:
+                return products.sorted{$0.estimatedValue! > $1.estimatedValue!}
+            default:
+                return products
+        }
     }
     var resultsText: String {
         if searchText.isEmpty {
@@ -102,12 +141,13 @@ struct ProductView: View {
         })
         .navigationTitle(model)
         .navigationBarTitleDisplayMode(.large)
-        .if(UIDevice.current.model.hasPrefix("iPhone")) {
-            $0.toolbar {
-                ToolbarItem(placement: .navigationBarTrailing)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing)
+            {
+                HStack
                 {
-                    HStack
-                    {
+                    SortMenuView(sortStyle: $sortStyle, customLabelStyle: CustomSortLabelStyle())
+                    if(UIDevice.current.model.hasPrefix("iPhone") || horizontalSizeClass == .compact) {
                         NavigationLink(destination: SearchView(previousModelDetailView: model).environmentObject(collectionModel).environmentObject(accentColor))
                         {
                             Image(systemName: "magnifyingglass")
@@ -139,7 +179,7 @@ struct ProductView: View {
                 }
             }
         }
-        .if(UIDevice.current.model.hasPrefix("iPhone")) {
+        .if(UIDevice.current.model.hasPrefix("iPhone") || horizontalSizeClass == .compact) {
             $0.alert(isPresented: $collectionFull) {
                 Alert(
                     title: Text("1000 Product Limit Reached"),
@@ -473,29 +513,62 @@ struct HorizontalMixedAttributeBooleanView: View {
     }
 }
 
-struct ImageDocument: FileDocument {
-    
-    static var readableContentTypes: [UTType] { [.png] }
-
-    var image: UIImage
-
-    init(image: UIImage?) {
-        self.image = image ?? UIImage()
-    }
-
-    init(configuration: ReadConfiguration) throws {
-        guard let data = configuration.file.regularFileContents,
-              let image = UIImage(data: data)
-        else {
-            throw CocoaError(.fileReadCorruptFile)
+struct SortMenuView: View {
+    @Binding var sortStyle: SortStyle
+    var customLabelStyle: CustomSortLabelStyle
+    var body: some View {
+        Menu {
+            Picker("Sort Style", selection: $sortStyle) {
+                ForEach(SortStyle.allCases) { style in
+                    if(!style.images.isEmpty) {
+                        Label(style.rawValue, systemImage: style.images[0])
+                            .tag(style)
+                    }
+                    else {
+                        Text(style.rawValue)
+                            .tag(style)
+                    }
+                }
+            }
+            .pickerStyle(InlinePickerStyle())
+        } label: {
+            if(sortStyle == SortStyle.None) {
+                Label {
+                    Text("Sort")
+                        .font(.system(size: 18, design: .rounded))
+                } icon: {Image(systemName: "arrow.up.arrow.down.circle").imageScale(.large)}.labelStyle(CustomSortLabelStyle())
+            }
+            else if(sortStyle == SortStyle.EstimatedValueDescending || sortStyle == SortStyle.YearAcquiredDescending) {
+                Label {
+                    Text("Sort")
+                        .font(.system(size: 18, design: .rounded))
+                } icon: {Image(systemName: "arrow.down.circle.fill").imageScale(.large)}.labelStyle(CustomSortLabelStyle())
+            }
+            else {
+                Label {
+                    Text("Sort")
+                        .font(.system(size: 18, design: .rounded))
+                } icon: {Image(systemName: "arrow.up.circle.fill").imageScale(.large)}.labelStyle(CustomSortLabelStyle())
+            }
         }
-        self.image = image
-    }
 
-    func fileWrapper(configuration: WriteConfiguration) throws -> FileWrapper {
-        return FileWrapper(regularFileWithContents: image.pngData()!)
     }
-    
+}
+
+struct CustomSortLabelStyle: LabelStyle {
+    @Environment(\.horizontalSizeClass) var horizontalSizeClass
+    func makeBody(configuration: Configuration) -> some View {
+        if(UIDevice.current.model.hasPrefix("iPhone") || horizontalSizeClass == .compact)
+        {
+            configuration.icon
+        }
+        else {
+            HStack {
+                configuration.icon
+                configuration.title
+            }
+        }
+    }
 }
 
 class MetadataActivityItem: NSObject, UIActivityItemSource {
@@ -529,5 +602,4 @@ class MetadataActivityItem: NSObject, UIActivityItemSource {
     }
 
 }
-
 

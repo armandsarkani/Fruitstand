@@ -16,22 +16,47 @@ struct SearchView: View {
     @State private var searchText = ""
     @State private var cardTapped = false
     @State var deviceTypeFilter: String = "All Devices"
+    @State var sortStyle: SortStyle = SortStyle.None
+    @Environment(\.horizontalSizeClass) var horizontalSizeClass
     let deviceTypeFilters = ["All Devices", "Mac", "iPhone", "iPad", "Apple Watch", "AirPods", "Apple TV", "iPod"]
     var suggestions: [String] {
         return getSearchSuggestions(deviceTypeFilter: deviceTypeFilter)
     }
     var searchResults: [ProductInfo] {
-           if searchText.isEmpty {
-               return []
-           }
-           else {
-               if(deviceTypeFilter != "All Devices")
-               {
-                   return collectionModel.collectionArray.filter { $0.contains(searchText: searchText) && $0.type == DeviceType(rawValue: deviceTypeFilter)}
-               }
-               return collectionModel.collectionArray.filter { $0.contains(searchText: searchText)}
+        if searchText.isEmpty {
+            return []
+        }
+        var products: [ProductInfo] = []
+        if(deviceTypeFilter != "All Devices")
+        {
+            if(searchText == "Entire Collection") {
+                products = collectionModel.collectionArray.filter {$0.type == DeviceType(rawValue: deviceTypeFilter)}
 
-           }
+            }
+            else {
+                products = collectionModel.collectionArray.filter { $0.contains(searchText: searchText) && $0.type == DeviceType(rawValue: deviceTypeFilter)}
+            }
+        }
+        else {
+            if(searchText == "Entire Collection") {
+                products = collectionModel.collectionArray
+            }
+            else {
+                products = collectionModel.collectionArray.filter {$0.contains(searchText: searchText)}
+            }
+        }
+        switch(sortStyle) {
+            case .YearAcquiredAscending:
+                return products.sorted{$0.yearAcquired! < $1.yearAcquired!}
+            case .YearAcquiredDescending:
+                return products.sorted{$0.yearAcquired! > $1.yearAcquired!}
+            case .EstimatedValueAscending:
+                return products.sorted{$0.estimatedValue! < $1.estimatedValue!}
+            case .EstimatedValueDescending:
+                return products.sorted{$0.estimatedValue! > $1.estimatedValue!}
+            default:
+                return products
+        }
     }
 
     var resultsText: String {
@@ -49,13 +74,24 @@ struct SearchView: View {
         }
     }
     var body: some View {
-        Picker(selection: $deviceTypeFilter, label: Label("Device Type", systemImage: "square.3.layers.3d.down.left")) {
-            if(!searchText.isEmpty) {
-                ForEach(deviceTypeFilters, id: \.self) { filter in
-                    Image(systemName: (icons[filter] ?? "circle.hexagongrid"))
+        
+        HStack {
+            Picker(selection: $deviceTypeFilter, label: Label("Device Type", systemImage: "square.3.layers.3d.down.left")) {
+                if(!searchText.isEmpty) {
+                    ForEach(deviceTypeFilters, id: \.self) { filter in
+                        Image(systemName: (icons[filter] ?? "circle.hexagongrid"))
+                    }
+                    
                 }
             }
+            if(UIDevice.current.model.hasPrefix("iPad") && !searchText.isEmpty) {
+                Spacer().frame(width: 20)
+            }
+            if(!searchText.isEmpty) {
+                SortMenuView(sortStyle: $sortStyle, customLabelStyle: CustomSortLabelStyle())
+            }
         }
+
        .if(searchText.isEmpty)
         {
             $0.padding(.top, -100)
@@ -70,12 +106,12 @@ struct SearchView: View {
         .pickerStyle(.segmented)
         .if(UIDevice.current.model.hasPrefix("iPhone") && !searchText.isEmpty)
         {
-            $0.frame(maxWidth: (UIScreen.main.bounds.width * 0.9))
+            $0.frame(width: (UIScreen.main.bounds.width * 0.91))
         }
-
         .if(UIDevice.current.model.hasPrefix("iPad") && !searchText.isEmpty)
         {
             $0.scaleEffect(0.9)
+
         }
        List
        {
@@ -94,6 +130,14 @@ struct SearchView: View {
                            Label{Text(suggestion).foregroundColor(.primary)} icon: {Image(systemName: "arrow.up.right")}
                            
                        }
+                   }
+                   Button(action: {generator.notificationOccurred(.success); searchText = "Entire Collection"})
+                   {
+                       Label{Text("Entire Collection").foregroundColor(accentColor.color)} icon: {
+                           Image(systemName: "rectangle.stack.fill")
+
+                       }
+                       
                    }
                }
                
@@ -153,7 +197,7 @@ struct SearchView: View {
         }
         else if(deviceTypeFilter == "Apple TV")
         {
-            return ["Apple TV 4K", "Apple TV HD", "First Apple TV"]
+            return ["Apple TV 4K", "Apple TV HD", "64GB", "32GB", "First Apple TV"]
         }
         else
         {
@@ -163,13 +207,4 @@ struct SearchView: View {
     }
 }
 
-struct PreventCollapseView: View {
 
-    private var mostlyClear = Color(UIColor(white: 0.0, alpha: 0.0005))
-
-    var body: some View {
-        Rectangle()
-            .fill(mostlyClear)
-            .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: 1)
-    }
-}

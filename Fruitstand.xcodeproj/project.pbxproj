@@ -13,7 +13,7 @@
 		16022E0F2652F8720098BD95 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 16022E0E2652F8720098BD95 /* Preview Assets.xcassets */; };
 		1606260927A9C92E0026123A /* ActivityView in Frameworks */ = {isa = PBXBuildFile; productRef = 1606260827A9C92E0026123A /* ActivityView */; };
 		16205F0E279E848D005232E4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1624C746279E7D5800258513 /* Assets.xcassets */; };
-		16205F11279E84F8005232E4 /* Fruitstand WidgetExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 1624C73F279E7D5700258513 /* Fruitstand WidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		16205F11279E84F8005232E4 /* Fruitstand WidgetExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 1624C73F279E7D5700258513 /* Fruitstand WidgetExtension.appex */; platformFilter = ios; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		1624C740279E7D5700258513 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 162C825A279D5F81008002DF /* WidgetKit.framework */; };
 		1624C741279E7D5700258513 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 162C825C279D5F81008002DF /* SwiftUI.framework */; };
 		1624C744279E7D5700258513 /* Fruitstand_Widget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1624C743279E7D5700258513 /* Fruitstand_Widget.swift */; };
@@ -73,6 +73,16 @@
 				16205F11279E84F8005232E4 /* Fruitstand WidgetExtension.appex in Embed App Extensions */,
 			);
 			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		16CE6D4327AA1CAD00811CCC /* Embed Watch Content */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "$(CONTENTS_FOLDER_PATH)/Watch";
+			dstSubfolderSpec = 16;
+			files = (
+			);
+			name = "Embed Watch Content";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
@@ -253,6 +263,7 @@
 				16022E012652F8710098BD95 /* Frameworks */,
 				16022E022652F8710098BD95 /* Resources */,
 				162C826E279D5F82008002DF /* Embed App Extensions */,
+				16CE6D4327AA1CAD00811CCC /* Embed Watch Content */,
 			);
 			buildRules = (
 			);
@@ -432,6 +443,7 @@
 /* Begin PBXTargetDependency section */
 		16205F10279E84ED005232E4 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
+			platformFilter = ios;
 			target = 1624C73E279E7D5700258513 /* Fruitstand WidgetExtension */;
 			targetProxy = 16205F0F279E84ED005232E4 /* PBXContainerItemProxy */;
 		};
@@ -571,7 +583,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 2422;
+				CURRENT_PROJECT_VERSION = 2430;
 				DEVELOPMENT_ASSET_PATHS = "\"Fruitstand/Preview Content\"";
 				DEVELOPMENT_TEAM = 86LR2G8L2C;
 				"ENABLE_HARDENED_RUNTIME[sdk=macosx*]" = YES;
@@ -606,7 +618,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 2422;
+				CURRENT_PROJECT_VERSION = 2430;
 				DEVELOPMENT_ASSET_PATHS = "\"Fruitstand/Preview Content\"";
 				DEVELOPMENT_TEAM = 86LR2G8L2C;
 				"ENABLE_HARDENED_RUNTIME[sdk=macosx*]" = YES;
@@ -639,7 +651,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2422;
+				CURRENT_PROJECT_VERSION = 2430;
 				DEVELOPMENT_TEAM = 86LR2G8L2C;
 				"ENABLE_HARDENED_RUNTIME[sdk=macosx*]" = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -673,7 +685,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2422;
+				CURRENT_PROJECT_VERSION = 2430;
 				DEVELOPMENT_TEAM = 86LR2G8L2C;
 				"ENABLE_HARDENED_RUNTIME[sdk=macosx*]" = YES;
 				GENERATE_INFOPLIST_FILE = YES;

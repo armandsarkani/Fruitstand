@@ -32,6 +32,53 @@ class CollectionModel: ObservableObject {
                 object: NSUbiquitousKeyValueStore.default)
         }
     }
+    func saveMultipleProducts(products: inout [ProductInfo])
+    {
+        for (index, product) in products.enumerated() {
+            if(collectionSize >= 1000)
+            {
+                break
+            }
+            var uuidPrefix = product.type!.id
+            if(product.type!.id == "Apple TV")
+            {
+                uuidPrefix = "AppleTV"
+            }
+            else if(product.type!.id == "Apple Watch")
+            {
+                uuidPrefix = "AppleWatch"
+            }
+            let uuid = uuidPrefix + "_" + UUID().uuidString
+            products[index].uuid = uuid
+            
+            // Save to collection
+            collection[product.type ?? DeviceType.Mac]!.append(products[index])
+            collectionSize += 1
+            collectionArray.append(products[index])
+
+            // Save to UserDefaults/iCloud
+            if(iCloudStatus)
+            {
+                let userDefaults = NSUbiquitousKeyValueStore.default
+                var UUIDArray: [String] = userDefaults.object(forKey: "uuidArray") as? [String] ?? []
+                UUIDArray.append(uuid)
+                userDefaults.set(UUIDArray, forKey: "uuidArray")
+                userDefaults.setCodableObject(products[index], forKey: uuid)
+                NSUbiquitousKeyValueStore.default.synchronize()
+            }
+            else
+            {
+                let userDefaults = UserDefaults.standard
+                var UUIDArray: [String] = userDefaults.object(forKey: "uuidArray") as? [String] ?? []
+                UUIDArray.append(uuid)
+                userDefaults.set(UUIDArray, forKey: "uuidArray")
+                userDefaults.setCodableObject(products[index], forKey: uuid)
+                userDefaults.synchronize()
+            }
+        }
+        saveWidgetModel()
+        loadModelList()
+    }
     func saveOneProduct(product: inout ProductInfo)
     {
         // Complete product
@@ -53,7 +100,17 @@ class CollectionModel: ObservableObject {
         
         // Save to collection
         collection[product.type ?? DeviceType.Mac]!.append(product)
-        loadModelList()
+        if(getModelListIndex(product: product) != -1) // model already exists in collection, optimized update
+        {
+            let currentModelAndCount: ModelAndCount = modelList[product.type!]![getModelListIndex(product: product)]
+            let newModelAndCount: ModelAndCount = ModelAndCount(model: product.model!, count: currentModelAndCount.count! + 1, rank: currentModelAndCount.rank)
+            modelList[product.type!]![getModelListIndex(product: product)] = newModelAndCount
+        }
+        else
+        {
+            loadModelList()
+        }
+       
         collectionSize += 1
         collectionArray.append(product)
         saveWidgetModel()
@@ -164,7 +221,7 @@ class CollectionModel: ObservableObject {
             let userDefaults = NSUbiquitousKeyValueStore.default
             let dictionary = userDefaults.dictionaryRepresentation
             dictionary.keys.forEach { key in
-                if(key != "userColor") {
+                if(key != "userColor" && key != "launchedBefore") {
                     userDefaults.removeObject(forKey: key)
                 }
             }
@@ -175,7 +232,7 @@ class CollectionModel: ObservableObject {
             let userDefaults = UserDefaults.standard
             let dictionary = userDefaults.dictionaryRepresentation()
             dictionary.keys.forEach { key in
-                if(key != "userColor") {
+                if(key != "userColor" && key != "launchedBefore") {
                     userDefaults.removeObject(forKey: key)
                 }
             }
@@ -187,7 +244,17 @@ class CollectionModel: ObservableObject {
        // Save to collection
         collection[product.type!]!.remove(at: returnCollectionIndexByProduct(product: product))
         collectionArray.remove(at: returnCollectionArrayIndexByProduct(product: product))
-        loadModelList()
+        let currentModelAndCount: ModelAndCount = modelList[product.type!]![getModelListIndex(product: product)]
+        if(currentModelAndCount.count! - 1 == 0)
+        {
+            modelList[product.type!]!.remove(at: getModelListIndex(product: product))
+        }
+        else
+        {
+            let newModelAndCount: ModelAndCount = ModelAndCount(model: product.model!, count: currentModelAndCount.count! - 1, rank: currentModelAndCount.rank)
+            modelList[product.type!]![getModelListIndex(product: product)] = newModelAndCount
+        }
+        
         collectionSize -= 1
         saveWidgetModel()
         
@@ -323,6 +390,16 @@ class CollectionModel: ObservableObject {
             modelCountsArray.sort{$0.rank < $1.rank}
             modelList[deviceType] = modelCountsArray
         }
+    }
+    func getModelListIndex(product: ProductInfo) -> Int
+    {
+        for (index, model) in modelList[product.type!]!.enumerated() {
+            if(product.model == model.model)
+            {
+                return index
+            }
+        }
+        return -1
     }
     func getModelCount(model: String) -> Int
     {

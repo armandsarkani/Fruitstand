@@ -49,6 +49,7 @@ class CSVCollectionModel
 
     func loadProductsFromCSV(productData: [[String:String]], deviceType: DeviceType)
     {
+        var products: [ProductInfo] = []
         for element in productData
         {
             var product: ProductInfo = ProductInfo(type: deviceType, color: element["Color"] ?? nil, workingStatus: WorkingStatus(rawValue: element["Working Status"] ?? ""), estimatedValue: Int(element["Estimated Value"] ?? ""), condition: Condition(rawValue: element["Condition"] ?? ""), acquiredAs: AcquiredAs(rawValue: element["Acquired As"] ?? ""), physicalDamage: stringToBool[element["Physical Damage"] ?? "No"] ?? false, originalBox: stringToBool[element["Original Box"] ?? "No"] ?? false, warranty: Warranty(rawValue: element["Warranty"] ?? ""), yearAcquired: Int(element["Year Acquired"] ?? ""), comments: (element["Comments"] != "" ? element["Comments"]: nil), storage: element["Storage"] ?? nil, activationLock: stringToBool[element["Activation Lock"] ?? "No"] ?? false, carrier: element["Carrier"] ?? nil, ESNStatus: ESNStatus(rawValue: element["ESN Status"] ?? ""), carrierLockStatus: CarrierLockStatus(rawValue: element["Carrier Lock Status"] ?? ""), connectivity: iPadConnectivity(rawValue: element["iPad Connectivity"] ?? ""), year: element["Year"] ?? nil, formFactor: FormFactor(rawValue: element["Form Factor"] ?? ""), screenSize: Int(element["Screen Size"] ?? ""), processor: element["Processor"] ?? nil, memory: element["Memory"] ?? nil, caseType: WatchCaseType(rawValue: element["Case Type"] ?? ""), caseSize: Int(element["Case Size"] ?? ""), watchConnectivity: WatchConnectivity(rawValue: element["Watch Connectivity"] ?? ""), originalBands: element["Original Bands"] ?? nil, hasRemote: stringToBool[element["Has Remote"] ?? "No"] ?? false, APCaseType: AirPodsCaseType(rawValue: element["AirPods Case"] ?? ""))
@@ -83,9 +84,9 @@ class CSVCollectionModel
             if(product.model == "Other" || product.model == "Earlier Models") {
                 product.otherModel = element["Model"]
             }
-            collectionModel.saveOneProduct(product: &product)
-
+            products.append(product)
         }
+        collectionModel.saveMultipleProducts(products: &products)
             
     }
 

@@ -17,6 +17,7 @@ struct ProductListView: View {
     @EnvironmentObject var collectionModel: CollectionModel
     @EnvironmentObject var accentColor: AccentColor
     @State var showInfoModalView: Bool = false
+    @Environment(\.horizontalSizeClass) var horizontalSizeClass
     @State private var searchText = ""
     var resultsText: String {
         if searchText.isEmpty {
@@ -87,7 +88,7 @@ struct ProductListView: View {
         })
         .navigationTitle(Text(deviceType.rawValue))
         .navigationBarTitleDisplayMode(.large)
-        .if(UIDevice.current.model.hasPrefix("iPhone")) {
+        .if(UIDevice.current.model.hasPrefix("iPhone") || horizontalSizeClass == .compact) {
             $0.toolbar {
                 ToolbarItem(placement: .navigationBarTrailing)
                 {
@@ -124,7 +125,7 @@ struct ProductListView: View {
                 }
             }
         }
-        .if(UIDevice.current.model.hasPrefix("iPhone")) {
+        .if(UIDevice.current.model.hasPrefix("iPhone") || horizontalSizeClass == .compact) {
             $0.alert(isPresented: $collectionFull) {
                 Alert(
                     title: Text("1000 Product Limit Reached"),
