@@ -53,7 +53,7 @@ struct ProductListView: View {
                 if(!searchText.isEmpty)
                 {
                     Section(header: Text(resultsText).fontWeight(.medium).font(.system(.title3, design: .rounded)).textCase(nil)) {}
-                    .listRowInsets(EdgeInsets(top: 20, leading: 7, bottom: -500, trailing: 0))
+                    .listRowInsets(EdgeInsets(top: 20, leading: 7, bottom: -1000, trailing: 0))
                 }
                 ForEach(searchResults, id: \.self) { model in
                     NavigationLink(destination: ProductView(model: model.model, deviceType: deviceType, fromSearch: false)              .environmentObject(collectionModel).environmentObject(accentColor))
@@ -71,6 +71,7 @@ struct ProductListView: View {
                     }
                 }
             }
+            .listStyle(InsetGroupedListStyle())
         }
         .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .automatic)).autocapitalization(.none)
         .overlay(Group {
@@ -86,6 +87,7 @@ struct ProductListView: View {
                 }
             }
         })
+
         .navigationTitle(Text(deviceType.rawValue))
         .navigationBarTitleDisplayMode(.large)
         .if(UIDevice.current.model.hasPrefix("iPhone") || horizontalSizeClass == .compact) {

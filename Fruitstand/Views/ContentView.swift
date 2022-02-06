@@ -10,6 +10,7 @@
 
 import SwiftUI
 import AlertToast
+import Introspect
 
 // Global variables
 var keyStore = NSUbiquitousKeyValueStore()
@@ -26,6 +27,7 @@ extension View {
 
 
 struct ContentView: View {
+    @Environment(\.horizontalSizeClass) var horizontalSizeClass: UserInterfaceSizeClass?
     @State var showInfoModalView: Bool = false
     @State private var collectionFull: Bool = false
     @State var showSettingsModalView: Bool = false
@@ -33,7 +35,7 @@ struct ContentView: View {
     @State var count = 1
     @EnvironmentObject var collectionModel: CollectionModel
     @EnvironmentObject var accentColor: AccentColor
-    @State var showiPadWelcomeScreen: Bool
+    @State var showiPadWelcomeScreen: Bool = false
     @Environment(\.isPresented) var presentation
     init() {
         let design = UIFontDescriptor.SystemDesign.rounded
@@ -43,26 +45,12 @@ struct ContentView: View {
         let inlineDescriptor = UIFontDescriptor.preferredFontDescriptor(withTextStyle: .body).withDesign(design)!.withSymbolicTraits(.traitBold)
         let inlineFont = UIFont.init(descriptor: inlineDescriptor!, size: inlineDescriptor!.pointSize)
         UINavigationBar.appearance().titleTextAttributes = [.font: inlineFont]
-        #if targetEnvironment(macCatalyst)
-            showiPadWelcomeScreen = false
-        #else
-            if(UIDevice.current.model.hasPrefix("iPad")) {
-                if UserDefaults.standard.object(forKey: "launchedBefore") != nil {
-                    showiPadWelcomeScreen = false
-                }
-                else {
-                    showiPadWelcomeScreen = true
-                }
-            }
-            else {
-                showiPadWelcomeScreen = false
-            }
-        #endif
+
     }
     var body: some View {
         NavigationView {
             List {
-                Section(header: Text("Devices").font(.subheadline))
+                Section(header: Text("Devices").customSectionHeader())
                 {
                     ForEach(DeviceType.allCases, id: \.self) { label in
                         NavigationLink(destination: ProductListView(deviceType: label).environmentObject(collectionModel).environmentObject(accentColor)){
@@ -75,7 +63,8 @@ struct ContentView: View {
                         }
                     }
                 }
-                Section(header: Text("Statistics").font(.subheadline))
+                //.headerProminence(.increased)
+                Section(header: Text("Statistics").customSectionHeader())
                 {
                     NavigationLink(destination: ValuesView().environmentObject(collectionModel).environmentObject(accentColor)){
                         Label("Values", systemImage: "dollarsign.circle.fill")
@@ -89,11 +78,16 @@ struct ContentView: View {
                             .foregroundColor(.gray)
                     }
                 }
-               
+                //.headerProminence(.increased)
+
+
             }
-            .environment(\.horizontalSizeClass, .regular)
-            .navigationTitle("My Collection")
+            #if targetEnvironment(macCatalyst)
+            .environment(\.defaultMinListRowHeight, 30)
+            #endif
+            .navigationTitle(Text("My Collection"))
             .toolbar {
+                #if !targetEnvironment(macCatalyst)
                 ToolbarItem(placement: .navigationBarLeading)
                 {
                     Button(action: { showSettingsModalView.toggle()}) {
@@ -103,10 +97,18 @@ struct ContentView: View {
                     }
 
                 }
+                #endif
                 ToolbarItem(placement: .navigationBarTrailing)
                 {
                     HStack
                     {
+                        #if targetEnvironment(macCatalyst)
+                        Button(action: { showSettingsModalView.toggle()}) {
+                            Image(systemName: "gearshape")
+                                .imageScale(.large)
+                                .frame(height: 96, alignment: .trailing)
+                        }
+                        #endif
                         NavigationLink(destination: SearchView().environmentObject(collectionModel).environmentObject(accentColor))
                         {
                             Image(systemName: "magnifyingglass")
@@ -134,6 +136,7 @@ struct ContentView: View {
                             #else
                             .keyboardShortcut("+", modifiers: .command)
                             #endif
+                        
                     }
                 }
             }
@@ -147,13 +150,26 @@ struct ContentView: View {
             .onAppear {
                 collectionModel.loadCollection(count: count)
                 count += 1
+                #if targetEnvironment(macCatalyst)
+                    showiPadWelcomeScreen = false
+                #else
+                    if(UIDevice.current.model.hasPrefix("iPad")) {
+                        if UserDefaults.standard.object(forKey: "launchedBefore") != nil {
+                            showiPadWelcomeScreen = false
+                        }
+                        else {
+                            showiPadWelcomeScreen = true
+                        }
+                    }
+                    else {
+                        showiPadWelcomeScreen = false
+                    }
+                #endif
             }
-            
-        }
-        .if(UIDevice.current.model.hasPrefix("iPhone"))
-        {
-            $0.navigationViewStyle(StackNavigationViewStyle())
 
+        }
+        .if(UIDevice.current.model.hasPrefix("iPhone") || horizontalSizeClass == .compact) {
+            $0.navigationViewStyle(StackNavigationViewStyle())
         }
         .toast(isPresenting: $showToast, duration: 1) {
             AlertToast(type: .complete(accentColor.color), title: "Product Added", style: AlertToast.AlertStyle.style(titleFont: Font.system(.title3, design: .rounded).bold()))
@@ -165,7 +181,7 @@ struct ContentView: View {
             }
         }) {
             AddProductView(showInfoModalView: self.$showInfoModalView).environmentObject(collectionModel).environmentObject(accentColor)
-            
+
         }
         .sheet(isPresented: $showSettingsModalView) {
             SettingsView(showSettingsModalView: self.$showSettingsModalView).environmentObject(collectionModel).environmentObject(accentColor)
@@ -181,7 +197,32 @@ struct ContentView: View {
             .padding(.horizontal)
         }
     }
+
 }
+
+struct CustomSectionHeaderViewModifier: ViewModifier {
+    let font = Font.system(.title3, design: .rounded).weight(.medium)
+    func body(content: Content) -> some View {
+        content
+            .font(font)
+            .textCase(nil)
+            .foregroundColor(.primary)
+        #if targetEnvironment(macCatalyst)
+            .padding(.bottom, 7)
+            .padding(.top, 7)
+        #else
+            .padding(.bottom, 2)
+        #endif
+    }
+}
+
+
+extension View {
+    func customSectionHeader() -> some View {
+        modifier(CustomSectionHeaderViewModifier())
+    }
+}
+
 
 struct ContentView_Previews: PreviewProvider{
     static var previews: some View {
@@ -191,4 +232,5 @@ struct ContentView_Previews: PreviewProvider{
         }
     }
 }
+
 

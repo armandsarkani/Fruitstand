@@ -38,11 +38,19 @@ struct FruitstandApp: App {
                     Text("Continue")
                         .customButton()
                 }
+                #if targetEnvironment(macCatalyst)
+                .padding(.top, -50)
+                #else
                 .padding(.horizontal)
+                #endif
             }
             if((appLaunchedBefore != nil || continuePressed) || isiPad)
             {
                 ContentView().environmentObject(collectionModel).environmentObject(accentColor)
+                    #if targetEnvironment(macCatalyst)
+                    .environment(\.defaultMinListRowHeight, 40)
+                    .listRowSeparator(.visible)
+                    #endif
                     .withHostingWindow { window in
                         #if targetEnvironment(macCatalyst)
                         if let titlebar = window?.windowScene?.titlebar {
@@ -51,12 +59,16 @@ struct FruitstandApp: App {
                         }
                         #endif
                     }
+
                     .environment(\.font, Font.system(.body, design: .rounded))
                     .accentColor(accentColor.color)
+                    
+
             }
+            
         }
-        
     }
+    
     
 }
 
@@ -174,6 +186,5 @@ fileprivate struct HostingWindowFinder: UIViewRepresentable {
     func updateUIView(_ uiView: UIView, context: Context) {
     }
 }
-
 
 

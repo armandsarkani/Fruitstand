@@ -20,6 +20,7 @@ class CollectionModel: ObservableObject {
     @Published var iCloudStatus: Bool = false
     @Published var widgetModel: WidgetModel = WidgetModel(accentColor: Color.accentColor, deviceTypeCounts: [], collectionSize: 0, deviceTypeValues: [], averageValues: [], totalCollectionValue: 0)
     @Published var productJustAdded: Bool = false
+    @Published var productJustEdited: Bool = false
 
     init()
     {

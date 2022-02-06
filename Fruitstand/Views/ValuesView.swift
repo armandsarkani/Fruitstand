@@ -39,7 +39,7 @@ struct ValuesView: View {
                     Text(String(format: "$%d", locale: Locale.current, getTotalCollectionValue(collection: collectionModel.collection)))
                         .foregroundColor(.gray)
                 }
-                Section(header: Text("Total Value By Device Type").font(.subheadline))
+                Section(header: Text("Total Value By Device Type").customSectionHeader())
                 {
                     ForEach(getDeviceTypeValuesSorted(collection: collectionModel.collection), id: \.self) { element in
                         HStack
@@ -52,7 +52,9 @@ struct ValuesView: View {
                         }
                     }
                 }
-                Section(header: Text("Average Value By Device Type").font(.subheadline))
+                //.headerProminence(.increased)
+
+                Section(header: Text("Average Value By Device Type").customSectionHeader())
                  {
                      ForEach(getAverageValuesSorted(collection: collectionModel.collection, deviceTypeCounts: collectionModel.getDeviceTypeCounts()), id: \.self) { element in
                          HStack
@@ -65,6 +67,8 @@ struct ValuesView: View {
                          }
                      }
                  }
+                 //.headerProminence(.increased)
+
                 
             }
             .navigationTitle("Values")

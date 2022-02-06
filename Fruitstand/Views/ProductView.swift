@@ -71,6 +71,7 @@ struct ProductView: View {
     @State private var showToast: Bool = false
     @State private var searchText = ""
     @State private var collectionFull: Bool = false
+    @State private var showEditToast: Bool = false
     init(model: String, deviceType: DeviceType, fromSearch: Bool)
     {
         self.model = model
@@ -116,12 +117,12 @@ struct ProductView: View {
             if(!searchText.isEmpty)
             {
                 Section(header: Text(resultsText).fontWeight(.medium).font(.system(.title3, design: .rounded)).textCase(nil)) {}
-                .listRowInsets(EdgeInsets(top: 20, leading: 7, bottom: -500, trailing: 0))
+                .listRowInsets(EdgeInsets(top: 20, leading: 7, bottom: -1000, trailing: 0))
             }
             ForEach(searchResults, id: \.self) { product in
                 Section
                 {
-                    ProductCardView(product: product, fullySearchable: false, showButtons: true).environmentObject(collectionModel).environmentObject(accentColor)
+                    ProductCardView(product: product, fullySearchable: false, showButtons: true, showEditToast: $showEditToast).environmentObject(collectionModel).environmentObject(accentColor)
                 }
             }
         }
@@ -146,7 +147,11 @@ struct ProductView: View {
             {
                 HStack
                 {
+                    #if targetEnvironment(macCatalyst)
+                    SortMenuViewMac(sortStyle: $sortStyle).environmentObject(accentColor)
+                    #else
                     SortMenuView(sortStyle: $sortStyle, customLabelStyle: CustomSortLabelStyle())
+                    #endif
                     if(UIDevice.current.model.hasPrefix("iPhone") || horizontalSizeClass == .compact) {
                         NavigationLink(destination: SearchView(previousModelDetailView: model).environmentObject(collectionModel).environmentObject(accentColor))
                         {
@@ -191,6 +196,9 @@ struct ProductView: View {
         .toast(isPresenting: $showToast, duration: 1) {
             AlertToast(type: .complete(accentColor.color), title: "Product Added", style: AlertToast.AlertStyle.style(titleFont: Font.system(.title3, design: .rounded).bold()))
         }
+        .toast(isPresenting: $showEditToast, duration: 1) {
+            AlertToast(type: .complete(accentColor.color), title: "Product Edited", style: AlertToast.AlertStyle.style(titleFont: Font.system(.title3, design: .rounded).bold()))
+        }
         .sheet(isPresented: $showInfoModalView, onDismiss: {
             if(collectionModel.productJustAdded) {
                 showToast.toggle()
@@ -211,8 +219,10 @@ struct ProductCardView: View {
     var product: ProductInfo
     var fullySearchable: Bool
     var showButtons: Bool
+    @Binding var showEditToast: Bool
     @State var confirmationShown: Bool = false
     @State private var selectedProduct: ProductInfo? = nil
+    @State private var showToast: Bool = false
     @State var showEditModalView: Bool = false
     @State private var item: ActivityItem?
 
@@ -280,28 +290,25 @@ struct ProductCardView: View {
                 Text(product.color!)
                 if(showButtons) {
                     HStack {
-                        Label("Delete", systemImage: "trash.fill")
-                            .hoverEffect(.lift)
-                            .labelStyle(.iconOnly)
-                            .font(Font.system(.body).bold())
-                            .imageScale(.medium)
-                            .foregroundColor(.red)
-                            .onTapGesture {
-                                generator.notificationOccurred(.error)
-                                selectedProduct = product
-                                confirmationShown.toggle()
-                            }
+                        Button(role: .destructive, action: {generator.notificationOccurred(.error); selectedProduct = product; confirmationShown.toggle()})
+                        {
+                            Label("Delete", systemImage: "trash.fill").foregroundColor(.red)
+                                .hoverEffect(.lift)
+                                .labelStyle(.iconOnly)
+                                .imageScale(.medium)
+                                .font(Font.system(.body).bold())
+                        }
+                        .buttonStyle(BorderlessButtonStyle())
                         Spacer().frame(width: 30)
-                        Label("Edit", systemImage: "pencil")
-                            .hoverEffect(.lift)
-                            .labelStyle(.iconOnly)
-                            .font(Font.system(.body).bold())
-                            .imageScale(.large)
-                            .foregroundColor(accentColor.color)
-                            .onTapGesture {
-                                showEditModalView.toggle()
-                                generator.notificationOccurred(.success)
-                            }
+                        Button(role: .destructive, action: {generator.notificationOccurred(.success); showEditModalView.toggle()})
+                        {
+                            Label("Edit", systemImage: "pencil").foregroundColor(accentColor.color)
+                                .hoverEffect(.lift)
+                                .labelStyle(.iconOnly)
+                                .imageScale(.large)
+                                .font(Font.system(.body).bold())
+                        }
+                        .buttonStyle(BorderlessButtonStyle())
                     }.frame(maxWidth: .infinity, alignment: .trailing)
                 }
                
@@ -310,7 +317,13 @@ struct ProductCardView: View {
 
             Spacer()
         }
-        .sheet(isPresented: $showEditModalView) {
+        .sheet(isPresented: $showEditModalView, onDismiss: {
+            if(collectionModel.productJustEdited) {
+                showEditToast.toggle()
+                collectionModel.productJustEdited = false
+            }
+        })
+        {
             EditProductView(product: product, showEditModalView: $showEditModalView).environmentObject(collectionModel).environmentObject(accentColor)
 
         }
@@ -348,11 +361,12 @@ struct ProductCardView: View {
 struct ProductCardSnapshotView: View {
     @EnvironmentObject var collectionModel: CollectionModel
     @EnvironmentObject var accentColor: AccentColor
+    @State var showEditToast: Bool = false
     var product: ProductInfo
     var fullySearchable: Bool
     var body: some View {
         List {
-            ProductCardView(product: product, fullySearchable: fullySearchable, showButtons: false).environmentObject(collectionModel).environmentObject(accentColor)
+            ProductCardView(product: product, fullySearchable: fullySearchable, showButtons: false, showEditToast: $showEditToast).environmentObject(collectionModel).environmentObject(accentColor)
         }
     }
 }
@@ -551,7 +565,27 @@ struct SortMenuView: View {
                 } icon: {Image(systemName: "arrow.up.circle.fill").imageScale(.large)}.labelStyle(CustomSortLabelStyle())
             }
         }
+    }
+}
 
+struct SortMenuViewMac: View {
+    @Binding var sortStyle: SortStyle
+    @EnvironmentObject var accentColor: AccentColor
+    var body: some View {
+        Picker(selection: $sortStyle, label: MacLabelStyle(sortStyle: sortStyle).foregroundColor(accentColor.color))
+        {
+            ForEach(SortStyle.allCases) { style in
+                if(!style.images.isEmpty) {
+                    Label(style.rawValue, systemImage: style.images[0])
+                        .tag(style)
+                }
+                else {
+                    Text(style.rawValue)
+                        .tag(style)
+                }
+            }
+        }
+        .pickerStyle(MenuPickerStyle())
     }
 }
 
@@ -567,6 +601,24 @@ struct CustomSortLabelStyle: LabelStyle {
                 configuration.icon
                 configuration.title
             }
+        }
+    }
+}
+
+struct MacLabelStyle: View {
+    var sortStyle: SortStyle
+    var body: some View {
+        if(sortStyle == SortStyle.None)
+        {
+            Image(systemName: "arrow.up.arrow.down.circle").imageScale(.large)
+        }
+        else if(sortStyle == SortStyle.EstimatedValueDescending || sortStyle == SortStyle.YearAcquiredDescending)
+        {
+            Image(systemName: "arrow.down.circle.fill").imageScale(.large)
+        }
+        else
+        {
+            Image(systemName: "arrow.up.circle.fill").imageScale(.large)
         }
     }
 }

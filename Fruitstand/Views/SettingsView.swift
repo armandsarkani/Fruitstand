@@ -9,6 +9,7 @@ import Foundation
 import SwiftUI
 import UniformTypeIdentifiers
 import SwiftCSV
+import AlertToast
 
 enum FileError: Error {
     case fileNameError
@@ -37,6 +38,7 @@ struct SettingsView: View {
     @EnvironmentObject var collectionModel: CollectionModel
     @Binding var showSettingsModalView: Bool
     @State private var noiCloudAccount: Bool = false
+    @State private var showSyncToast: Bool = false
     @State private var isExporting: Bool = false
     @State private var isImporting: Bool = false
     @State private var alertInfo: AlertInfo?
@@ -49,7 +51,7 @@ struct SettingsView: View {
         NavigationView {
             List
             {
-                Section(header: Text("General").font(.subheadline))
+                Section(header: Text("General").customSectionHeader())
                 {
                     Button(action: {confirmationShown.toggle()}) {
                         Label("Erase Collection", systemImage: "trash")
@@ -73,6 +75,7 @@ struct SettingsView: View {
                     Button(action: {
                         if(collectionModel.iCloudStatus){
                             NSUbiquitousKeyValueStore.default.synchronize()
+                            showSyncToast.toggle()
                         }
                         else {
                             noiCloudAccount.toggle()
@@ -92,7 +95,9 @@ struct SettingsView: View {
                         )
                     }
                 }
-                Section(header: Text("Manage Collection").font(.subheadline))
+                //.headerProminence(.increased)
+
+                Section(header: Text("Manage Collection").customSectionHeader())
                 {
                     Button(action: {
                         CSVCollectionModel(collectionModel: collectionModel).loadSampleCollection()
@@ -113,7 +118,9 @@ struct SettingsView: View {
                         Label("Import Collection from CSV", systemImage: "arrow.down.doc.fill")
                     }
                 }
-                Section(header: Text("Appearance").font(.subheadline))
+                //.headerProminence(.increased)
+
+                Section(header: Text("Appearance").customSectionHeader())
                 {
                     HStack {
                         Text("Accent Color")
@@ -134,7 +141,9 @@ struct SettingsView: View {
                             }
                     }
                 }
-                Section(header: Text("Fruitstand Info").font(.subheadline))
+                //.headerProminence(.increased)
+
+                Section(header: Text("Fruitstand Info").customSectionHeader())
                 {
                     HStack {
                         Text("Version Number")
@@ -147,7 +156,10 @@ struct SettingsView: View {
                         Text(getBuildNumber()).foregroundColor(.gray)
                     }
                 }
+                //.headerProminence(.increased)
+
             }
+
             
             .fileExporter(isPresented: $isExporting, documents: CSVCollectionModel(collectionModel: collectionModel).getCSVFiles(), contentType: UTType.commaSeparatedText) { result in
                 switch result {
@@ -212,6 +224,9 @@ struct SettingsView: View {
                     message: Text(info.message),
                     dismissButton: .default(Text("OK")))
             })
+            .toast(isPresenting: $showSyncToast, duration: 1) {
+                AlertToast(type: .systemImage("cloud.fill", Color.blue), title: "Sync in Progress", style: AlertToast.AlertStyle.style(titleFont: Font.system(.title3, design: .rounded).bold()))
+            }
             .navigationTitle(Text("Settings"))
             .navigationBarTitleDisplayMode(.large)
             .toolbar {

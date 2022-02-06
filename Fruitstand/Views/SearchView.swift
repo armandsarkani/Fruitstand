@@ -7,7 +7,8 @@
 
 import Foundation
 import SwiftUI
-
+import AlertToast
+import Combine
 
 struct SearchView: View {
     @EnvironmentObject var collectionModel: CollectionModel
@@ -17,7 +18,7 @@ struct SearchView: View {
     @State private var cardTapped = false
     @State var deviceTypeFilter: String = "All Devices"
     @State var sortStyle: SortStyle = SortStyle.None
-    @Environment(\.horizontalSizeClass) var horizontalSizeClass
+    @State private var showEditToast: Bool = false
     let deviceTypeFilters = ["All Devices", "Mac", "iPhone", "iPad", "Apple Watch", "AirPods", "Apple TV", "iPod"]
     var suggestions: [String] {
         return getSearchSuggestions(deviceTypeFilter: deviceTypeFilter)
@@ -74,25 +75,27 @@ struct SearchView: View {
         }
     }
     var body: some View {
-        
         HStack {
             Picker(selection: $deviceTypeFilter, label: Label("Device Type", systemImage: "square.3.layers.3d.down.left")) {
                 if(!searchText.isEmpty) {
                     ForEach(deviceTypeFilters, id: \.self) { filter in
                         Image(systemName: (icons[filter] ?? "circle.hexagongrid"))
                     }
-                    
+
                 }
             }
             if(UIDevice.current.model.hasPrefix("iPad") && !searchText.isEmpty) {
                 Spacer().frame(width: 20)
             }
             if(!searchText.isEmpty) {
+                #if targetEnvironment(macCatalyst)
+                SortMenuViewMac(sortStyle: $sortStyle).environmentObject(accentColor)
+                #else
                 SortMenuView(sortStyle: $sortStyle, customLabelStyle: CustomSortLabelStyle())
+                #endif
             }
         }
-
-       .if(searchText.isEmpty)
+        .if(searchText.isEmpty)
         {
             $0.padding(.top, -100)
         }
@@ -118,30 +121,26 @@ struct SearchView: View {
            if(!searchText.isEmpty)
            {
                Section(header: Text(resultsText).fontWeight(.medium).font(.system(.title3, design: .rounded)).textCase(nil)) {}
-               .listRowInsets(EdgeInsets(top: 15, leading: 7, bottom: -1000, trailing: 0))
+               .listRowInsets(EdgeInsets(top: 20, leading: 7, bottom: -20, trailing: 0))
            }
            if(searchText.isEmpty)
            {
-               Section(header: Text("Suggestions").font(.subheadline))
+               Section(header: Text("Suggestions").customSectionHeader())
                {
                    ForEach(suggestions.choose(4), id: \.self) { suggestion in
                        Button(action: {generator.notificationOccurred(.success); searchText = suggestion})
                        {
                            Label{Text(suggestion).foregroundColor(.primary)} icon: {Image(systemName: "arrow.up.right")}
-                           
                        }
                    }
                    Button(action: {generator.notificationOccurred(.success); searchText = "Entire Collection"})
                    {
                        Label{Text("Entire Collection").foregroundColor(accentColor.color)} icon: {
                            Image(systemName: "rectangle.stack.fill")
-
                        }
-                       
                    }
                }
-               
-               Picker(selection: $deviceTypeFilter, label: Text("Filter By Device Type").font(.subheadline)) {
+               Picker(selection: $deviceTypeFilter, label: Text("Filter By Device Type").customSectionHeader()) {
                    ForEach(deviceTypeFilters, id: \.self) { filter in
                        Label(filter, systemImage: (icons[filter] ?? "circle.hexagongrid"))
                    }
@@ -150,7 +149,7 @@ struct SearchView: View {
            }
            ForEach(searchResults, id: \.self) { product in
                Section {
-                   ProductCardView(product: product, fullySearchable: true, showButtons: true).environmentObject(collectionModel)
+                   ProductCardView(product: product, fullySearchable: true, showButtons: true, showEditToast: $showEditToast).environmentObject(collectionModel)
                    if(collectionModel.getModelCount(model: product.model!) > 1)
                    {
                        NavigationLink(destination: ProductView(model: product.model!, deviceType: product.type!, fromSearch: true).environmentObject(collectionModel).environmentObject(accentColor))
@@ -161,6 +160,9 @@ struct SearchView: View {
                    }
                }
            }
+       }
+       .toast(isPresenting: $showEditToast, duration: 1) {
+           AlertToast(type: .complete(accentColor.color), title: "Product Edited", style: AlertToast.AlertStyle.style(titleFont: Font.system(.title3, design: .rounded).bold()))
        }
        .environment(\.defaultMinListHeaderHeight, 20)
        .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .always), prompt: "Search all products ").autocapitalization(.none)
@@ -206,5 +208,7 @@ struct SearchView: View {
         }
     }
 }
+
+
 
 

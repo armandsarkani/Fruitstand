@@ -13,7 +13,7 @@
 		16022E0F2652F8720098BD95 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 16022E0E2652F8720098BD95 /* Preview Assets.xcassets */; };
 		1606260927A9C92E0026123A /* ActivityView in Frameworks */ = {isa = PBXBuildFile; productRef = 1606260827A9C92E0026123A /* ActivityView */; };
 		16205F0E279E848D005232E4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1624C746279E7D5800258513 /* Assets.xcassets */; };
-		16205F11279E84F8005232E4 /* Fruitstand WidgetExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 1624C73F279E7D5700258513 /* Fruitstand WidgetExtension.appex */; platformFilter = ios; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		16205F11279E84F8005232E4 /* Fruitstand WidgetExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 1624C73F279E7D5700258513 /* Fruitstand WidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		1624C740279E7D5700258513 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 162C825A279D5F81008002DF /* WidgetKit.framework */; };
 		1624C741279E7D5700258513 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 162C825C279D5F81008002DF /* SwiftUI.framework */; };
 		1624C744279E7D5700258513 /* Fruitstand_Widget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1624C743279E7D5700258513 /* Fruitstand_Widget.swift */; };
@@ -21,6 +21,7 @@
 		1624C74A279E7D5800258513 /* Fruitstand_Widget.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = 1624C745279E7D5700258513 /* Fruitstand_Widget.intentdefinition */; };
 		1625662E27A7E5580029AB3A /* AlertToast in Frameworks */ = {isa = PBXBuildFile; productRef = 1625662D27A7E5580029AB3A /* AlertToast */; };
 		162C058D279794FE006FDA48 /* CollectionStatistics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 162C058C279794FE006FDA48 /* CollectionStatistics.swift */; };
+		163D4D9C27AD17C1001EE416 /* Introspect in Frameworks */ = {isa = PBXBuildFile; productRef = 163D4D9B27AD17C1001EE416 /* Introspect */; };
 		167E160E279FA47B008427F1 /* CSV in Frameworks */ = {isa = PBXBuildFile; productRef = 167E160D279FA47B008427F1 /* CSV */; };
 		1690B4902790197900CFAD06 /* AddProductView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1690B48F2790197900CFAD06 /* AddProductView.swift */; };
 		169A919827924FEF00AC9088 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 169A919727924FEF00AC9088 /* AppDelegate.swift */; };
@@ -114,7 +115,7 @@
 		16B2D1DE278A5277006242BC /* Fruitstand.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Fruitstand.entitlements; sourceTree = "<group>"; };
 		16B2D1E0278A5289006242BC /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
 		16B2D1E2278A6A35006242BC /* ProductAtttributes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductAtttributes.swift; sourceTree = "<group>"; };
-		16B322EA279DE8AB00DEE18B /* SearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchView.swift; sourceTree = "<group>"; };
+		16B322EA279DE8AB00DEE18B /* SearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchView.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		16B333CF2652F8B1003E4BCE /* ProductView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProductView.swift; sourceTree = "<group>"; };
 		16C5AE092792163B00C837F4 /* SampleCollection */ = {isa = PBXFileReference; lastKnownFileType = folder; name = SampleCollection; path = Fruitstand/SampleCollection; sourceTree = "<group>"; };
 		16F1CF0F279B5EFD0094CE89 /* ProductListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductListView.swift; sourceTree = "<group>"; };
@@ -130,6 +131,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1606260927A9C92E0026123A /* ActivityView in Frameworks */,
+				163D4D9C27AD17C1001EE416 /* Introspect in Frameworks */,
 				167E160E279FA47B008427F1 /* CSV in Frameworks */,
 				1625662E27A7E5580029AB3A /* AlertToast in Frameworks */,
 				16B2D1E1278A5289006242BC /* CloudKit.framework in Frameworks */,
@@ -276,6 +278,7 @@
 				167E160D279FA47B008427F1 /* CSV */,
 				1625662D27A7E5580029AB3A /* AlertToast */,
 				1606260827A9C92E0026123A /* ActivityView */,
+				163D4D9B27AD17C1001EE416 /* Introspect */,
 			);
 			productName = Fruitstand;
 			productReference = 16022E042652F8710098BD95 /* Fruitstand.app */;
@@ -351,6 +354,7 @@
 				167E160C279FA47B008427F1 /* XCRemoteSwiftPackageReference "CSV" */,
 				1625662C27A7E5580029AB3A /* XCRemoteSwiftPackageReference "AlertToast" */,
 				1606260727A9C92E0026123A /* XCRemoteSwiftPackageReference "ActivityView" */,
+				163D4D9A27AD17C1001EE416 /* XCRemoteSwiftPackageReference "SwiftUI-Introspect" */,
 			);
 			productRefGroup = 16022E052652F8710098BD95 /* Products */;
 			projectDirPath = "";
@@ -443,7 +447,6 @@
 /* Begin PBXTargetDependency section */
 		16205F10279E84ED005232E4 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			platformFilter = ios;
 			target = 1624C73E279E7D5700258513 /* Fruitstand WidgetExtension */;
 			targetProxy = 16205F0F279E84ED005232E4 /* PBXContainerItemProxy */;
 		};
@@ -583,7 +586,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 2430;
+				CURRENT_PROJECT_VERSION = 2503;
 				DEVELOPMENT_ASSET_PATHS = "\"Fruitstand/Preview Content\"";
 				DEVELOPMENT_TEAM = 86LR2G8L2C;
 				"ENABLE_HARDENED_RUNTIME[sdk=macosx*]" = YES;
@@ -594,7 +597,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.4;
+				MARKETING_VERSION = 1.5;
 				PRODUCT_BUNDLE_IDENTIFIER = armandsarkani.Fruitstand;
 				"PRODUCT_BUNDLE_IDENTIFIER[sdk=macosx*]" = armandsarkani.Fruitstand;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -602,7 +605,7 @@
 				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "Fruitstand Mac Catalyst Profile with App Groups";
 				SUPPORTS_MACCATALYST = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = "1,2,6";
 			};
 			name = Debug;
 		};
@@ -618,7 +621,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 2430;
+				CURRENT_PROJECT_VERSION = 2503;
 				DEVELOPMENT_ASSET_PATHS = "\"Fruitstand/Preview Content\"";
 				DEVELOPMENT_TEAM = 86LR2G8L2C;
 				"ENABLE_HARDENED_RUNTIME[sdk=macosx*]" = YES;
@@ -629,7 +632,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.4;
+				MARKETING_VERSION = 1.5;
 				PRODUCT_BUNDLE_IDENTIFIER = armandsarkani.Fruitstand;
 				"PRODUCT_BUNDLE_IDENTIFIER[sdk=macosx*]" = armandsarkani.Fruitstand;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -637,7 +640,7 @@
 				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "Fruitstand Mac Catalyst Profile with App Groups";
 				SUPPORTS_MACCATALYST = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = "1,2,6";
 			};
 			name = Release;
 		};
@@ -651,7 +654,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2430;
+				CURRENT_PROJECT_VERSION = 2503;
 				DEVELOPMENT_TEAM = 86LR2G8L2C;
 				"ENABLE_HARDENED_RUNTIME[sdk=macosx*]" = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -664,14 +667,14 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.4;
+				MARKETING_VERSION = 1.5;
 				PRODUCT_BUNDLE_IDENTIFIER = "armandsarkani.Fruitstand.Fruitstand-Widget";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SUPPORTS_MACCATALYST = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = "1,2,6";
 			};
 			name = Debug;
 		};
@@ -685,7 +688,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2430;
+				CURRENT_PROJECT_VERSION = 2503;
 				DEVELOPMENT_TEAM = 86LR2G8L2C;
 				"ENABLE_HARDENED_RUNTIME[sdk=macosx*]" = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -698,14 +701,14 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.4;
+				MARKETING_VERSION = 1.5;
 				PRODUCT_BUNDLE_IDENTIFIER = "armandsarkani.Fruitstand.Fruitstand-Widget";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SUPPORTS_MACCATALYST = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = "1,2,6";
 			};
 			name = Release;
 		};
@@ -805,6 +808,14 @@
 				minimumVersion = 1.0.0;
 			};
 		};
+		163D4D9A27AD17C1001EE416 /* XCRemoteSwiftPackageReference "SwiftUI-Introspect" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/siteline/SwiftUI-Introspect";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.1.4;
+			};
+		};
 		167E160C279FA47B008427F1 /* XCRemoteSwiftPackageReference "CSV" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/yaslab/CSV.swift";
@@ -833,6 +844,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 1625662C27A7E5580029AB3A /* XCRemoteSwiftPackageReference "AlertToast" */;
 			productName = AlertToast;
+		};
+		163D4D9B27AD17C1001EE416 /* Introspect */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 163D4D9A27AD17C1001EE416 /* XCRemoteSwiftPackageReference "SwiftUI-Introspect" */;
+			productName = Introspect;
 		};
 		167E160D279FA47B008427F1 /* CSV */ = {
 			isa = XCSwiftPackageProductDependency;

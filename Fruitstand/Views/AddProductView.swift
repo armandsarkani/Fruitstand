@@ -23,30 +23,41 @@ struct AddProductView: View {
            NavigationView {
                 Form
                 {
-                    Picker("Device", selection: $product.type) {
-                        ForEach(DeviceType.allCases, id: \.id) { device in
-                            Label(device.id, systemImage: icons[device.rawValue]!)
-                            .tag(device as DeviceType?)
-                            }
-                        .accentColor(accentColor.color)
+                    CustomPickerContainerView("Device") {
+                        Picker(selection: $product.type, label: CustomPickerLabelView("Device")) {
+                        #if targetEnvironment(macCatalyst)
+                            Text("Select").tag(nil as DeviceType?)
+                        #endif
+                            ForEach(DeviceType.allCases, id: \.id) { device in
+                                Label(device.id, systemImage: icons[device.rawValue]!)
+                                .tag(device as DeviceType?)
+                                }
+                            .accentColor(accentColor.color)
+                        }
                     }
                     ModelPickerView(product: $product)
                         .accentColor(accentColor.color)
                     
-                    Section(header: Text("Basics").font(.subheadline))
+                    Section(header: Text("Basics").customSectionHeader())
                     {
                         BasicsView(product: $product)
                     }
-                    Section(header: Text("Device Specifics").font(.subheadline))
+                    //.headerProminence(.increased)
+
+                    Section(header: Text("Device Specifics").customSectionHeader())
                     {
                         SpecificsView(product: $product)
                     }
+                    //.headerProminence(.increased)
+
                    
-                    Section(header: Text("Additional Comments").font(.subheadline))
+                    Section(header: Text("Additional Comments").customSectionHeader())
                     {
                         TextField("Comments", text: $product.comments ?? "")
                             .autocapitalization(.none)
                     }
+                    //.headerProminence(.increased)
+
 
                 }
                 .gesture(
@@ -60,7 +71,8 @@ struct AddProductView: View {
                         Button(action: {self.showInfoModalView.toggle()}, label: {Text("Cancel").fontWeight(.regular)})
                     }
                     ToolbarItem(placement: .navigationBarTrailing) {
-                        Button(action: {addItem()}, label: {Text("Add").bold()}).disabled((product.type == nil ||  product.color == nil || product.yearAcquired == nil || product.estimatedValue == nil || product.workingStatus == nil || product.condition == nil || product.acquiredAs == nil || product.warranty == nil || product.physicalDamage == nil || product.originalBox == nil) || (product.iPhoneModel == nil && product.iPadModel == nil && product.MacModel == nil && product.AppleWatchModel == nil && product.AirPodsModel == nil && product.AppleTVModel == nil && product.iPodModel == nil))
+                        Button(action: {addItem()}, label: {Text("Add").bold()}).disabled((product.type == nil ||  product.color == nil || product.yearAcquired == nil || product.estimatedValue == nil || product.workingStatus == nil || product.condition == nil || product.acquiredAs == nil || product.warranty == nil || product.physicalDamage == nil || product.originalBox == nil) || ((product.type == DeviceType.iPhone && product.iPhoneModel == nil) || (product.type == DeviceType.iPad && product.iPadModel == nil) || (product.type == DeviceType.Mac && product.MacModel == nil) || (product.type == DeviceType.AppleWatch && product.AppleWatchModel == nil) || (product.type == DeviceType.AirPods && product.AirPodsModel == nil) || (product.type == DeviceType.AppleTV && product.AppleTVModel == nil) || (product.type == DeviceType.iPod && product.iPodModel == nil)))
+                        
                     }
                 }
            }
@@ -94,20 +106,25 @@ struct EditProductView: View {
              {
                  ModelPickerView(product: $product)
                      .accentColor(accentColor.color)
-                 Section(header: Text("Basics").font(.subheadline))
+                 Section(header: Text("Basics").customSectionHeader())
                  {
                      BasicsView(product: $product)
+
                  }
-                 Section(header: Text("Device Specifics").font(.subheadline))
+                 //.headerProminence(.increased)
+
+                 Section(header: Text("Device Specifics").customSectionHeader())
                  {
                      SpecificsView(product: $product)
                  }
+                 //.headerProminence(.increased)
                 
-                 Section(header: Text("Additional Comments").font(.subheadline))
+                 Section(header: Text("Additional Comments").customSectionHeader())
                  {
                      TextField("Comments", text: $product.comments ?? "")
                          .autocapitalization(.none)
                  }
+                 //.headerProminence(.increased)
 
              }
              .gesture(
@@ -132,6 +149,7 @@ struct EditProductView: View {
         generator.notificationOccurred(.success)
         product.model = getProductModel(product: product)
         collectionModel.updateOneProduct(product: product)
+        collectionModel.productJustEdited = true
         self.showEditModalView.toggle()
     }
 }
@@ -159,30 +177,54 @@ struct BasicsView: View
         
         Group
         {
-            Picker("Working Status", selection: $product.workingStatus) {
-                ForEach(WorkingStatus.allCases, id: \.id) { status in
-                    Text(status.id)
-                    .tag(status as WorkingStatus?)
-                    }
+            CustomPickerContainerView("Working Status") {
+                Picker(selection: $product.workingStatus, label: CustomPickerLabelView("Working Status")) {
+                #if targetEnvironment(macCatalyst)
+                    Text("Select").tag(nil as WorkingStatus?)
+                #endif
+                    ForEach(WorkingStatus.allCases, id: \.id) { status in
+                        Text(status.id)
+                        .tag(status as WorkingStatus?)
+                        }
+                }
             }
-            Picker("Condition", selection: $product.condition) {
-                ForEach(Condition.allCases, id: \.id) { status in
-                    Text(status.id)
-                    .tag(status as Condition?)
-                    }
+            
+            CustomPickerContainerView("Condition") {
+                Picker(selection: $product.condition, label: CustomPickerLabelView("Condition")) {
+                #if targetEnvironment(macCatalyst)
+                    Text("Select").tag(nil as Condition?)
+                #endif
+                    ForEach(Condition.allCases, id: \.id) { status in
+                        Text(status.id)
+                        .tag(status as Condition?)
+                        }
+                }
             }
-            Picker("Acquired As", selection: $product.acquiredAs) {
-                ForEach(AcquiredAs.allCases, id: \.id) { status in
-                    Text(status.id)
-                    .tag(status as AcquiredAs?)
-                    }
+            
+            CustomPickerContainerView("Acquired As") {
+                Picker(selection: $product.acquiredAs, label: CustomPickerLabelView("Acquired As")) {
+                #if targetEnvironment(macCatalyst)
+                    Text("Select").tag(nil as AcquiredAs?)
+                #endif
+                    ForEach(AcquiredAs.allCases, id: \.id) { status in
+                        Text(status.id)
+                        .tag(status as AcquiredAs?)
+                        }
+                }
             }
-            Picker("Warranty", selection: $product.warranty) {
-                ForEach(Warranty.allCases, id: \.id) { status in
-                    Text(status.id)
-                    .tag(status as Warranty?)
-                    }
+            
+            CustomPickerContainerView("Warranty") {
+                Picker(selection: $product.warranty, label: CustomPickerLabelView("Warranty")) {
+                #if targetEnvironment(macCatalyst)
+                    Text("Select").tag(nil as Warranty?)
+                #endif
+                    ForEach(Warranty.allCases, id: \.id) { status in
+                        Text(status.id)
+                        .tag(status as Warranty?)
+                        }
+                }
             }
+            
         }
         Group
         {
@@ -212,37 +254,61 @@ struct SpecificsView: View
         {
             TextField("Carrier", text: $product.carrier ?? "")
                 .autocapitalization(.none)
-            Picker("IMEI/ESN Status", selection: $product.ESNStatus) {
-                ForEach(ESNStatus.allCases, id: \.id) { status in
-                    Text(status.id)
-                    .tag(status as ESNStatus?)
-                    }
+            
+            
+            CustomPickerContainerView("IMEI/ESN Status") {
+                Picker(selection: $product.ESNStatus, label: CustomPickerLabelView("IMEI/ESN Status")) {
+                #if targetEnvironment(macCatalyst)
+                    Text("Select").tag(nil as ESNStatus?)
+                #endif
+                    ForEach(ESNStatus.allCases, id: \.id) { status in
+                        Text(status.id)
+                        .tag(status as ESNStatus?)
+                        }
+                }
             }
-            Picker("Carrier Lock Status", selection: $product.carrierLockStatus) {
-                ForEach(CarrierLockStatus.allCases, id: \.id) { status in
-                    Text(status.id)
-                    .tag(status as CarrierLockStatus?)
-                    }
+            
+            CustomPickerContainerView("Carrier Lock Status") {
+                Picker(selection: $product.carrierLockStatus, label: CustomPickerLabelView("Carrier Lock Status")) {
+                #if targetEnvironment(macCatalyst)
+                    Text("Select").tag(nil as CarrierLockStatus?)
+                #endif
+                    ForEach(CarrierLockStatus.allCases, id: \.id) { status in
+                        Text(status.id)
+                        .tag(status as CarrierLockStatus?)
+                        }
+                }
             }
 
         }
         if(product.type == DeviceType.iPad)
         {
-            Picker("Connectivity", selection: $product.connectivity) {
-                ForEach(iPadConnectivity.allCases, id: \.id) { status in
-                    Text(status.id)
-                    .tag(status as iPadConnectivity?)
-                    }
+            CustomPickerContainerView("Connectivity") {
+                Picker(selection: $product.connectivity, label: CustomPickerLabelView("Connectivity")) {
+                #if targetEnvironment(macCatalyst)
+                    Text("Select").tag(nil as iPadConnectivity?)
+                #endif
+                    ForEach(iPadConnectivity.allCases, id: \.id) { status in
+                        Text(status.id)
+                        .tag(status as iPadConnectivity?)
+                        }
+                }
             }
         }
         if(product.type == DeviceType.Mac)
         {
-            Picker("Form Factor", selection: $product.formFactor) {
-                ForEach(FormFactor.allCases, id: \.id) { status in
-                    Text(status.id)
-                    .tag(status as FormFactor?)
-                    }
+            CustomPickerContainerView("Form Factor") {
+                Picker(selection: $product.formFactor, label: CustomPickerLabelView("Form Factor")) {
+                #if targetEnvironment(macCatalyst)
+                    Text("Select").tag(nil as FormFactor?)
+                #endif
+                    ForEach(FormFactor.allCases, id: \.id) { status in
+                        Text(status.id)
+                        .tag(status as FormFactor?)
+                        }
+                }
             }
+            
             if(product.formFactor == FormFactor.Notebook || product.formFactor == FormFactor.AllinOne)
             {
                 HStack
@@ -275,18 +341,29 @@ struct SpecificsView: View
             }
             TextField("Original Band(s) Included", text: $product.originalBands ?? "")
                 .autocapitalization(.none)
-
-            Picker("Case Material", selection: $product.caseType) {
-                ForEach(WatchCaseType.allCases, id: \.id) { status in
-                    Text(status.id)
-                    .tag(status as WatchCaseType?)
-                    }
+            
+            CustomPickerContainerView("Case Type") {
+                Picker(selection: $product.caseType, label: CustomPickerLabelView("Case Type")) {
+                #if targetEnvironment(macCatalyst)
+                    Text("Select").tag(nil as WatchCaseType?)
+                #endif
+                    ForEach(WatchCaseType.allCases, id: \.id) { status in
+                        Text(status.id)
+                        .tag(status as WatchCaseType?)
+                        }
+                }
             }
-            Picker("Connectivity", selection: $product.watchConnectivity) {
-                ForEach(WatchConnectivity.allCases, id: \.id) { status in
-                    Text(status.id)
-                    .tag(status as WatchConnectivity?)
-                    }
+            
+            CustomPickerContainerView("Connectivity") {
+                Picker(selection: $product.watchConnectivity, label: CustomPickerLabelView("Connectivity")) {
+                #if targetEnvironment(macCatalyst)
+                    Text("Select").tag(nil as WatchConnectivity?)
+                #endif
+                    ForEach(WatchConnectivity.allCases, id: \.id) { status in
+                        Text(status.id)
+                        .tag(status as WatchConnectivity?)
+                        }
+                }
             }
             
             
@@ -300,11 +377,17 @@ struct SpecificsView: View
         }
         if(product.type == DeviceType.AirPods)
         {
-            Picker("Case Type", selection: $product.APCaseType) {
-                ForEach(AirPodsCaseType.allCases, id: \.id) { status in
-                    Text(status.id)
-                    .tag(status as AirPodsCaseType?)
-                    }
+            
+            CustomPickerContainerView("Case Type") {
+                Picker(selection: $product.APCaseType, label: CustomPickerLabelView("Case Type")) {
+                #if targetEnvironment(macCatalyst)
+                    Text("Select").tag(nil as AirPodsCaseType?)
+                #endif
+                    ForEach(AirPodsCaseType.allCases, id: \.id) { status in
+                        Text(status.id)
+                        .tag(status as AirPodsCaseType?)
+                        }
+                }
             }
         }
         if(product.type == DeviceType.iPhone || product.type == DeviceType.iPad || product.type == DeviceType.Mac || product.type == DeviceType.AppleWatch || product.type == DeviceType.iPod)
@@ -323,23 +406,34 @@ struct ModelPickerView : View
     @Binding var product: ProductInfo
     var body: some View {
         if(product.type == DeviceType.iPhone){
-            Picker("Model", selection: $product.iPhoneModel) {
-                ForEach(iPhoneModel.allCases, id: \.id) { status in
-                    Label(status.id, systemImage: status.getIcon())
-                    .tag(status as iPhoneModel?)
-                    }
+            CustomPickerContainerView("Model") {
+                Picker(selection: $product.iPhoneModel, label: CustomPickerLabelView("Model")) {
+                #if targetEnvironment(macCatalyst)
+                    Text("Select").tag(nil as iPhoneModel?)
+                #endif
+                    ForEach(iPhoneModel.allCases, id: \.id) { status in
+                        Label(status.id, systemImage: status.getIcon())
+                        .tag(status as iPhoneModel?)
+                        }
+                }
             }
+            
             if(product.iPhoneModel == iPhoneModel.Other){
                 TextField("Other iPhone Model", text: $product.otherModel ?? "")
                     .autocapitalization(.none)
             }
         }
         if(product.type == DeviceType.iPad){
-            Picker("Model", selection: $product.iPadModel) {
-                ForEach(iPadModel.allCases, id: \.id) { status in
-                    Label(status.id, systemImage: status.getIcon())
-                    .tag(status as iPadModel?)
-                    }
+            CustomPickerContainerView("Model") {
+                Picker(selection: $product.iPadModel, label: CustomPickerLabelView("Model")) {
+                #if targetEnvironment(macCatalyst)
+                    Text("Select").tag(nil as iPadModel?)
+                #endif
+                    ForEach(iPadModel.allCases, id: \.id) { status in
+                        Label(status.id, systemImage: status.getIcon())
+                        .tag(status as iPadModel?)
+                        }
+                }
             }
             if(product.iPadModel == iPadModel.Other){
                 TextField("Other iPad Model", text: $product.otherModel ?? "")
@@ -347,23 +441,34 @@ struct ModelPickerView : View
             }
         }
         if(product.type == DeviceType.Mac){
-            Picker("Model", selection: $product.MacModel) {
-                ForEach(MacModel.allCases, id: \.id) { status in
-                    Label(status.id, systemImage: status.getIcon())
-                    .tag(status as MacModel?)
+            CustomPickerContainerView("Model") {
+                Picker(selection: $product.MacModel, label: CustomPickerLabelView("Model")) {
+                #if targetEnvironment(macCatalyst)
+                    Text("Select").tag(nil as MacModel?)
+                #endif
+                    ForEach(MacModel.allCases, id: \.id) { status in
+                        Label(status.id, systemImage: status.getIcon())
+                        .tag(status as MacModel?)
+                        }
                 }
             }
+
             if(product.MacModel == MacModel.Other || product.MacModel == MacModel.Earlier){
                 TextField("Other/Earlier Mac Model", text: $product.otherModel ?? "")
                     .autocapitalization(.none)
             }
         }
         if(product.type == DeviceType.AppleWatch){
-            Picker("Model", selection: $product.AppleWatchModel) {
-                ForEach(AppleWatchModel.allCases, id: \.id) { status in
-                    Label(status.id, systemImage: status.getIcon())
-                    .tag(status as AppleWatchModel?)
-                    }
+            CustomPickerContainerView("Model") {
+                Picker(selection: $product.AppleWatchModel, label: CustomPickerLabelView("Model")) {
+                #if targetEnvironment(macCatalyst)
+                    Text("Select").tag(nil as AppleWatchModel?)
+                #endif
+                    ForEach(AppleWatchModel.allCases, id: \.id) { status in
+                        Label(status.id, systemImage: status.getIcon())
+                        .tag(status as AppleWatchModel?)
+                        }
+                }
             }
             if(product.AppleWatchModel == AppleWatchModel.Other){
                 TextField("Other Watch Model", text: $product.otherModel ?? "")
@@ -371,23 +476,34 @@ struct ModelPickerView : View
             }
         }
         if(product.type == DeviceType.AirPods){
-            Picker("Model", selection: $product.AirPodsModel) {
-                ForEach(AirPodsModel.allCases, id: \.id) { status in
-                    Label(status.id, systemImage: status.getIcon())
-                    .tag(status as AirPodsModel?)
-                    }
+            CustomPickerContainerView("Model") {
+                Picker(selection: $product.AirPodsModel, label: CustomPickerLabelView("Model")) {
+                #if targetEnvironment(macCatalyst)
+                    Text("Select").tag(nil as AirPodsModel?)
+                #endif
+                    ForEach(AirPodsModel.allCases, id: \.id) { status in
+                        Label(status.id, systemImage: status.getIcon())
+                        .tag(status as AirPodsModel?)
+                        }
+                }
             }
+
             if(product.AirPodsModel == AirPodsModel.Other){
                 TextField("Other AirPods Model", text: $product.otherModel ?? "")
                     .autocapitalization(.none)
             }
         }
         if(product.type == DeviceType.AppleTV){
-            Picker("Model", selection: $product.AppleTVModel) {
-                ForEach(AppleTVModel.allCases, id: \.id) { status in
-                    Label(status.id, systemImage: status.getIcon())
-                    .tag(status as AppleTVModel?)
-                    }
+            CustomPickerContainerView("Model") {
+                Picker(selection: $product.AppleTVModel, label: CustomPickerLabelView("Model")) {
+                #if targetEnvironment(macCatalyst)
+                    Text("Select").tag(nil as AppleTVModel?)
+                #endif
+                    ForEach(AppleTVModel.allCases, id: \.id) { status in
+                        Label(status.id, systemImage: status.getIcon())
+                        .tag(status as AppleTVModel?)
+                        }
+                }
             }
             if(product.AppleTVModel == AppleTVModel.Other){
                 TextField("Other Apple TV Model", text: $product.otherModel ?? "")
@@ -395,11 +511,16 @@ struct ModelPickerView : View
             }
         }
         if(product.type == DeviceType.iPod){
-            Picker("Model", selection: $product.iPodModel) {
-                ForEach(iPodModel.allCases, id: \.id) { status in
-                    Label(status.id, systemImage: status.getIcon())
-                    .tag(status as iPodModel?)
-                    }
+            CustomPickerContainerView("Model") {
+                Picker(selection: $product.iPodModel, label: CustomPickerLabelView("Model")) {
+                #if targetEnvironment(macCatalyst)
+                    Text("Select").tag(nil as iPodModel?)
+                #endif
+                    ForEach(iPodModel.allCases, id: \.id) { status in
+                        Label(status.id, systemImage: status.getIcon())
+                        .tag(status as iPodModel?)
+                        }
+                }
             }
             if(product.iPodModel == iPodModel.Other){
                 TextField("Other iPod Model", text: $product.otherModel ?? "")
@@ -415,5 +536,41 @@ struct AddProductView_Previews: PreviewProvider{
             AddProductView(showInfoModalView: .constant(false))
                 .preferredColorScheme(.dark)
         }
+    }
+}
+
+struct CustomPickerContainerView<Content: View>: View {
+    let content: Content
+    var text: String
+    init(_ text: String, @ViewBuilder content: () -> Content) {
+        self.content = content()
+        self.text = text
+    }
+
+    var body: some View {
+        VStack(alignment: .leading) {
+            #if targetEnvironment(macCatalyst)
+            Text(text)
+            content
+                .padding(.leading, -10)
+            #else
+            content
+            #endif
+
+        }
+    }
+}
+
+struct CustomPickerLabelView: View{
+    var text: String
+    init(_ text: String) {
+        self.text = text
+    }
+    var body: some View {
+        #if targetEnvironment(macCatalyst)
+        Group {}
+        #else
+        Text(text)
+        #endif
     }
 }
