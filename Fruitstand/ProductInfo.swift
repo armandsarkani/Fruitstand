@@ -11,6 +11,8 @@ import Foundation
 import Combine
 import SwiftUI
 
+var modelIcons: [String: String] = [:]
+
 extension UserDefaults
 {
   func setCodableObject<T: Codable>(_ data: T?, forKey defaultName: String)
@@ -85,15 +87,6 @@ struct ProductInfo: Codable, Hashable
     var warranty: Warranty?
     var yearAcquired: Int?
     var comments: String?
-    
-    // Model names for each device type
-    var iPhoneModel: iPhoneModel?
-    var iPadModel: iPadModel?
-    var MacModel: MacModel?
-    var AppleWatchModel: AppleWatchModel?
-    var AirPodsModel: AirPodsModel?
-    var AppleTVModel: AppleTVModel?
-    var iPodModel: iPodModel?
     var otherModel: String?
     
     // Shared with iPhone, iPad, Mac, Apple TV, iPod
@@ -145,22 +138,8 @@ struct ProductInfo: Codable, Hashable
 func getCommonHeaderName(product: ProductInfo, toDisplay: Bool) -> String
 {
     if(product.type == DeviceType.Mac) {
-        if(product.model == "Other" || product.model == "Earlier Models")
-        {
-            return "\(product.otherModel ?? "Unknown Model") (\(product.year ?? "Unknown Year")) \(product.screenSize != nil ? "\(String(product.screenSize!))-inch": "")"
-            
-        }
-        else {
-            return "\(product.year ?? "Unknown Year") \(product.screenSize != nil ? "\(String(product.screenSize!))-inch": "")"
-        }
         
-    }
-    else
-    {
-        if(product.model == "Other")
-        {
-            return "\(product.otherModel ?? "Unknown Model")"
-        }
+        return "\(product.year ?? "Unknown Year") \(product.screenSize != nil ? "\(String(product.screenSize!))-inch": "")"
     }
     if(product.type == DeviceType.iPhone && toDisplay)
     {
@@ -215,33 +194,6 @@ func getCommonName(product: ProductInfo, toDisplay: Bool) -> String
     
 }
 
-func getProductModel(product: ProductInfo) -> String
-{
-    var model: String
-    if(product.type == DeviceType.iPhone){
-        model = product.iPhoneModel!.rawValue
-    }
-    else if(product.type == DeviceType.iPad){
-        model = product.iPadModel!.rawValue
-    }
-    else if(product.type == DeviceType.Mac){
-        model = product.MacModel!.rawValue
-    }
-    else if(product.type == DeviceType.AppleWatch){
-        model = product.AppleWatchModel!.rawValue
-    }
-    else if(product.type == DeviceType.AirPods){
-        model = product.AirPodsModel!.rawValue
-    }
-    else if(product.type == DeviceType.AppleTV){
-        model = product.AppleTVModel!.rawValue
-    }
-    else{
-        model = product.iPodModel!.rawValue
-    }
-    return model
-}
-
 func typeToRank(deviceType: String, key: String) -> Int
 {
     let deviceTypeEnum = DeviceType(rawValue: deviceType)!
@@ -270,28 +222,43 @@ func typeToRank(deviceType: String, key: String) -> Int
 
 func getProductIcon(product: ProductInfo) -> String
 {
-    var model: String
+    var icon: String
     if(product.type == DeviceType.iPhone){
-        model = (iPhoneModel(rawValue: product.model ?? "Other") ?? iPhoneModel.Other).getIcon()
+        icon = (iPhoneModel(rawValue: product.model ?? "Other") ?? iPhoneModel.Other).getIcon()
     }
     else if(product.type == DeviceType.iPad){
-        model = (iPadModel(rawValue: product.model ?? "Other") ?? iPadModel.Other).getIcon()
+        icon = (iPadModel(rawValue: product.model ?? "Other") ?? iPadModel.Other).getIcon()
     }
     else if(product.type == DeviceType.Mac){
-        model = (MacModel(rawValue: product.model ?? "Other") ?? MacModel.Other).getIcon()
+        if(MacModel(rawValue: product.model ?? "Other/Earlier Models") != nil) {
+            icon = MacModel(rawValue: product.model ?? "Other/Earlier Models")!.getIcon()
+        }
+        else {
+            if(product.formFactor == FormFactor.Notebook) {
+                icon = "laptopcomputer"
+            }
+            else if(product.formFactor == FormFactor.AllinOne) {
+                icon = "desktopcomputer"
+            }
+            else {
+                icon = "macmini"
+            }
+        }
     }
     else if(product.type == DeviceType.AppleWatch){
-        model = (AppleWatchModel(rawValue: product.model ?? "Other") ?? AppleWatchModel.Other).getIcon()
+        icon = (AppleWatchModel(rawValue: product.model ?? "Other") ?? AppleWatchModel.Other).getIcon()
     }
     else if(product.type == DeviceType.AirPods){
-        model = (AirPodsModel(rawValue: product.model ?? "Other") ?? AirPodsModel.Other).getIcon()
+        icon = (AirPodsModel(rawValue: product.model ?? "Other") ?? AirPodsModel.Other).getIcon()
     }
     else if(product.type == DeviceType.AppleTV){
-        model = (AppleTVModel(rawValue: product.model ?? "Other") ?? AppleTVModel.Other).getIcon()
+        icon = (AppleTVModel(rawValue: product.model ?? "Other") ?? AppleTVModel.Other).getIcon()
     }
     else{
-        model = (iPodModel(rawValue: product.model ?? "Other") ?? iPodModel.Other).getIcon()
+        icon = (iPodModel(rawValue: product.model ?? "Other") ?? iPodModel.Other).getIcon()
     }
-    return model
+    modelIcons[product.model ?? "Unknown Model"] = icon
+
+    return icon
 }
 

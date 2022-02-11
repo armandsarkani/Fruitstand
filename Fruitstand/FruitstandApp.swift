@@ -7,11 +7,17 @@
 
 import SwiftUI
 import UIKit
+import Introspect
+
+
 
 @main
 struct FruitstandApp: App {
+    @Environment(\.scenePhase) var scenePhase
+    private let quickActionService = QuickActionService()
     @StateObject var collectionModel: CollectionModel = CollectionModel()
     @StateObject var accentColor: AccentColor = AccentColor()
+    @AppStorage("selectedAppearance") var selectedAppearance = 0
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     let appLaunchedBefore = UserDefaults.standard.object(forKey: "launchedBefore")
     @State var continuePressed: Bool = false
@@ -46,7 +52,8 @@ struct FruitstandApp: App {
             }
             if((appLaunchedBefore != nil || continuePressed) || isiPad)
             {
-                ContentView().environmentObject(collectionModel).environmentObject(accentColor)
+                ContentView().environmentObject(collectionModel).environmentObject(accentColor)               .environmentObject(quickActionService)
+                    .preferredColorScheme(selectedAppearance == 1 ? .light : selectedAppearance == 2 ? .dark : nil)
                     #if targetEnvironment(macCatalyst)
                     .environment(\.defaultMinListRowHeight, 40)
                     .listRowSeparator(.visible)
@@ -59,17 +66,40 @@ struct FruitstandApp: App {
                         }
                         #endif
                     }
-
                     .environment(\.font, Font.system(.body, design: .rounded))
                     .accentColor(accentColor.color)
-                    
-
             }
             
         }
+        .onChange(of: scenePhase) { scenePhase in
+            switch scenePhase {
+            case .active:
+                guard let shortcutItem = appDelegate.shortcutItem else { return }
+                quickActionService.action = QuickAction(rawValue: shortcutItem.type)
+            case .background:
+                addQuickActions()
+            default: return
+            }
+        }
     }
-    
-    
+    func addQuickActions() {
+        UIApplication.shared.shortcutItems = [UIApplicationShortcutItem(type: "add", localizedTitle: "Add Product", localizedSubtitle: "Add a product to your collection", icon: UIApplicationShortcutIcon(type: .add)),
+        UIApplicationShortcutItem(type: "search", localizedTitle: "Search", localizedSubtitle: "Search for a product in your collection", icon: UIApplicationShortcutIcon(type: .search))]
+    }
+}
+
+enum QuickAction: String {
+    case search, add
+}
+
+class QuickActionService: ObservableObject {
+    @Published var action: QuickAction?
+    @Published var searchAction: Bool = false
+    @Published var addAction: Bool = false
+
+    init(initialValue: QuickAction? = nil) {
+        action = initialValue
+    }
 }
 
 extension UIView {
@@ -187,4 +217,14 @@ fileprivate struct HostingWindowFinder: UIViewRepresentable {
     }
 }
 
+func OptionalBinding<T>(_ binding: Binding<T?>, _ defaultValue: T) -> Binding<T> {
+    return Binding<T>(get: {
+        return binding.wrappedValue ?? defaultValue
+    }, set: {
+        binding.wrappedValue = $0
+    })
+}
 
+func ??<T> (left: Binding<T?>, right: T) -> Binding<T> {
+    return OptionalBinding(left, right)
+}

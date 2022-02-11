@@ -586,7 +586,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 2503;
+				CURRENT_PROJECT_VERSION = 2530;
 				DEVELOPMENT_ASSET_PATHS = "\"Fruitstand/Preview Content\"";
 				DEVELOPMENT_TEAM = 86LR2G8L2C;
 				"ENABLE_HARDENED_RUNTIME[sdk=macosx*]" = YES;
@@ -621,7 +621,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 2503;
+				CURRENT_PROJECT_VERSION = 2530;
 				DEVELOPMENT_ASSET_PATHS = "\"Fruitstand/Preview Content\"";
 				DEVELOPMENT_TEAM = 86LR2G8L2C;
 				"ENABLE_HARDENED_RUNTIME[sdk=macosx*]" = YES;
@@ -654,7 +654,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2503;
+				CURRENT_PROJECT_VERSION = 2530;
 				DEVELOPMENT_TEAM = 86LR2G8L2C;
 				"ENABLE_HARDENED_RUNTIME[sdk=macosx*]" = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -674,7 +674,7 @@
 				SUPPORTS_MACCATALYST = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2,6";
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
@@ -688,7 +688,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2503;
+				CURRENT_PROJECT_VERSION = 2530;
 				DEVELOPMENT_TEAM = 86LR2G8L2C;
 				"ENABLE_HARDENED_RUNTIME[sdk=macosx*]" = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -708,7 +708,7 @@
 				SUPPORTS_MACCATALYST = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2,6";
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};

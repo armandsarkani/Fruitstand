@@ -37,7 +37,7 @@ struct ValuesView: View {
                         .fixedSize()
                     Spacer()
                     Text(String(format: "$%d", locale: Locale.current, getTotalCollectionValue(collection: collectionModel.collection)))
-                        .foregroundColor(.gray)
+                        .foregroundColor(.secondary)
                 }
                 Section(header: Text("Total Value By Device Type").customSectionHeader())
                 {
@@ -48,7 +48,7 @@ struct ValuesView: View {
                                 .fixedSize()
                             Spacer()
                             Text(String(format: "$%d", locale: Locale.current, element.totalValue ?? 0))
-                                .foregroundColor(.gray)
+                                .foregroundColor(.secondary)
                         }
                     }
                 }
@@ -63,7 +63,7 @@ struct ValuesView: View {
                                  .fixedSize()
                              Spacer()
                              Text(String(format: "$%.2f", locale: Locale.current, element.averageValue ?? 0.0))
-                                 .foregroundColor(.gray)
+                                 .foregroundColor(.secondary)
                          }
                      }
                  }
@@ -72,7 +72,6 @@ struct ValuesView: View {
                 
             }
             .navigationTitle("Values")
-            .navigationBarTitleDisplayMode(.large)
         }
     }
     

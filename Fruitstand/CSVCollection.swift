@@ -52,38 +52,28 @@ class CSVCollectionModel
         var products: [ProductInfo] = []
         for element in productData
         {
-            var product: ProductInfo = ProductInfo(type: deviceType, color: element["Color"] ?? nil, workingStatus: WorkingStatus(rawValue: element["Working Status"] ?? ""), estimatedValue: Int(element["Estimated Value"] ?? ""), condition: Condition(rawValue: element["Condition"] ?? ""), acquiredAs: AcquiredAs(rawValue: element["Acquired As"] ?? ""), physicalDamage: stringToBool[element["Physical Damage"] ?? "No"] ?? false, originalBox: stringToBool[element["Original Box"] ?? "No"] ?? false, warranty: Warranty(rawValue: element["Warranty"] ?? ""), yearAcquired: Int(element["Year Acquired"] ?? ""), comments: (element["Comments"] != "" ? element["Comments"]: nil), storage: element["Storage"] ?? nil, activationLock: stringToBool[element["Activation Lock"] ?? "No"] ?? false, carrier: element["Carrier"] ?? nil, ESNStatus: ESNStatus(rawValue: element["ESN Status"] ?? ""), carrierLockStatus: CarrierLockStatus(rawValue: element["Carrier Lock Status"] ?? ""), connectivity: iPadConnectivity(rawValue: element["iPad Connectivity"] ?? ""), year: element["Year"] ?? nil, formFactor: FormFactor(rawValue: element["Form Factor"] ?? ""), screenSize: Int(element["Screen Size"] ?? ""), processor: element["Processor"] ?? nil, memory: element["Memory"] ?? nil, caseType: WatchCaseType(rawValue: element["Case Type"] ?? ""), caseSize: Int(element["Case Size"] ?? ""), watchConnectivity: WatchConnectivity(rawValue: element["Watch Connectivity"] ?? ""), originalBands: element["Original Bands"] ?? nil, hasRemote: stringToBool[element["Has Remote"] ?? "No"] ?? false, APCaseType: AirPodsCaseType(rawValue: element["AirPods Case"] ?? ""))
-            if(deviceType == DeviceType.iPhone){
-                product.iPhoneModel = iPhoneModel(rawValue: element["Model"] ?? "Other") ?? iPhoneModel.Other
-                product.model = (product.iPhoneModel ?? iPhoneModel.Other).id
-            }
-            if(deviceType == DeviceType.iPad){
-                product.iPadModel = iPadModel(rawValue: element["Model"] ?? "Other") ?? iPadModel.Other
-                product.model = (product.iPadModel ?? iPadModel.Other).id
-            }
-            if(deviceType == DeviceType.Mac){
-                product.MacModel = MacModel(rawValue: element["Model"] ?? "Other") ?? MacModel.Earlier
-                product.model = (product.MacModel ?? MacModel.Other).id
-            }
-            if(deviceType == DeviceType.AppleWatch){
-                product.AppleWatchModel = AppleWatchModel(rawValue: element["Model"] ?? "Other") ?? AppleWatchModel.Other
-                product.model = (product.AppleWatchModel ?? AppleWatchModel.Other).id
-            }
-            if(deviceType == DeviceType.AirPods){
-                product.AirPodsModel = AirPodsModel(rawValue: element["Model"] ?? "Other") ?? AirPodsModel.Other
-                product.model = (product.AirPodsModel ?? AirPodsModel.Other).id
-            }
-            if(deviceType == DeviceType.AppleTV){
-                product.AppleTVModel = AppleTVModel(rawValue: element["Model"] ?? "Other") ?? AppleTVModel.Other
-                product.model = (product.AppleTVModel ?? AppleTVModel.Other).id
-            }
-            if(deviceType == DeviceType.iPod){
-                product.iPodModel = iPodModel(rawValue: element["Model"] ?? "Other") ?? iPodModel.Other
-                product.model = (product.iPodModel ?? iPodModel.Other).id
-            }
-            if(product.model == "Other" || product.model == "Earlier Models") {
-                product.otherModel = element["Model"]
-            }
+            var product: ProductInfo = ProductInfo(type: deviceType, color: element["Color"] ?? nil, model: element["Model"] ?? "Unknown Model", workingStatus: WorkingStatus(rawValue: element["Working Status"] ?? ""), estimatedValue: Int(element["Estimated Value"] ?? ""), condition: Condition(rawValue: element["Condition"] ?? ""), acquiredAs: AcquiredAs(rawValue: element["Acquired As"] ?? ""), physicalDamage: stringToBool[element["Physical Damage"] ?? "No"] ?? false, originalBox: stringToBool[element["Original Box"] ?? "No"] ?? false, warranty: Warranty(rawValue: element["Warranty"] ?? ""), yearAcquired: Int(element["Year Acquired"] ?? ""), comments: (element["Comments"] != "" ? element["Comments"]: nil), storage: element["Storage"] ?? nil, activationLock: stringToBool[element["Activation Lock"] ?? "No"] ?? false, carrier: element["Carrier"] ?? nil, ESNStatus: ESNStatus(rawValue: element["ESN Status"] ?? ""), carrierLockStatus: CarrierLockStatus(rawValue: element["Carrier Lock Status"] ?? ""), connectivity: iPadConnectivity(rawValue: element["iPad Connectivity"] ?? ""), year: element["Year"] ?? nil, formFactor: FormFactor(rawValue: element["Form Factor"] ?? ""), screenSize: Int(element["Screen Size"] ?? ""), processor: element["Processor"] ?? nil, memory: element["Memory"] ?? nil, caseType: WatchCaseType(rawValue: element["Case Type"] ?? ""), caseSize: Int(element["Case Size"] ?? ""), watchConnectivity: WatchConnectivity(rawValue: element["Watch Connectivity"] ?? ""), originalBands: element["Original Bands"] ?? nil, hasRemote: stringToBool[element["Has Remote"] ?? "No"] ?? false, APCaseType: AirPodsCaseType(rawValue: element["AirPods Case"] ?? ""))
+            if(deviceType == DeviceType.iPhone && iPhoneModel(rawValue: element["Model"] ?? "Other") == nil) {
+                product.otherModel = product.model
+             }
+             if(deviceType == DeviceType.iPad && iPadModel(rawValue: element["Model"] ?? "Other") == nil) {
+                 product.otherModel = product.model
+             }
+             if(deviceType == DeviceType.Mac && MacModel(rawValue: element["Model"] ?? "Other/Earlier Models") == nil) {
+                 product.otherModel = product.model
+             }
+             if(deviceType == DeviceType.AppleWatch && AppleWatchModel(rawValue: element["Model"] ?? "Other") == nil) {
+                 product.otherModel = product.model
+             }
+             if(deviceType == DeviceType.AirPods && AirPodsModel(rawValue: element["Model"] ?? "Other") == nil) {
+                 product.otherModel = product.model
+             }
+             if(deviceType == DeviceType.AppleTV && AppleTVModel(rawValue: element["Model"] ?? "Other") == nil) {
+                 product.otherModel = product.model
+             }
+             if(deviceType == DeviceType.iPod && iPodModel(rawValue: element["Model"] ?? "Other") == nil) {
+                 product.otherModel = product.model
+             }
             products.append(product)
         }
         collectionModel.saveMultipleProducts(products: &products)
@@ -143,7 +133,7 @@ class CSVCollectionModel
         for product in collectionModel.collection[DeviceType.iPhone]!
         {
             csv.beginNewRow()
-            try! csv.write(row: ["\(((product.model! != "Other") ? product.model!: product.otherModel!))", "\(product.color ?? "")", "\(product.yearAcquired != nil ? String(product.yearAcquired!): "")", "\(product.estimatedValue != nil ? String(product.estimatedValue!): "")", "\(product.workingStatus != nil ? product.workingStatus!.id: "")", "\(product.condition != nil ? product.condition!.id: "")", "\(product.acquiredAs != nil ? product.acquiredAs!.id: "")", "\(product.warranty != nil ? product.warranty!.id: "")", "\(boolToString[product.physicalDamage ?? false]!)", "\(boolToString[product.originalBox ?? false]!)", "\(product.storage ?? "")", "\(product.carrier ?? "")", "\(product.ESNStatus != nil ? product.ESNStatus!.id: "")", "\(product.carrierLockStatus != nil ? product.carrierLockStatus!.id: "")", "\(boolToString[product.activationLock ?? false]!)", "\(product.comments ?? "")"])
+            try! csv.write(row: ["\(product.model ?? "Unknown Model")", "\(product.color ?? "")", "\(product.yearAcquired != nil ? String(product.yearAcquired!): "")", "\(product.estimatedValue != nil ? String(product.estimatedValue!): "")", "\(product.workingStatus != nil ? product.workingStatus!.id: "")", "\(product.condition != nil ? product.condition!.id: "")", "\(product.acquiredAs != nil ? product.acquiredAs!.id: "")", "\(product.warranty != nil ? product.warranty!.id: "")", "\(boolToString[product.physicalDamage ?? false]!)", "\(boolToString[product.originalBox ?? false]!)", "\(product.storage ?? "")", "\(product.carrier ?? "")", "\(product.ESNStatus != nil ? product.ESNStatus!.id: "")", "\(product.carrierLockStatus != nil ? product.carrierLockStatus!.id: "")", "\(boolToString[product.activationLock ?? false]!)", "\(product.comments ?? "")"])
             
         }
 
@@ -159,7 +149,7 @@ class CSVCollectionModel
         for product in collectionModel.collection[DeviceType.iPad]!
         {
             csv.beginNewRow()
-            try! csv.write(row: ["\(((product.model! != "Other") ? product.model!: product.otherModel!))", "\(product.color ?? "")", "\(product.yearAcquired != nil ? String(product.yearAcquired!): "")", "\(product.estimatedValue != nil ? String(product.estimatedValue!): "")", "\(product.workingStatus != nil ? product.workingStatus!.id: "")", "\(product.condition != nil ? product.condition!.id: "")", "\(product.acquiredAs != nil ? product.acquiredAs!.id: "")", "\(product.warranty != nil ? product.warranty!.id: "")", "\(boolToString[product.physicalDamage ?? false]!)", "\(boolToString[product.originalBox ?? false]!)", "\(product.storage ?? "")", "\(product.connectivity != nil ? product.connectivity!.id: "")", "\(boolToString[product.activationLock ?? false]!)", "\(product.comments ?? "")"])
+            try! csv.write(row: ["\(product.model ?? "Unknown Model")", "\(product.color ?? "")", "\(product.yearAcquired != nil ? String(product.yearAcquired!): "")", "\(product.estimatedValue != nil ? String(product.estimatedValue!): "")", "\(product.workingStatus != nil ? product.workingStatus!.id: "")", "\(product.condition != nil ? product.condition!.id: "")", "\(product.acquiredAs != nil ? product.acquiredAs!.id: "")", "\(product.warranty != nil ? product.warranty!.id: "")", "\(boolToString[product.physicalDamage ?? false]!)", "\(boolToString[product.originalBox ?? false]!)", "\(product.storage ?? "")", "\(product.connectivity != nil ? product.connectivity!.id: "")", "\(boolToString[product.activationLock ?? false]!)", "\(product.comments ?? "")"])
             
         }
 
@@ -176,7 +166,7 @@ class CSVCollectionModel
         for product in collectionModel.collection[DeviceType.Mac]!
         {
             csv.beginNewRow()
-            try! csv.write(row: ["\(((product.model! != "Other" && product.model! != "Earlier Models") ? product.model!: product.otherModel!))", "\(product.color ?? "")", "\(product.yearAcquired != nil ? String(product.yearAcquired!): "")", "\(product.estimatedValue != nil ? String(product.estimatedValue!): "")", "\(product.workingStatus != nil ? product.workingStatus!.id: "")", "\(product.condition != nil ? product.condition!.id: "")", "\(product.acquiredAs != nil ? product.acquiredAs!.id: "")", "\(product.warranty != nil ? product.warranty!.id: "")", "\(boolToString[product.physicalDamage ?? false]!)", "\(boolToString[product.originalBox ?? false]!)", "\(product.formFactor != nil ? product.formFactor!.id: "")", "\(product.screenSize != nil ? String(product.screenSize!): "")", "\(product.year ?? "")", "\(product.processor ?? "")", "\(product.storage ?? "")", "\(product.memory ?? "")", "\(boolToString[product.activationLock ?? false]!)", "\(product.comments ?? "")"])
+            try! csv.write(row: ["\(product.model ?? "Unknown Model")", "\(product.color ?? "")", "\(product.yearAcquired != nil ? String(product.yearAcquired!): "")", "\(product.estimatedValue != nil ? String(product.estimatedValue!): "")", "\(product.workingStatus != nil ? product.workingStatus!.id: "")", "\(product.condition != nil ? product.condition!.id: "")", "\(product.acquiredAs != nil ? product.acquiredAs!.id: "")", "\(product.warranty != nil ? product.warranty!.id: "")", "\(boolToString[product.physicalDamage ?? false]!)", "\(boolToString[product.originalBox ?? false]!)", "\(product.formFactor != nil ? product.formFactor!.id: "")", "\(product.screenSize != nil ? String(product.screenSize!): "")", "\(product.year ?? "")", "\(product.processor ?? "")", "\(product.storage ?? "")", "\(product.memory ?? "")", "\(boolToString[product.activationLock ?? false]!)", "\(product.comments ?? "")"])
             
         }
 
@@ -192,7 +182,7 @@ class CSVCollectionModel
         for product in collectionModel.collection[DeviceType.AppleWatch]!
         {
             csv.beginNewRow()
-            try! csv.write(row: ["\(((product.model! != "Other") ? product.model!: product.otherModel!))", "\(product.color ?? "")", "\(product.yearAcquired != nil ? String(product.yearAcquired!): "")", "\(product.estimatedValue != nil ? String(product.estimatedValue!): "")", "\(product.workingStatus != nil ? product.workingStatus!.id: "")", "\(product.condition != nil ? product.condition!.id: "")", "\(product.acquiredAs != nil ? product.acquiredAs!.id: "")", "\(product.warranty != nil ? product.warranty!.id: "")", "\(boolToString[product.physicalDamage ?? false]!)", "\(boolToString[product.originalBox ?? false]!)", "\(product.caseSize != nil ? String(product.caseSize!): "")", "\(product.originalBands ?? "")", "\(product.caseType != nil ? product.caseType!.id: "")", "\(product.watchConnectivity != nil ? product.watchConnectivity!.id: "")", "\(boolToString[product.activationLock ?? false]!)", "\(product.comments ?? "")"])
+            try! csv.write(row: ["\(product.model ?? "Unknown Model")", "\(product.color ?? "")", "\(product.yearAcquired != nil ? String(product.yearAcquired!): "")", "\(product.estimatedValue != nil ? String(product.estimatedValue!): "")", "\(product.workingStatus != nil ? product.workingStatus!.id: "")", "\(product.condition != nil ? product.condition!.id: "")", "\(product.acquiredAs != nil ? product.acquiredAs!.id: "")", "\(product.warranty != nil ? product.warranty!.id: "")", "\(boolToString[product.physicalDamage ?? false]!)", "\(boolToString[product.originalBox ?? false]!)", "\(product.caseSize != nil ? String(product.caseSize!): "")", "\(product.originalBands ?? "")", "\(product.caseType != nil ? product.caseType!.id: "")", "\(product.watchConnectivity != nil ? product.watchConnectivity!.id: "")", "\(boolToString[product.activationLock ?? false]!)", "\(product.comments ?? "")"])
             
         }
 
@@ -208,7 +198,7 @@ class CSVCollectionModel
         for product in collectionModel.collection[DeviceType.AppleTV]!
         {
             csv.beginNewRow()
-            try! csv.write(row: ["\(((product.model! != "Other") ? product.model!: product.otherModel!))", "\(product.color ?? "")", "\(product.yearAcquired != nil ? String(product.yearAcquired!): "")", "\(product.estimatedValue != nil ? String(product.estimatedValue!): "")", "\(product.workingStatus != nil ? product.workingStatus!.id: "")", "\(product.condition != nil ? product.condition!.id: "")", "\(product.acquiredAs != nil ? product.acquiredAs!.id: "")", "\(product.warranty != nil ? product.warranty!.id: "")", "\(boolToString[product.physicalDamage ?? false]!)", "\(boolToString[product.originalBox ?? false]!)", "\(product.storage ?? "")", "\(boolToString[product.hasRemote ?? false]!)", "\(product.comments ?? "")"])
+            try! csv.write(row: ["\(product.model ?? "Unknown Model")", "\(product.color ?? "")", "\(product.yearAcquired != nil ? String(product.yearAcquired!): "")", "\(product.estimatedValue != nil ? String(product.estimatedValue!): "")", "\(product.workingStatus != nil ? product.workingStatus!.id: "")", "\(product.condition != nil ? product.condition!.id: "")", "\(product.acquiredAs != nil ? product.acquiredAs!.id: "")", "\(product.warranty != nil ? product.warranty!.id: "")", "\(boolToString[product.physicalDamage ?? false]!)", "\(boolToString[product.originalBox ?? false]!)", "\(product.storage ?? "")", "\(boolToString[product.hasRemote ?? false]!)", "\(product.comments ?? "")"])
             
         }
 
@@ -224,7 +214,7 @@ class CSVCollectionModel
         for product in collectionModel.collection[DeviceType.AirPods]!
         {
             csv.beginNewRow()
-            try! csv.write(row: ["\(((product.model! != "Other") ? product.model!: product.otherModel!))", "\(product.color ?? "")", "\(product.yearAcquired != nil ? String(product.yearAcquired!): "")", "\(product.estimatedValue != nil ? String(product.estimatedValue!): "")", "\(product.workingStatus != nil ? product.workingStatus!.id: "")", "\(product.condition != nil ? product.condition!.id: "")", "\(product.acquiredAs != nil ? product.acquiredAs!.id: "")", "\(product.warranty != nil ? product.warranty!.id: "")", "\(boolToString[product.physicalDamage ?? false]!)", "\(boolToString[product.originalBox ?? false]!)", "\(product.APCaseType != nil ? product.APCaseType!.id: "")", "\(product.comments ?? "")"])
+            try! csv.write(row: ["\(product.model ?? "Unknown Model")", "\(product.color ?? "")", "\(product.yearAcquired != nil ? String(product.yearAcquired!): "")", "\(product.estimatedValue != nil ? String(product.estimatedValue!): "")", "\(product.workingStatus != nil ? product.workingStatus!.id: "")", "\(product.condition != nil ? product.condition!.id: "")", "\(product.acquiredAs != nil ? product.acquiredAs!.id: "")", "\(product.warranty != nil ? product.warranty!.id: "")", "\(boolToString[product.physicalDamage ?? false]!)", "\(boolToString[product.originalBox ?? false]!)", "\(product.APCaseType != nil ? product.APCaseType!.id: "")", "\(product.comments ?? "")"])
             
         }
 
@@ -240,7 +230,7 @@ class CSVCollectionModel
         for product in collectionModel.collection[DeviceType.iPod]!
         {
             csv.beginNewRow()
-            try! csv.write(row: ["\(((product.model! != "Other") ? product.model!: product.otherModel!))", "\(product.color ?? "")", "\(product.yearAcquired != nil ? String(product.yearAcquired!): "")", "\(product.estimatedValue != nil ? String(product.estimatedValue!): "")", "\(product.workingStatus != nil ? product.workingStatus!.id: "")", "\(product.condition != nil ? product.condition!.id: "")", "\(product.acquiredAs != nil ? product.acquiredAs!.id: "")", "\(product.warranty != nil ? product.warranty!.id: "")", "\(boolToString[product.physicalDamage ?? false]!)", "\(boolToString[product.originalBox ?? false]!)", "\(product.storage ?? "")", "\(boolToString[product.activationLock ?? false]!)", "\(product.comments ?? "")"])
+            try! csv.write(row: ["\(product.model ?? "Unknown Model")", "\(product.color ?? "")", "\(product.yearAcquired != nil ? String(product.yearAcquired!): "")", "\(product.estimatedValue != nil ? String(product.estimatedValue!): "")", "\(product.workingStatus != nil ? product.workingStatus!.id: "")", "\(product.condition != nil ? product.condition!.id: "")", "\(product.acquiredAs != nil ? product.acquiredAs!.id: "")", "\(product.warranty != nil ? product.warranty!.id: "")", "\(boolToString[product.physicalDamage ?? false]!)", "\(boolToString[product.originalBox ?? false]!)", "\(product.storage ?? "")", "\(boolToString[product.activationLock ?? false]!)", "\(product.comments ?? "")"])
             
         }
 

@@ -21,6 +21,7 @@ class CollectionModel: ObservableObject {
     @Published var widgetModel: WidgetModel = WidgetModel(accentColor: Color.accentColor, deviceTypeCounts: [], collectionSize: 0, deviceTypeValues: [], averageValues: [], totalCollectionValue: 0)
     @Published var productJustAdded: Bool = false
     @Published var productJustEdited: Bool = false
+    @Published var lastiCloudSync: String = "Unknown"
 
     init()
     {
@@ -31,6 +32,10 @@ class CollectionModel: ObservableObject {
                 selector: #selector(CollectionModel.ubiquitousKeyValueStoreDidChange),
                 name: NSUbiquitousKeyValueStore.didChangeExternallyNotification,
                 object: NSUbiquitousKeyValueStore.default)
+        }
+        if let lastiCloudSyncObject = UserDefaults.standard.object(forKey: "lastiCloudSync")
+        {
+            self.lastiCloudSync = lastiCloudSyncObject as! String
         }
     }
     func saveMultipleProducts(products: inout [ProductInfo])
@@ -181,6 +186,7 @@ class CollectionModel: ObservableObject {
             NSUbiquitousKeyValueStore.default.set(false, forKey: "_UIConstraintBasedLayoutLogUnsatisfiable")
             UUIDArray = NSUbiquitousKeyValueStore.default.object(forKey: "uuidArray") as? [String] ?? []
             dictionary = NSUbiquitousKeyValueStore.default.dictionaryRepresentation
+            setLatestiCloudSyncDatetime()
         }
         else
         {
@@ -329,6 +335,13 @@ class CollectionModel: ObservableObject {
         }
         return false
     }
+    func setLatestiCloudSyncDatetime() {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateStyle = .short
+        dateFormatter.timeStyle = .short
+        lastiCloudSync = dateFormatter.string(from: Date())
+        UserDefaults.standard.set(lastiCloudSync, forKey: "lastiCloudSync")
+    }
     func getDeviceTypeCounts() -> [DeviceType: Int]
     {
         var deviceTypeCounts: [DeviceType: Int] = [:]
@@ -377,19 +390,30 @@ class CollectionModel: ObservableObject {
         {
             let matchingProducts = collection[deviceType]!
             var modelStrings: [String] = []
+            var otherModelStrings: [String] = []
             for product in matchingProducts
             {
+                if(product.otherModel != nil) {
+                    otherModelStrings.append(product.model!)
+                }
                 modelStrings.append(product.model!)
             }
             let mappedItems = modelStrings.map { ($0, 1) }
             let modelCounts = Dictionary(mappedItems, uniquingKeysWith: +)
             var modelCountsArray: [ModelAndCount] = []
+            var otherModelCountsArray: [ModelAndCount] = []
             for (key, value) in modelCounts
             {
-                modelCountsArray.append(ModelAndCount(model: key, count: value, rank: typeToRank(deviceType: deviceType.rawValue, key: key)))
+                if(otherModelStrings.contains(key)) {
+                    otherModelCountsArray.append(ModelAndCount(model: key, count: value, rank: typeToRank(deviceType: deviceType.rawValue, key: key)))
+                }
+                else {
+                    modelCountsArray.append(ModelAndCount(model: key, count: value, rank: typeToRank(deviceType: deviceType.rawValue, key: key)))
+                }
             }
             modelCountsArray.sort{$0.rank < $1.rank}
-            modelList[deviceType] = modelCountsArray
+            otherModelCountsArray.sort{$0.model.compare($1.model, options: .caseInsensitive) == .orderedAscending}
+            modelList[deviceType] = modelCountsArray + otherModelCountsArray
         }
     }
     func getModelListIndex(product: ProductInfo) -> Int
@@ -414,7 +438,19 @@ class CollectionModel: ObservableObject {
         }
         return 0
     }
-
+    func findReferenceProductForModel(model: String, deviceType: DeviceType) -> ProductInfo {
+        if(deviceType == DeviceType.Mac) {
+            for device in collection[deviceType]! {
+                if(device.model == model) {
+                    return device
+                }
+            }
+            return ProductInfo(type: deviceType, model: model)
+        }
+        else {
+            return ProductInfo(type: deviceType, model: model)
+        }
+    }
 
 }
 

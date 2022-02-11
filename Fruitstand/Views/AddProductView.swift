@@ -34,6 +34,10 @@ struct AddProductView: View {
                                 }
                             .accentColor(accentColor.color)
                         }
+                        .onChange(of: product.type) { change in
+                            product.model = nil
+                            product.otherModel = nil
+                        }
                     }
                     ModelPickerView(product: $product)
                         .accentColor(accentColor.color)
@@ -71,7 +75,7 @@ struct AddProductView: View {
                         Button(action: {self.showInfoModalView.toggle()}, label: {Text("Cancel").fontWeight(.regular)})
                     }
                     ToolbarItem(placement: .navigationBarTrailing) {
-                        Button(action: {addItem()}, label: {Text("Add").bold()}).disabled((product.type == nil ||  product.color == nil || product.yearAcquired == nil || product.estimatedValue == nil || product.workingStatus == nil || product.condition == nil || product.acquiredAs == nil || product.warranty == nil || product.physicalDamage == nil || product.originalBox == nil) || ((product.type == DeviceType.iPhone && product.iPhoneModel == nil) || (product.type == DeviceType.iPad && product.iPadModel == nil) || (product.type == DeviceType.Mac && product.MacModel == nil) || (product.type == DeviceType.AppleWatch && product.AppleWatchModel == nil) || (product.type == DeviceType.AirPods && product.AirPodsModel == nil) || (product.type == DeviceType.AppleTV && product.AppleTVModel == nil) || (product.type == DeviceType.iPod && product.iPodModel == nil)))
+                        Button(action: {addItem()}, label: {Text("Add").bold()}).disabled((product.type == nil ||  product.color == nil || product.yearAcquired == nil || product.estimatedValue == nil || product.workingStatus == nil || product.condition == nil || product.acquiredAs == nil || product.warranty == nil || product.physicalDamage == nil || product.originalBox == nil) || product.model == nil)
                         
                     }
                 }
@@ -80,8 +84,10 @@ struct AddProductView: View {
     }
     func addItem()
     {
+        if(product.otherModel != nil) {
+            product.model = product.otherModel
+        }
         generator.notificationOccurred(.success)
-        product.model = getProductModel(product: product)
         collectionModel.saveOneProduct(product: &product)
         collectionModel.productJustAdded = true
         self.showInfoModalView.toggle()
@@ -138,16 +144,23 @@ struct EditProductView: View {
                      Button(action: {showEditModalView.toggle()}, label: {Text("Cancel").fontWeight(.regular)})
                  }
                  ToolbarItem(placement: .navigationBarTrailing) {
-                     Button(action: {editItem()}, label: {Text("Done").bold()}).disabled((product.color == "" || product.yearAcquired == nil || product.estimatedValue == nil || product.workingStatus == nil || product.condition == nil || product.acquiredAs == nil || product.warranty == nil || product.physicalDamage == nil || product.originalBox == nil) || (product.iPhoneModel == nil && product.iPadModel == nil && product.MacModel == nil && product.AppleWatchModel == nil && product.AirPodsModel == nil && product.AppleTVModel == nil && product.iPodModel == nil))
+                     Button(action: {editItem()}, label: {Text("Done").bold()}).disabled((product.color == "" || product.yearAcquired == nil || product.estimatedValue == nil || product.workingStatus == nil || product.condition == nil || product.acquiredAs == nil || product.warranty == nil || product.physicalDamage == nil || product.originalBox == nil) || product.model == nil)
                  }
              }
         }
         .accentColor(accentColor.color)
+        .onAppear {
+            if(self.product.otherModel != nil) {
+                (self.product.type == DeviceType.Mac) ? (self.product.model = "Other/Earlier Models") : (self.product.model = "Other")
+            }
+        }
     }
     func editItem()
     {
+        if(product.otherModel != nil) {
+            product.model = product.otherModel
+        }
         generator.notificationOccurred(.success)
-        product.model = getProductModel(product: product)
         collectionModel.updateOneProduct(product: product)
         collectionModel.productJustEdited = true
         self.showEditModalView.toggle()
@@ -407,122 +420,154 @@ struct ModelPickerView : View
     var body: some View {
         if(product.type == DeviceType.iPhone){
             CustomPickerContainerView("Model") {
-                Picker(selection: $product.iPhoneModel, label: CustomPickerLabelView("Model")) {
+                Picker(selection: $product.model, label: CustomPickerLabelView("Model")) {
                 #if targetEnvironment(macCatalyst)
-                    Text("Select").tag(nil as iPhoneModel?)
+                    Text("Select").tag(nil as String?)
                 #endif
                     ForEach(iPhoneModel.allCases, id: \.id) { status in
                         Label(status.id, systemImage: status.getIcon())
-                        .tag(status as iPhoneModel?)
+                            .tag(status.id as String?)
                         }
                 }
+                .onChange(of: product.model) { change in
+                    if(product.model != "Other") {
+                        product.otherModel = nil
+                    }
+                }
             }
-            
-            if(product.iPhoneModel == iPhoneModel.Other){
+            if(product.model == "Other"){
                 TextField("Other iPhone Model", text: $product.otherModel ?? "")
                     .autocapitalization(.none)
             }
         }
         if(product.type == DeviceType.iPad){
             CustomPickerContainerView("Model") {
-                Picker(selection: $product.iPadModel, label: CustomPickerLabelView("Model")) {
+                Picker(selection: $product.model, label: CustomPickerLabelView("Model")) {
                 #if targetEnvironment(macCatalyst)
-                    Text("Select").tag(nil as iPadModel?)
+                    Text("Select").tag(nil as String?)
                 #endif
                     ForEach(iPadModel.allCases, id: \.id) { status in
                         Label(status.id, systemImage: status.getIcon())
-                        .tag(status as iPadModel?)
+                            .tag(status.id as String?)
                         }
                 }
+                .onChange(of: product.model) { change in
+                    if(product.model != "Other") {
+                        product.otherModel = nil
+                    }
+                }
             }
-            if(product.iPadModel == iPadModel.Other){
+            if(product.model == "Other"){
                 TextField("Other iPad Model", text: $product.otherModel ?? "")
                     .autocapitalization(.none)
             }
         }
         if(product.type == DeviceType.Mac){
             CustomPickerContainerView("Model") {
-                Picker(selection: $product.MacModel, label: CustomPickerLabelView("Model")) {
+                Picker(selection: $product.model, label: CustomPickerLabelView("Model")) {
                 #if targetEnvironment(macCatalyst)
-                    Text("Select").tag(nil as MacModel?)
+                    Text("Select").tag(nil as String?)
                 #endif
                     ForEach(MacModel.allCases, id: \.id) { status in
                         Label(status.id, systemImage: status.getIcon())
-                        .tag(status as MacModel?)
+                            .tag(status.id as String?)
                         }
                 }
+                .onChange(of: product.model) { change in
+                    if(product.model != "Other/Earlier Models") {
+                        product.otherModel = nil
+                    }
+                }
             }
-
-            if(product.MacModel == MacModel.Other || product.MacModel == MacModel.Earlier){
+            if(product.model == "Other/Earlier Models"){
                 TextField("Other/Earlier Mac Model", text: $product.otherModel ?? "")
                     .autocapitalization(.none)
             }
         }
         if(product.type == DeviceType.AppleWatch){
             CustomPickerContainerView("Model") {
-                Picker(selection: $product.AppleWatchModel, label: CustomPickerLabelView("Model")) {
+                Picker(selection: $product.model, label: CustomPickerLabelView("Model")) {
                 #if targetEnvironment(macCatalyst)
-                    Text("Select").tag(nil as AppleWatchModel?)
+                    Text("Select").tag(nil as String?)
                 #endif
                     ForEach(AppleWatchModel.allCases, id: \.id) { status in
                         Label(status.id, systemImage: status.getIcon())
-                        .tag(status as AppleWatchModel?)
+                            .tag(status.id as String?)
                         }
                 }
+                .onChange(of: product.model) { change in
+                    if(product.model != "Other") {
+                        product.otherModel = nil
+                    }
+                }
             }
-            if(product.AppleWatchModel == AppleWatchModel.Other){
-                TextField("Other Watch Model", text: $product.otherModel ?? "")
+            if(product.model == "Other"){
+                TextField("Other Apple Watch Model", text: $product.otherModel ?? "")
                     .autocapitalization(.none)
             }
         }
         if(product.type == DeviceType.AirPods){
             CustomPickerContainerView("Model") {
-                Picker(selection: $product.AirPodsModel, label: CustomPickerLabelView("Model")) {
+                Picker(selection: $product.model, label: CustomPickerLabelView("Model")) {
                 #if targetEnvironment(macCatalyst)
-                    Text("Select").tag(nil as AirPodsModel?)
+                    Text("Select").tag(nil as String?)
                 #endif
                     ForEach(AirPodsModel.allCases, id: \.id) { status in
                         Label(status.id, systemImage: status.getIcon())
-                        .tag(status as AirPodsModel?)
+                            .tag(status.id as String?)
                         }
                 }
+                .onChange(of: product.model) { change in
+                    if(product.model != "Other") {
+                        product.otherModel = nil
+                    }
+                }
             }
-
-            if(product.AirPodsModel == AirPodsModel.Other){
+            if(product.model == "Other"){
                 TextField("Other AirPods Model", text: $product.otherModel ?? "")
                     .autocapitalization(.none)
             }
         }
         if(product.type == DeviceType.AppleTV){
             CustomPickerContainerView("Model") {
-                Picker(selection: $product.AppleTVModel, label: CustomPickerLabelView("Model")) {
+                Picker(selection: $product.model, label: CustomPickerLabelView("Model")) {
                 #if targetEnvironment(macCatalyst)
-                    Text("Select").tag(nil as AppleTVModel?)
+                    Text("Select").tag(nil as String?)
                 #endif
                     ForEach(AppleTVModel.allCases, id: \.id) { status in
                         Label(status.id, systemImage: status.getIcon())
-                        .tag(status as AppleTVModel?)
+                            .tag(status.id as String?)
                         }
                 }
+                .onChange(of: product.model) { change in
+                    if(product.model != "Other") {
+                        product.otherModel = nil
+                    }
+                }
             }
-            if(product.AppleTVModel == AppleTVModel.Other){
+            if(product.model == "Other"){
                 TextField("Other Apple TV Model", text: $product.otherModel ?? "")
                     .autocapitalization(.none)
             }
         }
         if(product.type == DeviceType.iPod){
             CustomPickerContainerView("Model") {
-                Picker(selection: $product.iPodModel, label: CustomPickerLabelView("Model")) {
+                Picker(selection: $product.model, label: CustomPickerLabelView("Model")) {
                 #if targetEnvironment(macCatalyst)
-                    Text("Select").tag(nil as iPodModel?)
+                    Text("Select").tag(nil as String?)
                 #endif
                     ForEach(iPodModel.allCases, id: \.id) { status in
                         Label(status.id, systemImage: status.getIcon())
-                        .tag(status as iPodModel?)
+                            .tag(status.id as String?)
                         }
                 }
+                .onChange(of: product.model) { change in
+                    if(product.model != "Other") {
+                        product.otherModel = nil
+                    }
+                }
             }
-            if(product.iPodModel == iPodModel.Other){
+            if(product.model == "Other"){
                 TextField("Other iPod Model", text: $product.otherModel ?? "")
                     .autocapitalization(.none)
             }

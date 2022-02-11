@@ -46,25 +46,13 @@ enum SortStyle: String, CaseIterable, Identifiable, Codable {
     }
 }
 
-
-func OptionalBinding<T>(_ binding: Binding<T?>, _ defaultValue: T) -> Binding<T> {
-    return Binding<T>(get: {
-        return binding.wrappedValue ?? defaultValue
-    }, set: {
-        binding.wrappedValue = $0
-    })
-}
-
-func ??<T> (left: Binding<T?>, right: T) -> Binding<T> {
-    return OptionalBinding(left, right)
-}
-
 struct ProductView: View {
     @EnvironmentObject var collectionModel: CollectionModel
     @EnvironmentObject var accentColor: AccentColor
     var model: String
     var deviceType: DeviceType
     var fromSearch: Bool = false
+    var rootSizeClass: UserInterfaceSizeClass?
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
     @State var sortStyle: SortStyle = SortStyle.None
     @State var showInfoModalView: Bool = false
@@ -72,10 +60,11 @@ struct ProductView: View {
     @State private var searchText = ""
     @State private var collectionFull: Bool = false
     @State private var showEditToast: Bool = false
-    init(model: String, deviceType: DeviceType, fromSearch: Bool)
+    init(model: String, deviceType: DeviceType, fromSearch: Bool, rootSizeClass: UserInterfaceSizeClass?)
     {
         self.model = model
         self.deviceType = deviceType
+        self.rootSizeClass = rootSizeClass
     }
     var searchResults: [ProductInfo] {
         var products: [ProductInfo] = []
@@ -116,7 +105,7 @@ struct ProductView: View {
         List {
             if(!searchText.isEmpty)
             {
-                Section(header: Text(resultsText).fontWeight(.medium).font(.system(.title3, design: .rounded)).textCase(nil)) {}
+                Section(header: Text(resultsText).fontWeight(.medium).font(.system(.title3, design: .rounded)).textCase(nil).foregroundColor(.secondary)) {}
                 .listRowInsets(EdgeInsets(top: 20, leading: 7, bottom: -1000, trailing: 0))
             }
             ForEach(searchResults, id: \.self) { product in
@@ -126,12 +115,13 @@ struct ProductView: View {
                 }
             }
         }
+        .listStyle(InsetGroupedListStyle())
         .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .automatic)).autocapitalization(.none)
         .overlay(Group {
             if collectionModel.loadMatchingProductsByModel(deviceType: deviceType, model: model).isEmpty {
                 VStack(spacing: 15)
                 {
-                    Image(systemName: getProductIcon(product: ProductInfo(type: DeviceType(rawValue: deviceType.rawValue), model: model)))
+                    Image(systemName: modelIcons[model] ?? "questionmark.folder.fill") 
                         .font(.system(size: 72, design: .rounded))
                     Text(model)
                         .font(.system(.title, design: .rounded))
@@ -141,7 +131,6 @@ struct ProductView: View {
             }
         })
         .navigationTitle(model)
-        .navigationBarTitleDisplayMode(.large)
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing)
             {
@@ -153,7 +142,7 @@ struct ProductView: View {
                     SortMenuView(sortStyle: $sortStyle, customLabelStyle: CustomSortLabelStyle())
                     #endif
                     if(UIDevice.current.model.hasPrefix("iPhone") || horizontalSizeClass == .compact) {
-                        NavigationLink(destination: SearchView(previousModelDetailView: model).environmentObject(collectionModel).environmentObject(accentColor))
+                        NavigationLink(destination: SearchView(previousModelDetailView: model, rootSizeClass: rootSizeClass).environmentObject(collectionModel).environmentObject(accentColor))
                         {
                             Image(systemName: "magnifyingglass")
                                 .imageScale(.large)
@@ -175,11 +164,7 @@ struct ProductView: View {
                                     .imageScale(.large)
                                     .frame(height: 96, alignment: .trailing)
                             }
-                            #if targetEnvironment(macCatalyst)
                             .keyboardShortcut("a", modifiers: .command)
-                            #else
-                            .keyboardShortcut("+", modifiers: .command)
-                            #endif
                     }
                 }
             }
@@ -225,7 +210,6 @@ struct ProductCardView: View {
     @State private var showToast: Bool = false
     @State var showEditModalView: Bool = false
     @State private var item: ActivityItem?
-
     @Environment(\.colorScheme) var colorScheme
     var body: some View {
         VStack(alignment: .leading)
@@ -432,7 +416,7 @@ struct HorizontalOneAttributeView: View {
         {
             Text(description)
                 .font(.system(.subheadline, design: .rounded))
-                .foregroundColor(.gray)
+                .foregroundColor(.secondary)
                 .fixedSize()
             Spacer(minLength: 5)
             Text(data)
@@ -453,7 +437,7 @@ struct HorizontalOneBooleanView: View {
         {
             Text(description)
                 .font(.system(.subheadline, design: .rounded))
-                .foregroundColor(.gray)
+                .foregroundColor(.secondary)
                 .fixedSize()
             Spacer(minLength: 5)
             Label(data, systemImage: statusToImage[status]!).foregroundColor(statusToColor[status])

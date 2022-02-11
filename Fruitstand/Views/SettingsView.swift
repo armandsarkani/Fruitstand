@@ -17,6 +17,32 @@ enum FileError: Error {
     case decodeError
 }
 
+enum Appearance: Int, CaseIterable {
+    case System = 0
+    case Light = 1
+    case Dark = 2
+    func getString() -> String {
+        switch(self) {
+            case Appearance.System:
+                return "System"
+            case Appearance.Light:
+                return "Light"
+            case Appearance.Dark:
+                return "Dark"
+        }
+    }
+    func getIcon() -> String {
+        switch(self) {
+            case Appearance.System:
+                return "gearshape"
+            case Appearance.Light:
+                return "sun.max"
+            case Appearance.Dark:
+                return "moon.fill"
+        }
+    }
+}
+
 struct AlertInfo: Identifiable {
 
     enum AlertType {
@@ -44,9 +70,11 @@ struct SettingsView: View {
     @State private var alertInfo: AlertInfo?
     @State private var confirmationShown = false
     @EnvironmentObject var accentColor: AccentColor
+    let appearanceDict: [UIUserInterfaceStyle: ColorScheme] = [UIUserInterfaceStyle.dark: ColorScheme.dark, UIUserInterfaceStyle.light: ColorScheme.light]
     let appearances: [SwiftUI.ColorScheme] = [.light, .dark]
     @Environment(\.colorScheme) var colorScheme
     @Environment(\.isPresented) var presentation
+    @AppStorage("selectedAppearance") var selectedAppearance = 0
     var body: some View {
         NavigationView {
             List
@@ -75,6 +103,7 @@ struct SettingsView: View {
                     Button(action: {
                         if(collectionModel.iCloudStatus){
                             NSUbiquitousKeyValueStore.default.synchronize()
+                            collectionModel.setLatestiCloudSyncDatetime()
                             showSyncToast.toggle()
                         }
                         else {
@@ -119,9 +148,17 @@ struct SettingsView: View {
                     }
                 }
                 //.headerProminence(.increased)
-
                 Section(header: Text("Appearance").customSectionHeader())
                 {
+                    CustomPickerContainerView("Appearance") {
+                        Picker(selection: $selectedAppearance, label: CustomPickerLabelView("Appearance")) {
+                            ForEach(Appearance.allCases, id: \.self) { appearance in
+                                Label(appearance.getString(), systemImage: appearance.getIcon())
+                                    .tag(appearance.rawValue)
+                                    .accentColor(accentColor.color)
+                            }
+                        }
+                    }
                     HStack {
                         Text("Accent Color")
                         Spacer()
@@ -148,19 +185,26 @@ struct SettingsView: View {
                     HStack {
                         Text("Version Number")
                         Spacer()
-                        Text(getVersionNumber()).foregroundColor(.gray)
+                        Text(getVersionNumber()).foregroundColor(.secondary)
                     }
                     HStack {
                         Text("Build Number")
                         Spacer()
-                        Text(getBuildNumber()).foregroundColor(.gray)
+                        Text(getBuildNumber()).foregroundColor(.secondary)
+                    }
+                    if(collectionModel.iCloudStatus) {
+                        HStack {
+                            Text("Last iCloud Sync")
+                            Spacer()
+                            Text(collectionModel.lastiCloudSync).foregroundColor(.secondary)
+                        }
                     }
                 }
                 //.headerProminence(.increased)
 
             }
 
-            
+
             .fileExporter(isPresented: $isExporting, documents: CSVCollectionModel(collectionModel: collectionModel).getCSVFiles(), contentType: UTType.commaSeparatedText) { result in
                 switch result {
                     case .success(let url):
@@ -235,6 +279,7 @@ struct SettingsView: View {
                     Button(action: {self.showSettingsModalView.toggle()}, label: {Text("Close").fontWeight(.regular)})
                 }
             }
+            .preferredColorScheme(selectedAppearance == 1 ? .light : selectedAppearance == 2 ? .dark :  appearanceDict[UIScreen.main.traitCollection.userInterfaceStyle])
         }
         .accentColor(accentColor.color)
     }
@@ -248,6 +293,7 @@ struct SettingsView: View {
         let build = Bundle.main.infoDictionary?["CFBundleVersion"] as? String
         return build!
     }
+
    
 }
 

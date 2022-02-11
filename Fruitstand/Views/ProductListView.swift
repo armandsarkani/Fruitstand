@@ -16,6 +16,7 @@ struct ProductListView: View {
     @State private var showToast: Bool = false
     @EnvironmentObject var collectionModel: CollectionModel
     @EnvironmentObject var accentColor: AccentColor
+    var rootSizeClass: UserInterfaceSizeClass?
     @State var showInfoModalView: Bool = false
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
     @State private var searchText = ""
@@ -33,9 +34,10 @@ struct ProductListView: View {
             }
         }
     }
-    init(deviceType: DeviceType)
+    init(deviceType: DeviceType, rootSizeClass: UserInterfaceSizeClass?)
     {
         self.deviceType = deviceType
+        self.rootSizeClass = rootSizeClass
     }
     var searchResults: [ModelAndCount] {
            if searchText.isEmpty {
@@ -52,13 +54,13 @@ struct ProductListView: View {
             {
                 if(!searchText.isEmpty)
                 {
-                    Section(header: Text(resultsText).fontWeight(.medium).font(.system(.title3, design: .rounded)).textCase(nil)) {}
+                    Section(header: Text(resultsText).fontWeight(.medium).font(.system(.title3, design: .rounded)).textCase(nil).foregroundColor(.secondary)) {}
                     .listRowInsets(EdgeInsets(top: 20, leading: 7, bottom: -1000, trailing: 0))
                 }
                 ForEach(searchResults, id: \.self) { model in
-                    NavigationLink(destination: ProductView(model: model.model, deviceType: deviceType, fromSearch: false)              .environmentObject(collectionModel).environmentObject(accentColor))
+                    NavigationLink(destination: ProductView(model: model.model, deviceType: deviceType, fromSearch: false, rootSizeClass: rootSizeClass).environmentObject(collectionModel).environmentObject(accentColor))
                         {
-                            Label(model.model, systemImage: getProductIcon(product: ProductInfo(type: DeviceType(rawValue: deviceType.rawValue), model: model.model)))
+                            Label(model.model, systemImage: getProductIcon(product: collectionModel.findReferenceProductForModel(model: model.model, deviceType: deviceType)))
                                 .frame(width: 0.625*geo.size.width, alignment: .leading)
                                 .if(model.model.count < 30) {
                                     $0.fixedSize()
@@ -66,13 +68,14 @@ struct ProductListView: View {
                             Spacer()
                             Text(String(model.count!))
                                     .fixedSize()
-                                .foregroundColor(.gray)
+                                .foregroundColor(.secondary)
                         
-                    }
+                    }                    
                 }
             }
             .listStyle(InsetGroupedListStyle())
         }
+        
         .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .automatic)).autocapitalization(.none)
         .overlay(Group {
             if(collectionModel.modelList[deviceType]!.isEmpty){
@@ -89,14 +92,13 @@ struct ProductListView: View {
         })
 
         .navigationTitle(Text(deviceType.rawValue))
-        .navigationBarTitleDisplayMode(.large)
         .if(UIDevice.current.model.hasPrefix("iPhone") || horizontalSizeClass == .compact) {
             $0.toolbar {
                 ToolbarItem(placement: .navigationBarTrailing)
                 {
                     HStack
                     {
-                        NavigationLink(destination: SearchView().environmentObject(collectionModel).environmentObject(accentColor))
+                        NavigationLink(destination: SearchView(rootSizeClass: rootSizeClass).environmentObject(collectionModel).environmentObject(accentColor))
                         {
                             Image(systemName: "magnifyingglass")
                                 .imageScale(.large)
@@ -118,11 +120,7 @@ struct ProductListView: View {
                                     .imageScale(.large)
                                     .frame(height: 96, alignment: .trailing)
                             }
-                            #if targetEnvironment(macCatalyst)
                             .keyboardShortcut("a", modifiers: .command)
-                            #else
-                            .keyboardShortcut("+", modifiers: .command)
-                            #endif
                     }
                 }
             }
@@ -148,5 +146,6 @@ struct ProductListView: View {
             AddProductView(showInfoModalView: self.$showInfoModalView).environmentObject(collectionModel).environmentObject(accentColor)
             
         }
+        
     }
 }

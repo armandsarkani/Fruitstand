@@ -11,6 +11,7 @@
 import SwiftUI
 import AlertToast
 import Introspect
+import UIKit
 
 // Global variables
 var keyStore = NSUbiquitousKeyValueStore()
@@ -27,16 +28,18 @@ extension View {
 
 
 struct ContentView: View {
-    @Environment(\.horizontalSizeClass) var horizontalSizeClass: UserInterfaceSizeClass?
     @State var showInfoModalView: Bool = false
     @State private var collectionFull: Bool = false
     @State var showSettingsModalView: Bool = false
+    @State private var searchQuickAction: Bool = false
     @State private var showToast: Bool = false
     @State var count = 1
     @EnvironmentObject var collectionModel: CollectionModel
     @EnvironmentObject var accentColor: AccentColor
+    @EnvironmentObject var quickActions: QuickActionService
     @State var showiPadWelcomeScreen: Bool = false
-    @Environment(\.isPresented) var presentation
+    @Environment(\.colorScheme) var colorScheme
+    @Environment(\.horizontalSizeClass) var horizontalSizeClass: UserInterfaceSizeClass?
     init() {
         let design = UIFontDescriptor.SystemDesign.rounded
         let largeTitleDescriptor = UIFontDescriptor.preferredFontDescriptor(withTextStyle: .largeTitle).withDesign(design)!.withSymbolicTraits(.traitBold)
@@ -45,26 +48,33 @@ struct ContentView: View {
         let inlineDescriptor = UIFontDescriptor.preferredFontDescriptor(withTextStyle: .body).withDesign(design)!.withSymbolicTraits(.traitBold)
         let inlineFont = UIFont.init(descriptor: inlineDescriptor!, size: inlineDescriptor!.pointSize)
         UINavigationBar.appearance().titleTextAttributes = [.font: inlineFont]
-
+        
     }
     var body: some View {
         NavigationView {
             List {
-                Section(header: Text("Devices").customSectionHeader())
+                if(UIDevice.current.model.hasPrefix("iPad") && horizontalSizeClass != .compact)
+                {
+                    NavigationLink(destination: SearchView(rootSizeClass: horizontalSizeClass).environmentObject(collectionModel).environmentObject(accentColor), isActive: $searchQuickAction)
+                    {
+                        Label("Search", systemImage: "magnifyingglass")
+                    }
+                    .keyboardShortcut("f", modifiers: .command)
+                }
+                Section(header: Text("Devices").rootSectionHeader(horizontalSizeClass: horizontalSizeClass))
                 {
                     ForEach(DeviceType.allCases, id: \.self) { label in
-                        NavigationLink(destination: ProductListView(deviceType: label).environmentObject(collectionModel).environmentObject(accentColor)){
+                        NavigationLink(destination: ProductListView(deviceType: label, rootSizeClass: horizontalSizeClass).environmentObject(collectionModel).environmentObject(accentColor)){
                             Label(label.id, systemImage: icons[label.id]!)
                                 .fixedSize()
                             Spacer()
 
                             Text(String(collectionModel.collection[label]!.count))
-                                .foregroundColor(.gray)
+                                .foregroundColor(.secondary)
                         }
                     }
                 }
-                //.headerProminence(.increased)
-                Section(header: Text("Statistics").customSectionHeader())
+                Section(header: Text("Statistics").rootSectionHeader(horizontalSizeClass: horizontalSizeClass))
                 {
                     NavigationLink(destination: ValuesView().environmentObject(collectionModel).environmentObject(accentColor)){
                         Label("Values", systemImage: "dollarsign.circle.fill")
@@ -75,12 +85,16 @@ struct ContentView: View {
                             .fixedSize()
                         Spacer()
                         Text(String(collectionModel.collectionSize))
-                            .foregroundColor(.gray)
+                            .foregroundColor(.secondary)
                     }
                 }
-                //.headerProminence(.increased)
 
-
+            }
+            .if(UIDevice.current.model.hasPrefix("iPad") && horizontalSizeClass != .compact) {
+                $0.listStyle(SidebarListStyle())
+                .introspectTableView { introspect in
+                    introspect.backgroundColor = .secondarySystemBackground
+                }
             }
             #if targetEnvironment(macCatalyst)
             .environment(\.defaultMinListRowHeight, 30)
@@ -109,13 +123,14 @@ struct ContentView: View {
                                 .frame(height: 96, alignment: .trailing)
                         }
                         #endif
-                        NavigationLink(destination: SearchView().environmentObject(collectionModel).environmentObject(accentColor))
-                        {
-                            Image(systemName: "magnifyingglass")
-                                .imageScale(.large)
-                                .frame(height: 96, alignment: .trailing)
+                        if(UIDevice.current.model.hasPrefix("iPhone") || horizontalSizeClass == .compact) {
+                            NavigationLink(destination: SearchView(rootSizeClass: horizontalSizeClass).environmentObject(collectionModel).environmentObject(accentColor), isActive: $searchQuickAction)
+                            {
+                                Image(systemName: "magnifyingglass")
+                                    .imageScale(.large)
+                                    .frame(height: 96, alignment: .trailing)
+                            }
                         }
-                        .keyboardShortcut("f", modifiers: .command)
                         Button(action: {
                             if(collectionModel.collectionSize >= 1000)
                             {
@@ -131,11 +146,8 @@ struct ContentView: View {
                                     .imageScale(.large)
                                     .frame(height: 96, alignment: .trailing)
                             }
-                            #if targetEnvironment(macCatalyst)
                             .keyboardShortcut("a", modifiers: .command)
-                            #else
-                            .keyboardShortcut("+", modifiers: .command)
-                            #endif
+
                         
                     }
                 }
@@ -165,9 +177,32 @@ struct ContentView: View {
                         showiPadWelcomeScreen = false
                     }
                 #endif
+
             }
+            .onReceive(self.quickActions.$action, perform: { action in
+                if(action == QuickAction.add)
+                {
+                    if(collectionModel.collectionSize >= 1000)
+                    {
+                        generator.notificationOccurred(.error)
+                        collectionFull.toggle()
+                    }
+                    else {
+                        showInfoModalView.toggle()
+                    }
+                }
+                else if(action == QuickAction.search)
+                {
+                    searchQuickAction.toggle()
+                }
+            })
 
         }
+        #if targetEnvironment(macCatalyst)
+        .introspectSplitViewController { controller in
+              controller.preferredPrimaryColumnWidth = 270
+        }
+        #endif
         .if(UIDevice.current.model.hasPrefix("iPhone") || horizontalSizeClass == .compact) {
             $0.navigationViewStyle(StackNavigationViewStyle())
         }
@@ -185,6 +220,7 @@ struct ContentView: View {
         }
         .sheet(isPresented: $showSettingsModalView) {
             SettingsView(showSettingsModalView: self.$showSettingsModalView).environmentObject(collectionModel).environmentObject(accentColor)
+
         }
         .sheet(isPresented: $showiPadWelcomeScreen) {
             WelcomeView()
@@ -196,31 +232,62 @@ struct ContentView: View {
             }
             .padding(.horizontal)
         }
+
     }
 
 }
 
 struct CustomSectionHeaderViewModifier: ViewModifier {
-    let font = Font.system(.title3, design: .rounded).weight(.medium)
+    let font = Font.system(.headline, design: .rounded).weight(.medium)
     func body(content: Content) -> some View {
         content
             .font(font)
             .textCase(nil)
-            .foregroundColor(.primary)
+            .foregroundColor(.secondary)
         #if targetEnvironment(macCatalyst)
-            .padding(.bottom, 7)
-            .padding(.top, 7)
+            .padding(.bottom, 10)
+            .padding(.top, 10)
         #else
             .padding(.bottom, 2)
         #endif
     }
 }
 
+struct RootSectionHeaderViewModifier: ViewModifier {
+    var horizontalSizeClass: UserInterfaceSizeClass?
+    let compactFont = Font.system(.headline, design: .rounded).weight(.medium)
+    let largeFont = Font.system(.title3, design: .rounded).weight(.semibold)
+    func body(content: Content) -> some View {
+        #if !targetEnvironment(macCatalyst)
+        if(UIDevice.current.model.hasPrefix("iPhone") || (UIDevice.current.model.hasPrefix("iPad") && horizontalSizeClass == .compact))
+        {
+            content
+                .font(compactFont)
+                .textCase(nil)
+                .foregroundColor(.secondary)
+                .padding(.bottom, 2)
+        }
+        else {
+            content
+                .font(largeFont)
+        }
+        #else
+        content
+            .font(largeFont)
+            .padding(.top, 5)
+            .padding(.bottom, 5)
+        #endif
+    }
+}
 
 extension View {
     func customSectionHeader() -> some View {
         modifier(CustomSectionHeaderViewModifier())
     }
+    func rootSectionHeader(horizontalSizeClass: UserInterfaceSizeClass?) -> some View {
+        modifier(RootSectionHeaderViewModifier(horizontalSizeClass: horizontalSizeClass))
+    }
+
 }
 
 
@@ -232,5 +299,3 @@ struct ContentView_Previews: PreviewProvider{
         }
     }
 }
-
-

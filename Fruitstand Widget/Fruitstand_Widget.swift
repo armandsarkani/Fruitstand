@@ -77,7 +77,7 @@ struct SmallCountsWidgetView: View {
                 .font(.system(size: 48, design: .rounded))
                 .fontWeight(.semibold)
             Text("Apple Products")
-                .foregroundColor(.gray)
+                .foregroundColor(.secondary)
                 .fontWeight(.medium)
                 .font(.system(.headline, design: .rounded))
         }
@@ -90,7 +90,7 @@ struct MediumCountsWidgetView: View {
         GeometryReader { geo in
             VStack (alignment: .leading, spacing: 0.05*geo.size.height) {
                 Text("Collection Size by Product")
-                    .foregroundColor(.gray)
+                    .foregroundColor(.secondary)
                     .fontWeight(.medium)
                     .font(.system(.headline, design: .rounded))
                 HStack(alignment: .center) {
@@ -147,7 +147,7 @@ struct MediumCountsWidgetDetailView: View {
                     .fontWeight(.semibold)
                     .fixedSize()
                 Text(entry.widgetModel.deviceTypeCounts[element].deviceType.id)
-                    .foregroundColor(.gray)
+                    .foregroundColor(.secondary)
                     .fontWeight(.medium)
                     .font(.system(.subheadline, design: .rounded))
                     .fixedSize()
@@ -180,7 +180,7 @@ struct SmallValuesWidgetView: View {
                 .font(.system(.title, design: .rounded))
                 .fontWeight(.semibold)
             Text("Collection Value")
-                .foregroundColor(.gray)
+                .foregroundColor(.secondary)
                 .fontWeight(.medium)
                 .font(.system(.headline, design: .rounded))
                 .minimumScaleFactor(0.0001)
@@ -195,7 +195,7 @@ struct MediumValuesWidgetView: View {
         GeometryReader { geo in
             VStack (alignment: .leading, spacing: 0.08*geo.size.height) {
                 Text("Estimated Value by Product")
-                    .foregroundColor(.gray)
+                    .foregroundColor(.secondary)
                     .fontWeight(.medium)
                     .font(.system(.headline, design: .rounded))
                 HStack(alignment: .center) {
@@ -238,7 +238,7 @@ struct MediumValuesWidgetDetailView: View {
                     .fontWeight(.semibold)
                     .fixedSize()
                 Text(entry.widgetModel.deviceTypeValues[element].deviceType.id)
-                    .foregroundColor(.gray)
+                    .foregroundColor(.secondary)
                     .fontWeight(.medium)
                     .font(.system(.subheadline, design: .rounded))
                     .fixedSize()
@@ -257,7 +257,7 @@ struct LargeValuesWidgetView: View {
                 GeometryReader { geo in
                     VStack (alignment: .leading, spacing: 0.08*geo.size.height) {
                         Text("Average Value by Product")
-                            .foregroundColor(.gray)
+                            .foregroundColor(.secondary)
                             .fontWeight(.medium)
                             .font(.system(.headline, design: .rounded))
                         HStack(alignment: .center) {
@@ -266,7 +266,7 @@ struct LargeValuesWidgetView: View {
                                     AverageValuesDetailView(entry: entry, element: element, geo: geo)
                                 }
                                 Text("Collection Value")
-                                    .foregroundColor(.gray)
+                                    .foregroundColor(.secondary)
                                     .fontWeight(.medium)
                                     .font(.system(.headline, design: .rounded))
                                     .fixedSize()
@@ -318,7 +318,7 @@ struct AverageValuesDetailView: View {
                     .fontWeight(.semibold)
                     .fixedSize()
                 Text(entry.widgetModel.averageValues[element].deviceType.id)
-                    .foregroundColor(.gray)
+                    .foregroundColor(.secondary)
                     .fontWeight(.medium)
                     .font(.system(.subheadline, design: .rounded))
                     .fixedSize()

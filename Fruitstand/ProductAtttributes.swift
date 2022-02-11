@@ -233,8 +233,7 @@ enum MacModel: String, CaseIterable, Identifiable, Codable {
     case _MacMini = "Mac mini (Intel)"
     case _MacMiniAS = "Mac mini (Apple Silicon)"
     case _MacPro = "Mac Pro"
-    case Other = "Other"
-    case Earlier = "Earlier Models"
+    case Other = "Other/Earlier Models"
     
     var id: String { self.rawValue }
     static var asArray: [MacModel] {return self.allCases}
