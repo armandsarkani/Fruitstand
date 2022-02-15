@@ -17,7 +17,6 @@ struct AddProductView: View {
     @Binding var showInfoModalView: Bool
     @EnvironmentObject var collectionModel: CollectionModel
     @EnvironmentObject var accentColor: AccentColor
-
     @Environment(\.isPresented) var presentation
     var body: some View {
            NavigationView {
@@ -46,13 +45,11 @@ struct AddProductView: View {
                     {
                         BasicsView(product: $product)
                     }
-                    //.headerProminence(.increased)
 
                     Section(header: Text("Device Specifics").customSectionHeader())
                     {
                         SpecificsView(product: $product)
                     }
-                    //.headerProminence(.increased)
 
                    
                     Section(header: Text("Additional Comments").customSectionHeader())
@@ -60,16 +57,13 @@ struct AddProductView: View {
                         TextField("Comments", text: $product.comments ?? "")
                             .autocapitalization(.none)
                     }
-                    //.headerProminence(.increased)
 
 
                 }
-                .gesture(
-                    DragGesture()
-                        .onChanged { _ in self.hideKeyboard() }
-                    )
+                .introspectTableView { introspect in
+                    introspect.keyboardDismissMode = .onDrag
+                }
                 .navigationTitle(Text("Add Product"))
-                .navigationBarTitleDisplayMode(.large)
                 .toolbar {
                     ToolbarItem(placement: .navigationBarLeading) {
                         Button(action: {self.showInfoModalView.toggle()}, label: {Text("Cancel").fontWeight(.regular)})
@@ -117,28 +111,23 @@ struct EditProductView: View {
                      BasicsView(product: $product)
 
                  }
-                 //.headerProminence(.increased)
 
                  Section(header: Text("Device Specifics").customSectionHeader())
                  {
                      SpecificsView(product: $product)
                  }
-                 //.headerProminence(.increased)
                 
                  Section(header: Text("Additional Comments").customSectionHeader())
                  {
                      TextField("Comments", text: $product.comments ?? "")
                          .autocapitalization(.none)
                  }
-                 //.headerProminence(.increased)
 
              }
-             .gesture(
-                 DragGesture()
-                     .onChanged { _ in self.hideKeyboard() }
-                 )
+             .introspectTableView { introspect in
+                 introspect.keyboardDismissMode = .onDrag
+             }
              .navigationTitle(Text("Edit Product"))
-             .navigationBarTitleDisplayMode(.large)
              .toolbar {
                  ToolbarItem(placement: .navigationBarLeading) {
                      Button(action: {showEditModalView.toggle()}, label: {Text("Cancel").fontWeight(.regular)})

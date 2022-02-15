@@ -11,7 +11,7 @@ import CSV
 import SwiftUI
 import UniformTypeIdentifiers
 
-class CSVCollectionModel
+struct CSVCollectionModel
 {
     var collectionModel: CollectionModel
     let boolToString: [Bool: String] = [true: "Yes", false: "No"]

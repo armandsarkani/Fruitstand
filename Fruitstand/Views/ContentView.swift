@@ -25,6 +25,7 @@ extension View {
          }
      }
 }
+var displayMode: NavigationBarItem.TitleDisplayMode = .automatic
 
 
 struct ContentView: View {
@@ -48,14 +49,13 @@ struct ContentView: View {
         let inlineDescriptor = UIFontDescriptor.preferredFontDescriptor(withTextStyle: .body).withDesign(design)!.withSymbolicTraits(.traitBold)
         let inlineFont = UIFont.init(descriptor: inlineDescriptor!, size: inlineDescriptor!.pointSize)
         UINavigationBar.appearance().titleTextAttributes = [.font: inlineFont]
-        
     }
     var body: some View {
         NavigationView {
             List {
                 if(UIDevice.current.model.hasPrefix("iPad") && horizontalSizeClass != .compact)
                 {
-                    NavigationLink(destination: SearchView(rootSizeClass: horizontalSizeClass).environmentObject(collectionModel).environmentObject(accentColor), isActive: $searchQuickAction)
+                    NavigationLink(destination: SearchView().environmentObject(collectionModel).environmentObject(accentColor), isActive: $searchQuickAction)
                     {
                         Label("Search", systemImage: "magnifyingglass")
                     }
@@ -64,7 +64,7 @@ struct ContentView: View {
                 Section(header: Text("Devices").rootSectionHeader(horizontalSizeClass: horizontalSizeClass))
                 {
                     ForEach(DeviceType.allCases, id: \.self) { label in
-                        NavigationLink(destination: ProductListView(deviceType: label, rootSizeClass: horizontalSizeClass).environmentObject(collectionModel).environmentObject(accentColor)){
+                        NavigationLink(destination: ProductListView(deviceType: label).environmentObject(collectionModel).environmentObject(accentColor)){
                             Label(label.id, systemImage: icons[label.id]!)
                                 .fixedSize()
                             Spacer()
@@ -76,9 +76,6 @@ struct ContentView: View {
                 }
                 Section(header: Text("Statistics").rootSectionHeader(horizontalSizeClass: horizontalSizeClass))
                 {
-                    NavigationLink(destination: ValuesView().environmentObject(collectionModel).environmentObject(accentColor)){
-                        Label("Values", systemImage: "dollarsign.circle.fill")
-                    }
                     HStack
                     {
                         Label("Collection Size", systemImage: "sum")
@@ -87,9 +84,21 @@ struct ContentView: View {
                         Text(String(collectionModel.collectionSize))
                             .foregroundColor(.secondary)
                     }
+                    NavigationLink(destination: ValuesView().environmentObject(collectionModel).environmentObject(accentColor)){
+                        HStack
+                        {
+                            Label("Values", systemImage: "dollarsign.circle.fill")
+                                .fixedSize()
+                            Spacer()
+                            Text(String(format: "$%d", locale: Locale.current, getTotalCollectionValue(collection: collectionModel.collection)))
+                                .foregroundColor(.secondary)
+                        }
+                    }
+                
                 }
 
             }
+            .navigationBarTitleDisplayMode(.large)
             .if(UIDevice.current.model.hasPrefix("iPad") && horizontalSizeClass != .compact) {
                 $0.listStyle(SidebarListStyle())
                 .introspectTableView { introspect in
@@ -124,7 +133,7 @@ struct ContentView: View {
                         }
                         #endif
                         if(UIDevice.current.model.hasPrefix("iPhone") || horizontalSizeClass == .compact) {
-                            NavigationLink(destination: SearchView(rootSizeClass: horizontalSizeClass).environmentObject(collectionModel).environmentObject(accentColor), isActive: $searchQuickAction)
+                            NavigationLink(destination: SearchView().environmentObject(collectionModel).environmentObject(accentColor), isActive: $searchQuickAction)
                             {
                                 Image(systemName: "magnifyingglass")
                                     .imageScale(.large)
@@ -203,9 +212,9 @@ struct ContentView: View {
               controller.preferredPrimaryColumnWidth = 270
         }
         #endif
-        .if(UIDevice.current.model.hasPrefix("iPhone") || horizontalSizeClass == .compact) {
-            $0.navigationViewStyle(StackNavigationViewStyle())
-        }
+//        .if(UIDevice.current.model.hasPrefix("iPhone") || horizontalSizeClass == .compact) {
+//            $0.navigationViewStyle(StackNavigationViewStyle())
+//        }
         .toast(isPresenting: $showToast, duration: 1) {
             AlertToast(type: .complete(accentColor.color), title: "Product Added", style: AlertToast.AlertStyle.style(titleFont: Font.system(.title3, design: .rounded).bold()))
         }

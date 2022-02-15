@@ -16,12 +16,14 @@ struct ValuesView: View {
     @State private var showToast: Bool = false
     @EnvironmentObject var accentColor: AccentColor
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
+
     var body: some View {
         if(collectionModel.isEmpty()) {
             VStack(spacing: 15)
             {
                 Image(systemName: "dollarsign.circle.fill")
                     .font(.system(size: 72, design: .rounded))
+                    .foregroundColor(accentColor.color)
                 Text("Values")
                     .font(.system(.title, design: .rounded))
                     .fontWeight(.bold)
@@ -52,7 +54,6 @@ struct ValuesView: View {
                         }
                     }
                 }
-                //.headerProminence(.increased)
 
                 Section(header: Text("Average Value By Device Type").customSectionHeader())
                  {
@@ -67,9 +68,62 @@ struct ValuesView: View {
                          }
                      }
                  }
-                 //.headerProminence(.increased)
 
                 
+            }
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing)
+                {
+                    HStack
+                    {
+                        if(UIDevice.current.model.hasPrefix("iPhone") || horizontalSizeClass == .compact) {
+                            NavigationLink(destination: SearchView().environmentObject(collectionModel).environmentObject(accentColor))
+                            {
+                                Image(systemName: "magnifyingglass")
+                                    .imageScale(.large)
+                                    .frame(height: 96, alignment: .trailing)
+                            }
+                            .keyboardShortcut("f", modifiers: .command)
+                            Button(action: {
+                                if(collectionModel.collectionSize >= 1000)
+                                {
+                                    generator.notificationOccurred(.error)
+                                    collectionFull.toggle()
+                                }
+                                else {
+                                    generator.notificationOccurred(.success)
+                                    showInfoModalView.toggle()
+                                }
+                                }) {
+                                    Image(systemName: "plus")
+                                        .imageScale(.large)
+                                        .frame(height: 96, alignment: .trailing)
+                                }
+                                .keyboardShortcut("a", modifiers: .command)
+                        }
+                    }
+                }
+            }
+            .if(UIDevice.current.model.hasPrefix("iPhone") || horizontalSizeClass == .compact) {
+                $0.alert(isPresented: $collectionFull) {
+                    Alert(
+                        title: Text("1000 Product Limit Reached"),
+                        message: Text("Remove at least one product from your collection before adding new ones."),
+                        dismissButton: .default(Text("OK"))
+                    )
+                }
+            }
+            .sheet(isPresented: $showInfoModalView, onDismiss: {
+                if(collectionModel.productJustAdded) {
+                    showToast.toggle()
+                    collectionModel.productJustAdded = false
+                }
+            }) {
+                AddProductView(showInfoModalView: self.$showInfoModalView).environmentObject(collectionModel).environmentObject(accentColor)
+                
+            }
+            .toast(isPresenting: $showToast, duration: 1) {
+                AlertToast(type: .complete(accentColor.color), title: "Product Added", style: AlertToast.AlertStyle.style(titleFont: Font.system(.title3, design: .rounded).bold()))
             }
             .navigationTitle("Values")
         }

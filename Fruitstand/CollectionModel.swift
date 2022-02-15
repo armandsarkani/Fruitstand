@@ -405,10 +405,10 @@ class CollectionModel: ObservableObject {
             for (key, value) in modelCounts
             {
                 if(otherModelStrings.contains(key)) {
-                    otherModelCountsArray.append(ModelAndCount(model: key, count: value, rank: typeToRank(deviceType: deviceType.rawValue, key: key)))
+                    otherModelCountsArray.append(ModelAndCount(model: key, count: value, rank: ProductInfo.typeToRank(deviceType: deviceType.rawValue, key: key)))
                 }
                 else {
-                    modelCountsArray.append(ModelAndCount(model: key, count: value, rank: typeToRank(deviceType: deviceType.rawValue, key: key)))
+                    modelCountsArray.append(ModelAndCount(model: key, count: value, rank: ProductInfo.typeToRank(deviceType: deviceType.rawValue, key: key)))
                 }
             }
             modelCountsArray.sort{$0.rank < $1.rank}

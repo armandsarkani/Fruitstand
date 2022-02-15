@@ -74,6 +74,9 @@ struct FruitstandApp: App {
         .onChange(of: scenePhase) { scenePhase in
             switch scenePhase {
             case .active:
+                #if targetEnvironment(macCatalyst)
+                addQuickActions()
+                #endif
                 guard let shortcutItem = appDelegate.shortcutItem else { return }
                 quickActionService.action = QuickAction(rawValue: shortcutItem.type)
             case .background:

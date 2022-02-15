@@ -14,13 +14,16 @@ import Introspect
 struct SearchView: View {
     @EnvironmentObject var collectionModel: CollectionModel
     @EnvironmentObject var accentColor: AccentColor
+    @Environment(\.horizontalSizeClass) var horizontalSizeClass
+    @State private var collectionFull: Bool = false
+    @State private var showToast: Bool = false
+    @State var showInfoModalView: Bool = false
     @State var previousModelDetailView: String?
     @State private var searchText = ""
     @State private var cardTapped = false
     @State var deviceTypeFilter: String = "All Devices"
     @State var sortStyle: SortStyle = SortStyle.None
     @State private var showEditToast: Bool = false
-    var rootSizeClass: UserInterfaceSizeClass?
 
     let deviceTypeFilters = ["All Devices", "Mac", "iPhone", "iPad", "Apple Watch", "AirPods", "Apple TV", "iPod"]
     var suggestions: [String] {
@@ -33,7 +36,7 @@ struct SearchView: View {
         var products: [ProductInfo] = []
         if(deviceTypeFilter != "All Devices")
         {
-            if(searchText == "Entire Collection") {
+            if(searchText.lowercased() == "entire collection") {
                 products = collectionModel.collectionArray.filter {$0.type == DeviceType(rawValue: deviceTypeFilter)}
 
             }
@@ -42,7 +45,7 @@ struct SearchView: View {
             }
         }
         else {
-            if(searchText == "Entire Collection") {
+            if(searchText.lowercased() == "entire collection") {
                 products = collectionModel.collectionArray
             }
             else {
@@ -78,51 +81,8 @@ struct SearchView: View {
         }
     }
     var body: some View {
-        HStack {
-            Picker(selection: $deviceTypeFilter, label: Label("Device Type", systemImage: "square.3.layers.3d.down.left")) {
-                if(!searchText.isEmpty) {
-                    ForEach(deviceTypeFilters, id: \.self) { filter in
-                        Image(systemName: (icons[filter] ?? "circle.hexagongrid"))
-                    }
-
-                }
-            }
-            if(UIDevice.current.model.hasPrefix("iPad") && !searchText.isEmpty) {
-                Spacer().frame(width: 20)
-            }
-            if(!searchText.isEmpty) {
-                #if targetEnvironment(macCatalyst)
-                SortMenuViewMac(sortStyle: $sortStyle).environmentObject(accentColor)
-                #else
-                SortMenuView(sortStyle: $sortStyle, customLabelStyle: CustomSortLabelStyle())
-                #endif
-            }
-        }
-
-        .if(searchText.isEmpty)
-        {
-            $0.padding(.top, -100)
-        }
-        #if targetEnvironment(macCatalyst)
-        .if(!searchText.isEmpty)
-        {
-            $0.padding(.top, 15)
-        }
-        #endif
-        .scaledToFit()
-        .pickerStyle(.segmented)
-        .if(UIDevice.current.model.hasPrefix("iPhone") && !searchText.isEmpty)
-        {
-            $0.frame(width: (UIScreen.main.bounds.width * 0.91))
-        }
-        .if(UIDevice.current.model.hasPrefix("iPad") && !searchText.isEmpty)
-        {
-            $0.scaleEffect(0.9)
-
-        }
-       List
-       {
-           if(!searchText.isEmpty)
+       Form {
+           if(!searchText.isEmpty && !searchResults.isEmpty)
            {
                Section(header: Text(resultsText).fontWeight(.medium).font(.system(.title3, design: .rounded)).textCase(nil).foregroundColor(.secondary)) {}
                .listRowInsets(EdgeInsets(top: 20, leading: 7, bottom: -20, trailing: 0))
@@ -156,7 +116,7 @@ struct SearchView: View {
                    ProductCardView(product: product, fullySearchable: true, showButtons: true, showEditToast: $showEditToast).environmentObject(collectionModel)
                    if(collectionModel.getModelCount(model: product.model!) > 1)
                    {
-                       NavigationLink(destination: ProductView(model: product.model!, deviceType: product.type!, fromSearch: true, rootSizeClass: rootSizeClass).environmentObject(collectionModel).environmentObject(accentColor))
+                       NavigationLink(destination: ProductView(model: product.model!, deviceType: product.type!, fromSearch: true).environmentObject(collectionModel).environmentObject(accentColor))
                        {
                            Label("View All", systemImage: "rectangle.stack")
                                .foregroundColor(accentColor.color)
@@ -169,10 +129,90 @@ struct SearchView: View {
        .toast(isPresenting: $showEditToast, duration: 1) {
            AlertToast(type: .complete(accentColor.color), title: "Product Edited", style: AlertToast.AlertStyle.style(titleFont: Font.system(.title3, design: .rounded).bold()))
        }
+       .toolbar {
+           ToolbarItemGroup(placement: .bottomBar)
+           {
+                if(!searchText.isEmpty)
+                {
+                    #if targetEnvironment(macCatalyst)
+                    SortMenuViewMac(sortStyle: $sortStyle).environmentObject(accentColor)
+                    #else
+                    SortMenuView(sortStyle: $sortStyle)
+                    #endif
+                    Picker(selection: $deviceTypeFilter, label: Label("Device Type", systemImage: "square.3.layers.3d.down.left"))
+                    {
+                        ForEach(deviceTypeFilters, id: \.self) { filter in
+                            Image(systemName: icons[filter] ?? "circle.hexagongrid")
+                        }
+                    }
+                    .pickerStyle(SegmentedPickerStyle())
+                    .ignoresSafeArea(.keyboard, edges:.all)
+                }
+            }
+           ToolbarItem(placement: .navigationBarTrailing)
+           {
+               if(UIDevice.current.model.hasPrefix("iPhone") || horizontalSizeClass == .compact) {
+                   Button(action: {
+                       if(collectionModel.collectionSize >= 1000)
+                       {
+                           generator.notificationOccurred(.error)
+                           collectionFull.toggle()
+                       }
+                       else {
+                           generator.notificationOccurred(.success)
+                           showInfoModalView.toggle()
+                       }
+                       }) {
+                           Image(systemName: "plus")
+                               .imageScale(.large)
+                               .frame(height: 96, alignment: .trailing)
+                       }
+                       .keyboardShortcut("a", modifiers: .command)
+               }
+           }
+       }
+       .overlay(Group {
+           if(searchResults.isEmpty && !searchText.isEmpty){
+               VStack(spacing: 15)
+               {
+                   Image(systemName: "questionmark.folder.fill")
+                       .font(.system(size: 72, design: .rounded))
+                       .foregroundColor(accentColor.color)
+                   Text("No Results Found")
+                       .font(.system(.title, design: .rounded))
+                       .fontWeight(.bold)
+                   Text("Try your search again.")
+               }
+           }
+       })
+       .if(UIDevice.current.model.hasPrefix("iPhone") || horizontalSizeClass == .compact) {
+           $0.alert(isPresented: $collectionFull) {
+               Alert(
+                   title: Text("1000 Product Limit Reached"),
+                   message: Text("Remove at least one product from your collection before adding new ones."),
+                   dismissButton: .default(Text("OK"))
+               )
+           }
+       }
+       .toast(isPresenting: $showToast, duration: 1) {
+           AlertToast(type: .complete(accentColor.color), title: "Product Added", style: AlertToast.AlertStyle.style(titleFont: Font.system(.title3, design: .rounded).bold()))
+       }
+       .sheet(isPresented: $showInfoModalView, onDismiss: {
+           if(collectionModel.productJustAdded) {
+               showToast.toggle()
+               collectionModel.productJustAdded = false
+           }
+       }) {
+           AddProductView(showInfoModalView: self.$showInfoModalView).environmentObject(collectionModel).environmentObject(accentColor)
+           
+       }
        .environment(\.defaultMinListHeaderHeight, 20)
-       .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .always), prompt: "Search all products ").autocapitalization(.none)
-       .navigationBarTitleDisplayMode(.automatic)
+       .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .always), prompt: "Search all products").autocapitalization(.none)
+       .introspectTableView { introspect in
+           introspect.keyboardDismissMode = .onDrag
+       }
        .navigationTitle("Search")
+       .navigationBarTitleDisplayMode(.large)
        
     }
     func getSearchSuggestions(deviceTypeFilter: String) -> [String]

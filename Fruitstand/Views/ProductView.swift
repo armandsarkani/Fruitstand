@@ -31,19 +31,20 @@ enum SortStyle: String, CaseIterable, Identifiable, Codable {
     var id: String { self.rawValue }
     var images: [String] {
         if(self == SortStyle.YearAcquiredAscending) {
-            return ["calendar.circle.fill", "arrow.up"]
+            return ["calendar", "arrow.up.circle.fill"]
         }
         else if(self == SortStyle.YearAcquiredDescending) {
-            return ["calendar.circle.fill", "arrow.down"]
+            return ["calendar", "arrow.down.circle.fill"]
         }
         else if(self == SortStyle.EstimatedValueAscending) {
-            return ["dollarsign.circle.fill", "arrow.up"]
+            return ["dollarsign.circle", "arrow.up.circle.fill"]
         }
         else if(self == SortStyle.EstimatedValueDescending) {
-            return ["dollarsign.circle.fill", "arrow.down"]
+            return ["dollarsign.circle", "arrow.down.circle.fill"]
         }
-        return []
+        return ["list.bullet", "arrow.up.arrow.down.circle"]
     }
+    static let allSortedCases: [SortStyle] = [.YearAcquiredAscending, .YearAcquiredDescending, .EstimatedValueAscending, .EstimatedValueDescending]
 }
 
 struct ProductView: View {
@@ -52,7 +53,6 @@ struct ProductView: View {
     var model: String
     var deviceType: DeviceType
     var fromSearch: Bool = false
-    var rootSizeClass: UserInterfaceSizeClass?
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
     @State var sortStyle: SortStyle = SortStyle.None
     @State var showInfoModalView: Bool = false
@@ -60,11 +60,10 @@ struct ProductView: View {
     @State private var searchText = ""
     @State private var collectionFull: Bool = false
     @State private var showEditToast: Bool = false
-    init(model: String, deviceType: DeviceType, fromSearch: Bool, rootSizeClass: UserInterfaceSizeClass?)
+    init(model: String, deviceType: DeviceType, fromSearch: Bool)
     {
         self.model = model
         self.deviceType = deviceType
-        self.rootSizeClass = rootSizeClass
     }
     var searchResults: [ProductInfo] {
         var products: [ProductInfo] = []
@@ -103,10 +102,10 @@ struct ProductView: View {
     }
     var body: some View {
         List {
-            if(!searchText.isEmpty)
+            if(!searchText.isEmpty && !searchResults.isEmpty)
             {
                 Section(header: Text(resultsText).fontWeight(.medium).font(.system(.title3, design: .rounded)).textCase(nil).foregroundColor(.secondary)) {}
-                .listRowInsets(EdgeInsets(top: 20, leading: 7, bottom: -1000, trailing: 0))
+                .listRowInsets(EdgeInsets(top: 20, leading: 7, bottom: -20, trailing: 0))
             }
             ForEach(searchResults, id: \.self) { product in
                 Section
@@ -118,18 +117,36 @@ struct ProductView: View {
         .listStyle(InsetGroupedListStyle())
         .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .automatic)).autocapitalization(.none)
         .overlay(Group {
-            if collectionModel.loadMatchingProductsByModel(deviceType: deviceType, model: model).isEmpty {
-                VStack(spacing: 15)
-                {
-                    Image(systemName: modelIcons[model] ?? "questionmark.folder.fill") 
-                        .font(.system(size: 72, design: .rounded))
-                    Text(model)
-                        .font(.system(.title, design: .rounded))
-                        .fontWeight(.bold)
-                    Text("Collection is empty.")
+            if(searchResults.isEmpty){
+                if(searchText.isEmpty) {
+                    VStack(spacing: 15)
+                    {
+                        Image(systemName: modelIcons[model] ?? "questionmark.folder.fill")
+                            .font(.system(size: 72, design: .rounded))
+                            .foregroundColor(accentColor.color)
+                        Text(model)
+                            .font(.system(.title, design: .rounded))
+                            .fontWeight(.bold)
+                        Text("Collection is empty.")
+                    }
+                }
+                else {
+                    VStack(spacing: 15)
+                    {
+                        Image(systemName: "questionmark.folder.fill")
+                            .font(.system(size: 72, design: .rounded))
+                            .foregroundColor(accentColor.color)
+                        Text("No Results Found")
+                            .font(.system(.title, design: .rounded))
+                            .fontWeight(.bold)
+                        Text("Try your search again.")
+                    }
                 }
             }
         })
+        .introspectTableView { introspect in
+            introspect.keyboardDismissMode = .onDrag
+        }
         .navigationTitle(model)
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing)
@@ -139,10 +156,10 @@ struct ProductView: View {
                     #if targetEnvironment(macCatalyst)
                     SortMenuViewMac(sortStyle: $sortStyle).environmentObject(accentColor)
                     #else
-                    SortMenuView(sortStyle: $sortStyle, customLabelStyle: CustomSortLabelStyle())
+                    SortMenuView(sortStyle: $sortStyle)
                     #endif
                     if(UIDevice.current.model.hasPrefix("iPhone") || horizontalSizeClass == .compact) {
-                        NavigationLink(destination: SearchView(previousModelDetailView: model, rootSizeClass: rootSizeClass).environmentObject(collectionModel).environmentObject(accentColor))
+                        NavigationLink(destination: SearchView(previousModelDetailView: model).environmentObject(collectionModel).environmentObject(accentColor))
                         {
                             Image(systemName: "magnifyingglass")
                                 .imageScale(.large)
@@ -224,7 +241,15 @@ struct ProductCardView: View {
             }
             SpecificsHeaderView(product: product)
                 .contextMenu {
-                    Button(action: {UIPasteboard.general.string = getCommonName(product: product, toDisplay: true)})
+                    Button(role: .destructive, action: {generator.notificationOccurred(.error); selectedProduct = product; confirmationShown.toggle()})
+                    {
+                        Label("Erase Product", systemImage: "trash.fill").foregroundColor(.red)
+                    }
+                    Button(action: {generator.notificationOccurred(.success); showEditModalView.toggle()})
+                    {
+                        Label("Edit Product", systemImage: "pencil")
+                    }
+                    Button(action: {UIPasteboard.general.string = product.getCommonName(toDisplay: true)})
                     {
                         Label("Copy Model Name", systemImage: "doc.on.doc")
                     }
@@ -359,7 +384,7 @@ struct SpecificsHeaderView: View {
     var product: ProductInfo
     var body: some View {
         Spacer()
-        Text(getCommonHeaderName(product: product, toDisplay: true))
+        Text(product.getCommonHeaderName(toDisplay: true))
                 .fontWeight(.bold)
         .font(.system(.title3, design: .rounded))
         
@@ -513,41 +538,27 @@ struct HorizontalMixedAttributeBooleanView: View {
 
 struct SortMenuView: View {
     @Binding var sortStyle: SortStyle
-    var customLabelStyle: CustomSortLabelStyle
     var body: some View {
         Menu {
+            Picker("None", selection: $sortStyle) {
+                ForEach([SortStyle.None]) { style in
+                    Text(style.rawValue)
+                        .tag(style)
+                }
+            }
+            .pickerStyle(InlinePickerStyle())
             Picker("Sort Style", selection: $sortStyle) {
-                ForEach(SortStyle.allCases) { style in
-                    if(!style.images.isEmpty) {
-                        Label(style.rawValue, systemImage: style.images[0])
-                            .tag(style)
-                    }
-                    else {
-                        Text(style.rawValue)
-                            .tag(style)
-                    }
+                ForEach(SortStyle.allSortedCases) { style in
+                    Label(style.rawValue, systemImage: style.images[0])
+                        .tag(style)
                 }
             }
             .pickerStyle(InlinePickerStyle())
         } label: {
-            if(sortStyle == SortStyle.None) {
-                Label {
-                    Text("Sort")
-                        .font(.system(size: 18, design: .rounded))
-                } icon: {Image(systemName: "arrow.up.arrow.down.circle").imageScale(.large)}.labelStyle(CustomSortLabelStyle())
-            }
-            else if(sortStyle == SortStyle.EstimatedValueDescending || sortStyle == SortStyle.YearAcquiredDescending) {
-                Label {
-                    Text("Sort")
-                        .font(.system(size: 18, design: .rounded))
-                } icon: {Image(systemName: "arrow.down.circle.fill").imageScale(.large)}.labelStyle(CustomSortLabelStyle())
-            }
-            else {
-                Label {
-                    Text("Sort")
-                        .font(.system(size: 18, design: .rounded))
-                } icon: {Image(systemName: "arrow.up.circle.fill").imageScale(.large)}.labelStyle(CustomSortLabelStyle())
-            }
+            Label {
+                Text("Sort")
+                    .font(.system(size: 18, design: .rounded))
+            } icon: {Image(systemName: sortStyle.images[1]).imageScale(.large)}.labelStyle(CustomSortLabelStyle())
         }
     }
 }
@@ -556,17 +567,11 @@ struct SortMenuViewMac: View {
     @Binding var sortStyle: SortStyle
     @EnvironmentObject var accentColor: AccentColor
     var body: some View {
-        Picker(selection: $sortStyle, label: MacLabelStyle(sortStyle: sortStyle).foregroundColor(accentColor.color))
+        Picker(selection: $sortStyle, label: Image(systemName: sortStyle.images[1]).imageScale(.large).foregroundColor(accentColor.color))
         {
             ForEach(SortStyle.allCases) { style in
-                if(!style.images.isEmpty) {
-                    Label(style.rawValue, systemImage: style.images[0])
-                        .tag(style)
-                }
-                else {
-                    Text(style.rawValue)
-                        .tag(style)
-                }
+                Text(style.rawValue)
+                    .tag(style)
             }
         }
         .pickerStyle(MenuPickerStyle())
@@ -585,24 +590,6 @@ struct CustomSortLabelStyle: LabelStyle {
                 configuration.icon
                 configuration.title
             }
-        }
-    }
-}
-
-struct MacLabelStyle: View {
-    var sortStyle: SortStyle
-    var body: some View {
-        if(sortStyle == SortStyle.None)
-        {
-            Image(systemName: "arrow.up.arrow.down.circle").imageScale(.large)
-        }
-        else if(sortStyle == SortStyle.EstimatedValueDescending || sortStyle == SortStyle.YearAcquiredDescending)
-        {
-            Image(systemName: "arrow.down.circle.fill").imageScale(.large)
-        }
-        else
-        {
-            Image(systemName: "arrow.up.circle.fill").imageScale(.large)
         }
     }
 }

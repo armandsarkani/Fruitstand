@@ -45,11 +45,8 @@ fileprivate extension Color {
         
         #if os(macOS)
         SystemColor(self).getRed(&r, green: &g, blue: &b, alpha: &a)
-        // Note that non RGB color will raise an exception, that I don't now how to catch because it is an Objc exception.
         #else
         guard SystemColor(self).getRed(&r, green: &g, blue: &b, alpha: &a) else {
-            // Pay attention that the color should be convertible into RGB format
-            // Colors using hue, saturation and brightness won't work
             return nil
         }
         #endif

@@ -124,7 +124,6 @@ struct SettingsView: View {
                         )
                     }
                 }
-                //.headerProminence(.increased)
 
                 Section(header: Text("Manage Collection").customSectionHeader())
                 {
@@ -147,7 +146,6 @@ struct SettingsView: View {
                         Label("Import Collection from CSV", systemImage: "arrow.down.doc.fill")
                     }
                 }
-                //.headerProminence(.increased)
                 Section(header: Text("Appearance").customSectionHeader())
                 {
                     CustomPickerContainerView("Appearance") {
@@ -178,7 +176,6 @@ struct SettingsView: View {
                             }
                     }
                 }
-                //.headerProminence(.increased)
 
                 Section(header: Text("Fruitstand Info").customSectionHeader())
                 {
@@ -200,7 +197,6 @@ struct SettingsView: View {
                         }
                     }
                 }
-                //.headerProminence(.increased)
 
             }
 
@@ -272,7 +268,6 @@ struct SettingsView: View {
                 AlertToast(type: .systemImage("cloud.fill", Color.blue), title: "Sync in Progress", style: AlertToast.AlertStyle.style(titleFont: Font.system(.title3, design: .rounded).bold()))
             }
             .navigationTitle(Text("Settings"))
-            .navigationBarTitleDisplayMode(.large)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading)
                 {
